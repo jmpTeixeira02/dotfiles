@@ -68,6 +68,7 @@ in
         mermaid-cli
         tectonic
         imagemagick_light
+        ghostscript
         # IDE
         neovim
         go
