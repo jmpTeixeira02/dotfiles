@@ -17,7 +17,7 @@
       mkConfigPath = homeDirectory:
         if dotfilesRoot != ""
         then "${dotfilesRoot}/config"
-        else "${homeDirectory}/.dotfiles/config";
+        else "${homeDirectory}/dotfiles/config";
 
       pathsModule = { config, ... }: {
         options.paths.configPath = nixpkgs.lib.mkOption {
