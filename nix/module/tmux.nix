@@ -11,10 +11,6 @@ let
       sha256 = "sFL9/PMdPJxN7tgpc4YbUHW4PkCXlKmY7a7gi7PLcn8=";
     };
   };
-  dotfilesRoot = builtins.getEnv "FLAKE_DOTFILES";
-  configPath = if dotfilesRoot != ""
-               then "${dotfilesRoot}/config"
-               else "${config.home.homeDirectory}/.dotfiles/config";
 in
 {
   home.packages = with pkgs; [
@@ -24,7 +20,7 @@ in
 
   home.file = {
     ".config/tmux/tmux-local.conf".source =
-      config.lib.file.mkOutOfStoreSymlink "${configPath}/tmux/tmux.conf";
+      config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/tmux/tmux.conf";
   };
 
   programs.tmux = {

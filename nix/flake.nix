@@ -12,28 +12,43 @@
 
   outputs =
     { nixpkgs, home-manager, ... }:
+    let
+      dotfilesRoot = builtins.getEnv "FLAKE_DOTFILES";
+      mkConfigPath = homeDirectory:
+        if dotfilesRoot != ""
+        then "${dotfilesRoot}/config"
+        else "${homeDirectory}/.dotfiles/config";
+
+      pathsModule = { config, ... }: {
+        options.paths.configPath = nixpkgs.lib.mkOption {
+          type = nixpkgs.lib.types.str;
+          default = mkConfigPath config.home.homeDirectory;
+        };
+      };
+
+      baseModules = [
+        pathsModule
+        ./core.nix
+      ];
+    in
     {
       homeConfigurations = {
         joao = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = [
-            ./core.nix
+          modules = baseModules ++ [
             ./module/tmux.nix
           ];
         };
         server = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = [
-            ./core.nix
-          ];
+          modules = baseModules;
         };
         work = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          modules = [
-            ./core.nix
+          modules = baseModules ++ [
             ./module/tmux.nix
+            ./module/colima.nix
             ./module/work.nix
-            { colima = true; }
           ];
         };
       };

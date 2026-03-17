@@ -1,18 +1,7 @@
 { config, pkgs, lib, ... }:
 
-let
-  dotfilesRoot = builtins.getEnv "FLAKE_DOTFILES";
-  configPath = if dotfilesRoot != ""
-               then "${dotfilesRoot}/config"
-               else "${config.home.homeDirectory}/.dotfiles/config";
-in
 {
   options = {
-    colima = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Include colima specific fixes";
-    };
     terminal = lib.mkOption {
         type = lib.types.str;
         default = "ghostty";
@@ -46,16 +35,15 @@ in
         fd
         ripgrep
         btop
-        lazygit
         unzip
         xclip
-        mermaid-cli
 
         # IDE
         neovim
         tectonic
         imagemagick_light
         ghostscript
+        mermaid-cli
 
         # Languages
         go
@@ -75,11 +63,10 @@ in
         ansible
 
         # Git
+        git
+        lazygit
         gh
         gnupg # Sign commits
-      ]
-      ++ lib.optionals config.colima [
-        colima
       ]
       ++ lib.optionals (!config.macOS) [
         gcc
@@ -87,27 +74,24 @@ in
       ];
       file = {
         ".config/nvim".source =
-          config.lib.file.mkOutOfStoreSymlink "${configPath}/nvim";
+          config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/nvim";
         ".zshrc".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/zshrc";
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/zshrc";
         ".config/zsh/aliases.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/aliases.zsh";
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/aliases.zsh";
         ".config/zsh/tmux-sesh.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/tmux-sesh.zsh";
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/tmux-sesh.zsh";
         ".config/zsh/plugins.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/plugins.zsh";
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/plugins.zsh";
         ".config/zsh/fzf.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/fzf.zsh";
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/fzf.zsh";
         ".config/zsh/macos.zsh" = lib.mkIf config.macOS {
-            source = config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/macos.zsh";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/macos.zsh";
         };
         ".config/starship".source =
-            config.lib.file.mkOutOfStoreSymlink "${configPath}/starship";
-        ".config/zsh/colima.zsh" = lib.mkIf config.colima {
-            source = config.lib.file.mkOutOfStoreSymlink "${configPath}/zsh/colima.zsh";
-        };
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/starship";
         ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
-            source = config.lib.file.mkOutOfStoreSymlink "${configPath}/ghostty";
+            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/ghostty";
         };
       };
     };
