@@ -12,34 +12,26 @@
 
   outputs =
     { nixpkgs, home-manager, ... }:
-    let 
-      
-        mkPkgs = system: import nixpkgs {
-            inherit system;
-            overlays = [ 
-                (import ./overlays/go.nix)
-            ];
-        };
-    in
     {
       homeConfigurations = {
         joao = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [
             ./core.nix
+            ./module/tmux.nix
           ];
         };
         server = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [
             ./core.nix
-            { tmux = false; }
           ];
         };
         work = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           modules = [
             ./core.nix
+            ./module/tmux.nix
             ./module/work.nix
             { colima = true; }
           ];
