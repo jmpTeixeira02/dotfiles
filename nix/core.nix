@@ -49,7 +49,7 @@ in
         # Utils
         gnumake
         bison
-        nh
+
         # Core tools
         antigen
         starship
@@ -66,15 +66,19 @@ in
         unzip
         xclip
         mermaid-cli
+
+        # IDE
+        neovim
         tectonic
         imagemagick_light
         ghostscript
-        # IDE
-        neovim
+
+        # Languages
         go
         nodejs
         python3
         cargo
+
         # Docker
         docker
         docker-compose
@@ -85,6 +89,7 @@ in
         k9s
         opentofu
         ansible
+
         # Git
         gh
         gnupg # Sign commits

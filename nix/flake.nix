@@ -24,20 +24,20 @@
     {
       homeConfigurations = {
         joao = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [
             ./core.nix
           ];
         };
         server = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "x86_64-linux";
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = [
             ./core.nix
             { tmux = false; }
           ];
         };
         work = home-manager.lib.homeManagerConfiguration {
-          pkgs = mkPkgs "aarch64-darwin";
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           modules = [
             ./core.nix
             ./module/work.nix
