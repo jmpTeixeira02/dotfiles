@@ -47,6 +47,8 @@
 
         # Languages
         go
+        graphviz # Go Profiler dependency
+        buf # Protobuf
         nodejs
         python3
         cargo

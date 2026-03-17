@@ -48,7 +48,6 @@
           modules = baseModules ++ [
             ./module/tmux.nix
             ./module/colima.nix
-            ./module/work.nix
           ];
         };
       };
