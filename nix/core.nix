@@ -64,6 +64,10 @@
         opentofu
         ansible
 
+        # File Encryption
+        age
+        sops
+
         # Git
         git
         lazygit
