@@ -51,7 +51,10 @@
         buf # Protobuf
         nodejs
         python3
-        cargo
+        rustup
+
+        # AI
+        opencode
 
         # Docker
         docker
@@ -96,6 +99,10 @@
         };
         ".config/starship".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/starship";
+        ".config/lazygit".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/lazygit";
+        ".config/opencode".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode";
         ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
             source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/ghostty";
         };
