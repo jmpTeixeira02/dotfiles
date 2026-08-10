@@ -1,8 +1,6 @@
 return {
-  "coder/claudecode.nvim",
-  dependencies = { "folke/snacks.nvim" },
+  "folke/sidekick.nvim",
   opts = {
-    terminal_cmd = vim.fn.exepath("claude"),
+    nes = { enabled = false },
   },
-  config = true,
 }

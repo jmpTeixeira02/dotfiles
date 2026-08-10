@@ -9,5 +9,8 @@
             "*.env.example": "allow"
         }
     },
-    "share": "disabled"
+    "share": "disabled",
+    "plugin": [
+        "@dietrichgebert/ponytail"
+    ]
 }
