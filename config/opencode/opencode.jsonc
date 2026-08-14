@@ -6,6 +6,7 @@
             "*": "allow",
             "*.env": "deny",
             "*.env.*": "deny",
+            "*.sops.*": "deny",
             "*.env.example": "allow"
         }
     },
