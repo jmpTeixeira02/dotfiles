@@ -12,6 +12,7 @@
     },
     "share": "disabled",
     "plugin": [
-        "@dietrichgebert/ponytail"
+        "@dietrichgebert/ponytail",
+        "opencode-caveman"
     ]
 }
