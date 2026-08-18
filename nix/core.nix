@@ -9,7 +9,7 @@
     };
     macOS = lib.mkOption {
         type = lib.types.bool;
-        default = pkgs.stdenv.isDarwin;
+        default = pkgs.stdenv.hostPlatform.isDarwin;
         description = "Include macos specific fixes";
     };
   };
@@ -103,6 +103,8 @@
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/lazygit";
         ".config/opencode".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode";
+        ".config/git".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/git";
         ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
             source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/ghostty";
         };

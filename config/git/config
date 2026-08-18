@@ -1,0 +1,14 @@
+[user]
+    name = Joao Teixeira
+
+[includeIf "hasconfig:remote.*.url:git@github.com:jmpTeixeira02/**"]
+    path = ./personal
+
+[includeIf "hasconfig:remote.*.url:https://github.com/jmpTeixeira02/**"]
+    path = ./personal
+
+[includeIf "hasconfig:remote.*.url:git@github.com:openkcm/**"]
+    path = ./work
+
+[includeIf "hasconfig:remote.*.url:https://github.com/openkcm/**"]
+    path = ./work

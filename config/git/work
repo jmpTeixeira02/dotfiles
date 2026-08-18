@@ -1,0 +1,6 @@
+[user]
+	email = joao.teixeira01@sap.com
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = false
