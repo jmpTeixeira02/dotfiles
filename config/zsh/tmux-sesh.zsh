@@ -36,15 +36,22 @@ zle     -N             sesh-kill-session
 
 # Create TMUX Windows on Infra Session
 function _kubectl_contexts_(){
+    echo "local"
     kubectl config get-contexts -o name
 }
 
 function _kubectl_switch_context_(){
-    kubectl config use-context "$1" > /dev/null
-    tmux rename-window "$1"
+    if [[ "$1" == "local" ]]; then
+        unset KUBECONFIG
+        tmux rename-window "local"
+    else
+        kubectl config use-context "$1" > /dev/null
+        tmux rename-window "$1"
+    fi
 }
 
 function kubectl-switch-context() {
+    export KUBECONFIG=$(find ~/.kube/shoots -type f 2>/dev/null | tr '\n' ':')
     _select_and_handle_ "Select Kubectl Context" _kubectl_contexts_ _kubectl_switch_context_
 }
 zle     -N             kubectl-switch-context
