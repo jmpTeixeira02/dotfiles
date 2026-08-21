@@ -1,21 +1,20 @@
 { config, pkgs, lib, ... }:
 
+let
+  linkConfig = path: config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/${path}";
+  isMacOS = pkgs.stdenv.hostPlatform.isDarwin;
+in
 {
   options = {
-    opencode-config = lib.mkOption {
-        type = lib.types.enum [ "home" "work" ];
-        default = "home";
-        description = "OpenCode machine config";
+    opencodeProfile = lib.mkOption {
+      type = lib.types.enum [ "home" "work" ];
+      default = "home";
+      description = "OpenCode machine config";
     };
     terminal = lib.mkOption {
-        type = lib.types.str;
-        default = "ghostty";
-        description = "Terminal emulator";
-    };
-    macOS = lib.mkOption {
-        type = lib.types.bool;
-        default = pkgs.stdenv.hostPlatform.isDarwin;
-        description = "Include macos specific fixes";
+      type = lib.types.enum [ "ghostty" ];
+      default = "ghostty";
+      description = "Terminal emulator";
     };
   };
 
@@ -41,7 +40,6 @@
         ripgrep
         btop
         unzip
-        xclip
 
         # IDE
         neovim
@@ -82,52 +80,39 @@
         gh
         gnupg # Sign commits
       ]
-      ++ lib.optionals (!config.macOS) [
+      ++ lib.optionals (!isMacOS) [
         gcc
         zsh
+        xclip
       ];
       file = {
         # ZSH
-        ".zshrc".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/zshrc";
-        ".config/zsh/aliases.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/aliases.zsh";
-        ".config/zsh/tmux-sesh.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/tmux-sesh.zsh";
-        ".config/zsh/plugins.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/plugins.zsh";
-        ".config/zsh/fzf.zsh".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/fzf.zsh";
+        ".zshrc".source = linkConfig "zsh/zshrc";
+        ".config/zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
+        ".config/zsh/tmux-sesh.zsh".source = linkConfig "zsh/tmux-sesh.zsh";
+        ".config/zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
+        ".config/zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
 
-        # General
-        ".config/starship".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/starship";
-        ".config/lazygit".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/lazygit";
-        ".config/nvim".source =
-          config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/nvim";
-        ".config/git".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/git";
+        ".config/starship".source = linkConfig "starship";
+        ".config/lazygit".source = linkConfig "lazygit";
+        ".config/nvim".source = linkConfig "nvim";
+        ".config/git".source = linkConfig "git";
 
-        ".config/zsh/macos.zsh" = lib.mkIf config.macOS {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/macos.zsh";
+        ".config/zsh/macos.zsh" = lib.mkIf isMacOS {
+          source = linkConfig "zsh/macos.zsh";
         };
         ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/ghostty";
+          source = linkConfig "ghostty";
         };
 
         # Opencode
-        ".config/opencode/opencode.jsonc".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode/opencode.jsonc";
-        ".config/opencode/opencode.json".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode/${config.opencode-config}.json";
-        
+        ".config/opencode/opencode.jsonc".source = linkConfig "opencode/opencode.jsonc";
+        ".config/opencode/opencode.json".source = linkConfig "opencode/${config.opencodeProfile}.json";
       };
     };
 
     programs = {
-        home-manager.enable = true;
+      home-manager.enable = true;
     };
-
   };
 }

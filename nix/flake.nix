@@ -38,7 +38,7 @@
           modules = baseModules ++ [
             ./module/tmux.nix
             {
-                opencode-config = "home";
+                opencodeProfile = "home";
             }
           ];
         };
@@ -52,7 +52,7 @@
             ./module/tmux.nix
             ./module/colima.nix
             {
-                opencode-config = "work";
+                opencodeProfile = "work";
             }
           ];
         };
