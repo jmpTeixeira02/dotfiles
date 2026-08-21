@@ -2,6 +2,11 @@
 
 {
   options = {
+    opencode-config = lib.mkOption {
+        type = lib.types.enum [ "home" "work" ];
+        default = "home";
+        description = "OpenCode machine config";
+    };
     terminal = lib.mkOption {
         type = lib.types.str;
         default = "ghostty";
@@ -82,8 +87,7 @@
         zsh
       ];
       file = {
-        ".config/nvim".source =
-          config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/nvim";
+        # ZSH
         ".zshrc".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/zshrc";
         ".config/zsh/aliases.zsh".source =
@@ -94,20 +98,30 @@
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/plugins.zsh";
         ".config/zsh/fzf.zsh".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/fzf.zsh";
-        ".config/zsh/macos.zsh" = lib.mkIf config.macOS {
-            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/macos.zsh";
-        };
+
+        # General
         ".config/starship".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/starship";
         ".config/lazygit".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/lazygit";
-        ".config/opencode".source =
-            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode";
+        ".config/nvim".source =
+          config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/nvim";
         ".config/git".source =
             config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/git";
+
+        ".config/zsh/macos.zsh" = lib.mkIf config.macOS {
+            source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/macos.zsh";
+        };
         ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
             source = config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/ghostty";
         };
+
+        # Opencode
+        ".config/opencode/opencode.jsonc".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode/opencode.jsonc";
+        ".config/opencode/opencode.json".source =
+            config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/opencode/${config.opencode-config}.json";
+        
       };
     };
 

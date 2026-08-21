@@ -7,6 +7,7 @@
             "*.env": "deny",
             "*.env.*": "deny",
             "*.sops.*": "deny",
+            "*secrets.zsh": "deny",
             "*.env.example": "allow"
         }
     },

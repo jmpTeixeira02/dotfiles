@@ -1,5 +1,5 @@
 {
-  description = "Home Manager configuration of joao";
+  description = "Home Manager configuration";
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
@@ -33,10 +33,13 @@
     in
     {
       homeConfigurations = {
-        joao = home-manager.lib.homeManagerConfiguration {
+        home = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules ++ [
             ./module/tmux.nix
+            {
+                opencode-config = "home";
+            }
           ];
         };
         server = home-manager.lib.homeManagerConfiguration {
@@ -48,6 +51,9 @@
           modules = baseModules ++ [
             ./module/tmux.nix
             ./module/colima.nix
+            {
+                opencode-config = "work";
+            }
           ];
         };
       };

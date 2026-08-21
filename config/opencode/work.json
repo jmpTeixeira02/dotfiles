@@ -1,0 +1,14 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "share": "disabled",
+    "model": "anthropic/claude-opus-4-6",
+    "small_model": "anthropic/claude-sonnet-4-6",
+    "provider": {
+        "anthropic": {
+            "options": {
+                "baseURL": "http://localhost:6655/anthropic/v1",
+                "apiKey": "{env:HAI_PROXY_API_KEY}"
+            }
+        }
+    }
+}
