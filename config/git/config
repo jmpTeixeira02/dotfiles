@@ -12,3 +12,6 @@
 
 [includeIf "hasconfig:remote.*.url:https://github.com/openkcm/**"]
     path = ./work
+
+[includeIf "hasconfig:remote.*.url:https://github.tools.sap/**"]
+    path = ./work

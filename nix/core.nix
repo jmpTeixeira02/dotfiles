@@ -55,6 +55,7 @@ in
         nodejs
         python3
         rustup
+        openjdk
 
         # AI
         opencode
