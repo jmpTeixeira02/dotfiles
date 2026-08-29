@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   linkConfig = path: config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/${path}";
@@ -7,7 +12,10 @@ in
 {
   options = {
     opencodeProfile = lib.mkOption {
-      type = lib.types.enum [ "home" "work" ];
+      type = lib.types.enum [
+        "home"
+        "work"
+      ];
       default = "home";
       description = "OpenCode machine config";
     };
@@ -23,69 +31,71 @@ in
       username = builtins.getEnv "FLAKE_USER";
       homeDirectory = builtins.getEnv "FLAKE_HOME";
       stateVersion = "24.11";
-      packages = with pkgs; [
-        # Utils
-        gnumake
-        bison
+      packages =
+        with pkgs;
+        [
+          # Utils
+          gnumake
+          bison
 
-        # Core tools
-        antigen
-        starship
-        zoxide
-        eza
-        bat
-        fzf
-        tlrc
-        fd
-        ripgrep
-        btop
-        unzip
+          # Core tools
+          antigen
+          starship
+          zoxide
+          eza
+          bat
+          fzf
+          tlrc
+          fd
+          ripgrep
+          btop
+          unzip
 
-        # IDE
-        neovim
-        tectonic
-        imagemagick_light
-        ghostscript
-        mermaid-cli
+          # IDE
+          neovim
+          tectonic
+          imagemagick_light
+          ghostscript
+          mermaid-cli
 
-        # Languages
-        go
-        graphviz # Go Profiler dependency
-        buf # Protobuf
-        nodejs
-        python3
-        rustup
-        openjdk
+          # Languages
+          go
+          graphviz # Go Profiler dependency
+          buf # Protobuf
+          nodejs
+          python3
+          rustup
+          openjdk
 
-        # AI
-        opencode
+          # AI
+          opencode
 
-        # Docker
-        docker
-        docker-compose
-        kubernetes-helm
-        lazydocker
-        kubectl
-        k3d
-        k9s
-        opentofu
-        ansible
+          # Docker
+          docker
+          docker-compose
+          kubernetes-helm
+          lazydocker
+          kubectl
+          k3d
+          k9s
+          opentofu
+          ansible
 
-        # File Encryption
-        age
-        sops
+          # File Encryption
+          age
+          sops
 
-        # Git
-        git
-        lazygit
-        gh
-        gnupg # Sign commits
-      ]
-      ++ lib.optionals (!isMacOS) [
-        gcc
-        zsh
-        xclip
-      ];
+          # Git
+          git
+          lazygit
+          gh
+          gnupg # Sign commits
+        ]
+        ++ lib.optionals (!isMacOS) [
+          gcc
+          zsh
+          xclip
+        ];
       file = {
         # ZSH
         ".zshrc".source = linkConfig "zsh/zshrc";
@@ -114,6 +124,12 @@ in
 
     programs = {
       home-manager.enable = true;
+    };
+
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
     };
   };
 }

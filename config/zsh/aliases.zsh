@@ -5,6 +5,8 @@ alias src="source ~/.zshrc"
 alias tree="eza --icons --tree"
 alias cat='bat --paging=never'
 alias clean_nvim='rm -rf ~/.local/share/nvim'
+alias nix_clean="nix-collect-garbage -d"
+alias nix_update_store="nix flake update --flake ./nix"
 
 # Lazygit switch dir on exit
 lg()

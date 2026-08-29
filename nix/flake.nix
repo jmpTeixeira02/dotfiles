@@ -2,22 +2,34 @@
   description = "Home Manager configuration";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-
   outputs =
-    { nixpkgs, home-manager, ... }:
+    {
+      nixpkgs,
+      home-manager,
+      disko,
+      sops-nix,
+      ...
+    }:
     let
       dotfilesRoot = builtins.getEnv "FLAKE_DOTFILES";
-      mkConfigPath = homeDirectory:
-        if dotfilesRoot != ""
-        then "${dotfilesRoot}/config"
-        else "${homeDirectory}/dotfiles/config";
+      mkConfigPath =
+        homeDirectory:
+        if dotfilesRoot != "" then "${dotfilesRoot}/config" else "${homeDirectory}/dotfiles/config";
 
       pathsModule = { config, ... }: {
         options.paths.configPath = nixpkgs.lib.mkOption {
@@ -38,11 +50,11 @@
           modules = baseModules ++ [
             ./module/tmux.nix
             {
-                opencodeProfile = "home";
+              opencodeProfile = "home";
             }
           ];
         };
-        server = home-manager.lib.homeManagerConfiguration {
+        homelab = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules;
         };
@@ -52,8 +64,21 @@
             ./module/tmux.nix
             ./module/colima.nix
             {
-                opencodeProfile = "work";
+              opencodeProfile = "work";
             }
+          ];
+        };
+      };
+
+      nixosConfigurations = {
+        homelab = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            disko.nixosModules.disko
+            sops-nix.nixosModules.sops
+            ./hosts/homelab/disks/disko.nix
+            ./hosts/homelab/configuration.nix
+            ./hosts/homelab/hardware-configuration.nix
           ];
         };
       };
