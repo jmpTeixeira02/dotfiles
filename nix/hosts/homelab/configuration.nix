@@ -1,16 +1,20 @@
 { config, pkgs, ... }:
 
 {
+  _module.args.serviceData = "/var/lib/homelab";
+
   imports = [
     ./disks/disko.nix
     ./disks/pool.nix
+    ../../services/network/default.nix
+    ../../services/management/default.nix
   ];
 
   sops = {
-    defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/var/lib/sops-nix/key.txt";
     secrets = {
       homelab-password-hash = {
+        sopsFile = ./secrets.yaml;
         neededForUsers = true;
       };
     };
@@ -25,6 +29,7 @@
     podman = {
       enable = true;
       dockerCompat = true;
+      defaultNetwork.settings.dns_enabled = true;
     };
     oci-containers.backend = "podman";
   };
@@ -57,7 +62,10 @@
   users.users = {
     homelab = {
       isNormalUser = true;
-      extraGroups = [ "wheel" ];
+      extraGroups = [
+        "wheel"
+        "podman"
+      ];
       hashedPasswordFile = config.sops.secrets.homelab-password-hash.path;
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK7GueGAFmWmg0Bvx7RGb2MhMWRntk4OOwWDsYuGQHyt"
