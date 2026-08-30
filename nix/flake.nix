@@ -41,7 +41,9 @@
       baseModules = [
         pathsModule
         ./core.nix
+        ./lib/utils.nix
       ];
+
     in
     {
       homeConfigurations = {
@@ -49,6 +51,8 @@
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules ++ [
             ./module/tmux.nix
+            ./module/ai.nix
+            ./module/programming.nix
             {
               opencodeProfile = "home";
             }
@@ -61,8 +65,10 @@
         work = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.aarch64-darwin;
           modules = baseModules ++ [
-            ./module/tmux.nix
             ./module/colima.nix
+            ./module/tmux.nix
+            ./module/ai.nix
+            ./module/programming.nix
             {
               opencodeProfile = "work";
             }

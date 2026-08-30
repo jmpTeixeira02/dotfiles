@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  linkConfig,
+  lib,
+  ...
+}:
 
 let
   kanagawa = pkgs.tmuxPlugins.mkTmuxPlugin {
@@ -19,8 +25,7 @@ in
   ];
 
   home.file = {
-    ".config/tmux/tmux-local.conf".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/tmux/tmux.conf";
+    ".config/tmux/tmux-local.conf".source = linkConfig "tmux/tmux.conf";
   };
 
   programs.tmux = {

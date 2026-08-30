@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  linkConfig,
+  ...
+}:
 
 {
   home.packages = with pkgs; [
@@ -6,7 +11,6 @@
   ];
 
   home.file = {
-    ".config/zsh/colima.zsh".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.paths.configPath}/zsh/colima.zsh";
+    ".config/zsh/colima.zsh".source = linkConfig "zsh/colima.zsh";
   };
 }
