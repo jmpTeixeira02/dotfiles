@@ -66,6 +66,17 @@
           }
         ];
       }
+      {
+        "Media" = [
+          {
+            Prowlarr = {
+              icon = "prowlarr";
+              href = "https://prowlarr.${config.sops.placeholder."domain"}";
+              description = "Prowlarr";
+            };
+          }
+        ];
+      }
     ];
 
     "homepage-settings.yml".content = lib.generators.toYAML { } {
