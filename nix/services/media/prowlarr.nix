@@ -1,9 +1,17 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }:
 
+let
+  desiredProviders = [
+    "Nyaa.si"
+    "LimeTorrents"
+    "The Pirate Bay"
+  ];
+in
 {
   sops = {
     secrets = {
@@ -72,5 +80,42 @@
       config.sops.templates."prowlarr-labels".content
       config.sops.templates."prowlarr-config.xml".content
     ];
+    path = with pkgs; [
+      curl
+      jq
+      coreutils
+      gnugrep
+    ];
+
+    postStart = ''
+      set -euo pipefail
+
+      API_KEY=$(cat ${config.sops.secrets."media/prowlarr/apiKey".path})
+      URL="http://localhost:9696/api/v1/indexer"
+
+      echo "Waiting for Prowlarr API to become ready..."
+      # Keep trying until we get a 200/401 response from the API
+      until curl -s -f -H "X-Api-Key: $API_KEY" "$URL" > /dev/null; do
+        sleep 3
+      done
+
+      echo "API is up. Fetching state..."
+      EXISTING=$(curl -s -H "X-Api-Key: $API_KEY" "$URL" | jq -r '.[].name')
+      SCHEMAS=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/schema")
+
+      PROVIDERS=(${lib.concatStringsSep " " (map (p: ''"${p}"'') desiredProviders)})
+
+      for PROVIDER in "''${PROVIDERS[@]}"; do
+        if ! echo "$EXISTING" | grep -q "^''${PROVIDER}$"; then
+          echo "Adding provider: $PROVIDER"
+          PAYLOAD=$(echo "$SCHEMAS" | jq -c ".[] | select(.name == \"$PROVIDER\") | .enable = true | .appProfileId = 1")
+          
+          curl -s -o /dev/null -X POST "$URL" \
+            -H "X-Api-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
+        fi
+      done
+    '';
   };
 }
