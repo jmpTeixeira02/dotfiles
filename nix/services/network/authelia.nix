@@ -21,7 +21,7 @@
       };
       "users" = {
         format = "yaml";
-        sopsFile = ./secrets.yaml;
+        sopsFile = ./authelia-users-secrets.yaml;
         key = ""; # Leaves key empty to use the whole file
       };
     };
@@ -31,8 +31,8 @@
     image = "docker.io/authelia/authelia";
     autoStart = true;
     volumes = [
-      "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:ro"
-      "${config.sops.secrets."users".path}:/config/users.yml:ro"
+      "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw,U"
+      "${config.sops.secrets."users".path}:/config/users.yml:rw,U"
     ];
     environmentFiles = [
       config.sops.templates."authelia-env".path

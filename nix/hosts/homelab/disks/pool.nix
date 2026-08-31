@@ -6,9 +6,10 @@
 }:
 
 {
+
   environment.systemPackages = [ pkgs.mergerfs ];
 
-  fileSystems."/mnt/storage" = {
+  fileSystems."${config.mySystem.poolMount}" = {
     fsType = "fuse.mergerfs";
     device = "/mnt/disk1:/mnt/disk2";
     options = [

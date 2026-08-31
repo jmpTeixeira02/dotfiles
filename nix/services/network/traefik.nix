@@ -1,6 +1,5 @@
 {
   config,
-  serviceData,
   lib,
   ...
 }:
@@ -21,7 +20,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${serviceData}/traefik/certs 0755 root root -"
+    "d ${config.mySystem.serviceData}/traefik/certs 0755 root root -"
   ];
 
   virtualisation.oci-containers.containers.traefik = {
@@ -34,7 +33,7 @@
     volumes = [
       "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
       "${config.sops.templates."traefik.yml".path}:/etc/traefik/traefik.yml:ro"
-      "${serviceData}/traefik/certs:/var/traefik/certs:rw,U"
+      "${config.mySystem.serviceData}/traefik/certs:/var/traefik/certs:rw,U"
     ];
     environmentFiles = [
       config.sops.templates."traefik-env".path
