@@ -25,6 +25,11 @@
       "traefik.http.routers.dockhand.entryPoints" = "websecure";
       "traefik.http.routers.dockhand.rule" = "Host(`dockhand.${config.sops.placeholder."domain"}`)";
     };
+  };
 
+  systemd.services."podman-dockhand" = {
+    restartTriggers = [
+      config.sops.templates."dockhand-labels".content
+    ];
   };
 }

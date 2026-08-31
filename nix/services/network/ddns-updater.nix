@@ -48,4 +48,10 @@
     };
   };
 
+  systemd.services."podman-ddns-updater" = {
+    restartTriggers = [
+      config.sops.templates."ddns-updater-labels".content
+      config.sops.templates."ddns-updater.json".content
+    ];
+  };
 }

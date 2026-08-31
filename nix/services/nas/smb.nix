@@ -44,4 +44,10 @@
       PASS = config.sops.placeholder."nas/pass";
     };
   };
+
+  systemd.services."podman-smb" = {
+    restartTriggers = [
+      config.sops.templates."smb-env".content
+    ];
+  };
 }

@@ -139,4 +139,12 @@
     };
   };
 
+  systemd.services."podman-traefik" = {
+    restartTriggers = [
+      config.sops.templates."traefik-env".content
+      config.sops.templates."traefik-labels".content
+      config.sops.templates."traefik.yml".content
+    ];
+  };
+
 }

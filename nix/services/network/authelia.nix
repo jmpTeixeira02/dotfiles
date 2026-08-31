@@ -123,4 +123,11 @@
     };
   };
 
+  systemd.services."podman-authelia" = {
+    restartTriggers = [
+      config.sops.templates."authelia-env".path
+      config.sops.templates."authelia-labels".path
+      config.sops.templates."authelia.yml".path
+    ];
+  };
 }

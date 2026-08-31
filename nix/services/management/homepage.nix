@@ -78,4 +78,14 @@
 
   };
 
+  systemd.services."podman-homepage" = {
+    restartTriggers = [
+      config.sops.templates."homepage-env".content
+      config.sops.templates."homepage-labels".content
+      config.sops.templates."homepage-services.yml".content
+      config.sops.templates."homepage-settings.yml".content
+      config.sops.templates."homepage-bookmarks.yml".content
+    ];
+  };
+
 }
