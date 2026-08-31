@@ -75,6 +75,13 @@
               description = "Prowlarr";
             };
           }
+          {
+            qBitTorrent = {
+              icon = "qbittorrent";
+              href = "https://torrent.${config.sops.placeholder."domain"}";
+              description = "qBitTorrent";
+            };
+          }
         ];
       }
     ];
