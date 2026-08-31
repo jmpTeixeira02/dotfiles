@@ -4,7 +4,7 @@
 {
   sops.secrets."domain".sopsFile = ../secrets.yaml;
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/dockhand 0755 root root -"
+    "d ${config.mySystem.serviceData}/dockhand 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.dockhand = {

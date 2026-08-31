@@ -20,7 +20,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/traefik/certs 0755 root root -"
+    "d ${config.mySystem.serviceData}/traefik/certs 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.traefik = {

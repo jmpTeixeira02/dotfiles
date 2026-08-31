@@ -21,11 +21,14 @@ in
       "media/prowlarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
+      "media/lidarr/apiKey" = {
+        sopsFile = ../secrets.yaml;
+      };
     };
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/prowlarr 0755 root root -"
+    "d ${config.mySystem.serviceData}/prowlarr 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.prowlarr = {
@@ -91,31 +94,62 @@ in
       set -euo pipefail
 
       API_KEY=$(cat ${config.sops.secrets."media/prowlarr/apiKey".path})
-      URL="http://localhost:9696/api/v1/indexer"
+      INDEXER_URL="http://localhost:9696/api/v1/indexer"
 
       echo "Waiting for Prowlarr API to become ready..."
-      # Keep trying until we get a 200/401 response from the API
-      until curl -s -f -H "X-Api-Key: $API_KEY" "$URL" > /dev/null; do
+      until curl -s -f -H "X-Api-Key: $API_KEY" "$INDEXER_URL" > /dev/null; do
         sleep 3
       done
 
-      echo "API is up. Fetching state..."
-      EXISTING=$(curl -s -H "X-Api-Key: $API_KEY" "$URL" | jq -r '.[].name')
-      SCHEMAS=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/schema")
-
+      EXISTING=$(curl -s -H "X-Api-Key: $API_KEY" "$INDEXER_URL" | jq -r '.[].name')
+      SCHEMAS=$(curl -s -H "X-Api-Key: $API_KEY" "$INDEXER_URL/schema")
       PROVIDERS=(${lib.concatStringsSep " " (map (p: ''"${p}"'') desiredProviders)})
 
       for PROVIDER in "''${PROVIDERS[@]}"; do
-        if ! echo "$EXISTING" | grep -q "^''${PROVIDER}$"; then
+      if ! echo "$EXISTING" | grep -q "^''${PROVIDER}$"; then
           echo "Adding provider: $PROVIDER"
           PAYLOAD=$(echo "$SCHEMAS" | jq -c ".[] | select(.name == \"$PROVIDER\") | .enable = true | .appProfileId = 1")
           
-          curl -s -o /dev/null -X POST "$URL" \
+          curl -s -o /dev/null -X POST "$INDEXER_URL" \
+          -H "X-Api-Key: $API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "$PAYLOAD"
+      fi
+      done
+
+      echo "Checking Prowlarr application sync for Lidarr..."
+
+      APPLICATIONS_URL="http://localhost:9696/api/v1/applications"
+      APPS=$(curl -sS -H "X-Api-Key: $API_KEY" "$APPLICATIONS_URL")
+
+      LIDARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Lidarr")] | length')
+
+        if [ "$LIDARR_EXISTS" -eq 0 ]; then
+            echo "Adding Lidarr to Prowlarr applications..."
+
+            LIDARR_API_KEY=$(cat ${config.sops.secrets."media/lidarr/apiKey".path})
+
+            LIDARR_PAYLOAD=$(jq -n --arg apiKey "$LIDARR_API_KEY" \
+            '{
+                name: "Lidarr",
+                syncLevel: "addOnly",
+                implementation: "Lidarr",
+                implementationName: "Lidarr",
+                configContract: "LidarrSettings",
+                fields: [
+                    { name: "prowlarrUrl", value: "http://prowlarr:9696" },
+                    { name: "baseUrl", value: "http://lidarr:8686" },
+                    { name: "apiKey", value: $apiKey }
+                ],
+                tags: []
+            }')
+
+            curl -sS -f -X POST "$APPLICATIONS_URL" \
             -H "X-Api-Key: $API_KEY" \
             -H "Content-Type: application/json" \
-            -d "$PAYLOAD"
+            -d "$LIDARR_PAYLOAD"
         fi
-      done
+
     '';
   };
 }

@@ -82,6 +82,13 @@
               description = "qBitTorrent";
             };
           }
+          {
+            Lidarr = {
+              icon = "lidarr";
+              href = "https://lidarr.${config.sops.placeholder."domain"}";
+              description = "Lidarr";
+            };
+          }
         ];
       }
     ];

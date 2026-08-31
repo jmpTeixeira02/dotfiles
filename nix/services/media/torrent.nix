@@ -8,7 +8,7 @@
   sops.secrets."domain".sopsFile = ../secrets.yaml;
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/downloads 0755 root root -"
+    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.torrent = {
