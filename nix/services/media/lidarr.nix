@@ -33,7 +33,9 @@ in
     autoStart = true;
     volumes = [
       "${config.sops.templates."lidarr-config.xml".path}:/config/config.xml:rw"
+      "${config.mySystem.serviceData}/lidarr:/config:rw,U"
       "${config.mySystem.poolMount}/lidarr:/storage:rw"
+      "${config.mySystem.poolMount}/downloads:/downloads:rw"
     ];
     environment = {
       PUID = "1000";

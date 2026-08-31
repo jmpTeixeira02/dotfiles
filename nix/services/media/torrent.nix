@@ -15,6 +15,7 @@
     image = "lscr.io/linuxserver/qbittorrent:latest";
     autoStart = true;
     volumes = [
+      "${config.mySystem.serviceData}/torrent:/config:rw,U"
       "${config.sops.templates."torrent.conf".path}:/config/qBittorrent/qBittorrent.conf:rw,U"
       "${config.mySystem.poolMount}/downloads:/downloads:rw,U"
     ];
@@ -48,6 +49,11 @@
       WebUI\AuthSubnetWhitelist=192.168.1.0/24, 172.19.0.0/16, 10.88.0.0/16, 10.89.0.0/16
       WebUI\AuthSubnetWhitelistEnabled=true
       WebUI\LocalHostAuth=false
+      Downloads\SavePath=/downloads/
+      Bittorrent\MaxRatioEnabled=true
+      Bittorrent\MaxRatio=0.0
+      Bittorrent\InactiveSeedingTimeEnabled=false
+      Bittorrent\MaxSeedingTimeEnabled=false
     '';
   };
 
