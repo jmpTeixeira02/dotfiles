@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 
@@ -31,36 +32,44 @@
   };
 
   sops.templates = {
-    "homepage-env".content = ''
-      HOMEPAGE_ALLOWED_HOSTS=homepage.${config.sops.placeholder."domain"}
-    '';
+    "homepage-env".content = lib.generators.toKeyValue { } {
+      HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.sops.placeholder."domain"}";
+    };
 
-    "homepage-labels".content = ''
-      traefik.enable=true
-      traefik.http.routers.homepage.entryPoints=websecure
-      traefik.http.routers.homepage.rule=Host(`homepage.${config.sops.placeholder."domain"}`)
-    '';
+    "homepage-labels".content = lib.generators.toKeyValue { } {
+      "traefik.enable" = "true";
+      "traefik.http.routers.homepage.entryPoints" = "websecure";
+      "traefik.http.routers.homepage.rule" = "Host(`homepage.${config.sops.placeholder."domain"}`)";
+    };
 
-    "homepage-services.yml".content = ''
-      - Network Stack:
-          - Traefik:
-              icon: traefik-proxy
-              href: https://traefik.${config.sops.placeholder."domain"}.
-              description: Traefik
-          - DDNS-Updater:
-              icon: ddns-updater
-              href: https://ddns-updater.${config.sops.placeholder."domain"}.
-              description: DDNS-Updater
-    '';
+    "homepage-services.yml".content = lib.generators.toYAML { } [
+      {
+        "Network Stack" = [
+          {
+            Traefik = {
+              icon = "traefik-proxy";
+              href = "https://traefik.${config.sops.placeholder."domain"}";
+              description = "Traefik";
+            };
+          }
+          {
+            DDNS-Updater = {
+              icon = "ddns-updater";
+              href = "https://ddns-updater.${config.sops.placeholder."domain"}";
+              description = "DDNS-Updater";
+            };
+          }
+        ];
+      }
+    ];
 
-    "homepage-settings.yml".content = ''
-      title: Homelab Dashboard
+    "homepage-settings.yml".content = lib.generators.toYAML { } {
+      title = "Homelab Dashboard";
+      theme = "dark";
+      color = "neutral";
+    };
 
-      theme: dark
-      color: neutral
-    '';
-
-    "homepage-bookmarks.yml".content = "";
+    "homepage-bookmarks.yml".content = lib.generators.toYAML { } { };
 
   };
 

@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 
@@ -42,64 +43,84 @@
   };
 
   sops.templates = {
-    "authelia-env".content = ''
-      PUID = 1000
-      PGID = 1000
-      AUTHELIA_JWT_SECRET=${config.sops.placeholder."network/authelia/jwt"}
-      AUTHELIA_SESSION_SECRET=${config.sops.placeholder."network/authelia/session"}
-      AUTHELIA_STORAGE_ENCRYPTION_KEY=${config.sops.placeholder."network/authelia/storage_key"}
-    '';
+    "authelia-env".content = lib.generators.toKeyValue { } {
+      PUID = "1000";
+      PGID = "1000";
+      AUTHELIA_JWT_SECRET = config.sops.placeholder."network/authelia/jwt";
+      AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
+      AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
+    };
 
-    "authelia-labels".content = ''
-      traefik.enable=true
-      traefik.http.routers.authelia.entryPoints=websecure
-      traefik.http.routers.authelia.rule=Host(`auth.${config.sops.placeholder."domain"}`)
+    "authelia-labels".content = lib.generators.toKeyValue { } {
+      "traefik.enable" = "true";
+      "traefik.http.routers.authelia.entryPoints" = "websecure";
+      "traefik.http.routers.authelia.rule" = "Host(`auth.${config.sops.placeholder."domain"}`)";
 
-      traefik.http.middlewares.authelia.forwardAuth.address=http://authelia:9091/api/authz/forward-auth
-      traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader=true
-      traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders=Remote-User,Remote-Groups,Remote-Email,Remote-Name
-    '';
+      "traefik.http.middlewares.authelia.forwardAuth.address" =
+        "http://authelia:9091/api/authz/forward-auth";
+      "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader" = "true";
+      "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders" =
+        "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+    };
 
-    "authelia.yml".content = ''
-      theme: dark
+    "authelia.yml".content = lib.generators.toYAML { } {
+      theme = "dark";
 
-      server:
-        address: tcp://0.0.0.0:9091
+      server = {
+        address = "tcp://0.0.0.0:9091";
+      };
 
-      log:
-        level: info
+      log = {
+        level = "info";
+      };
 
-      authentication_backend:
-        file:
-          path: /config/users.yml
-          password:
-            algorithm: argon2id
+      authentication_backend = {
+        file = {
+          path = "/config/users.yml";
+          password = {
+            algorithm = "argon2id";
+          };
+        };
+      };
 
-      session:
-        cookies:
-          - domain: ${config.sops.placeholder."domain"}
-            authelia_url: https://auth.${config.sops.placeholder."domain"}
-            default_redirection_url: https://homepage.${config.sops.placeholder."domain"}
-            expiration: 1h
-            inactivity: 5m
+      session = {
+        cookies = [
+          {
+            domain = config.sops.placeholder."domain";
+            authelia_url = "https://auth.${config.sops.placeholder."domain"}";
+            default_redirection_url = "https://homepage.${config.sops.placeholder."domain"}";
+            expiration = "1h";
+            inactivity = "5m";
+          }
+        ];
+      };
 
-      storage:
-        local:
-          path: /config/db.sqlite3
+      storage = {
+        local = {
+          path = "/config/db.sqlite3";
+        };
+      };
 
-      notifier:
-        filesystem:
-          filename: /config/notifications.txt
+      notifier = {
+        filesystem = {
+          filename = "/config/notifications.txt";
+        };
+      };
 
-      access_control:
-        default_policy: deny
-        rules:
-          - domain: auth.${config.sops.placeholder."domain"}
-            policy: bypass
-          - domain: "*.${config.sops.placeholder."domain"}"
-            policy: one_factor
-    '';
-
+      access_control = {
+        default_policy = "deny";
+        rules = [
+          {
+            domain = "auth.${config.sops.placeholder."domain"}";
+            policy = "bypass";
+          }
+          {
+            domain = "*.${config.sops.placeholder."domain"}";
+            policy = "one_factor";
+          }
+        ];
+      };
+    };
   };
 
 }

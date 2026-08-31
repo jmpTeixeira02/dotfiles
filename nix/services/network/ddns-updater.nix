@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }:
 
@@ -27,11 +28,13 @@
   };
 
   sops.templates = {
-    "ddns-updater-labels".content = ''
-      traefik.enable=true
-      traefik.http.routers.ddns-updater.entryPoints=websecure
-      traefik.http.routers.ddns-updater.rule=Host(`ddns-updater.${config.sops.placeholder."domain"}`)
-    '';
+    "ddns-updater-labels".content = lib.generators.toKeyValue { } {
+      "traefik.enable" = "true";
+      "traefik.http.routers.ddns-updater.entryPoints" = "websecure";
+      "traefik.http.routers.ddns-updater.rule" = "Host(`ddns-updater.${
+        config.sops.placeholder."domain"
+      }`)";
+    };
 
     "ddns-updater.json".content = builtins.toJSON {
       settings = [

@@ -1,6 +1,7 @@
 {
   config,
   serviceData,
+  lib,
   ...
 }:
 
@@ -49,66 +50,94 @@
   ];
 
   sops.templates = {
-    "traefik-env".content = ''
-      DESEC_TOKEN=${config.sops.placeholder."network/desecToken"}
-      DESEC_POLLING_INTERVAL=75
-      DESEC_PROPAGATION_TIMEOUT=300
-    '';
+    "traefik-env".content = lib.generators.toKeyValue { } {
+      DESEC_TOKEN = config.sops.placeholder."network/desecToken";
+      DESEC_POLLING_INTERVAL = "75";
+      DESEC_PROPAGATION_TIMEOUT = "300";
+    };
 
-    "traefik-labels".content = ''
-      traefik.enable=true
-      traefik.http.routers.traefik.entryPoints=websecure
-      traefik.http.routers.traefik.rule=Host(`traefik.${config.sops.placeholder."domain"}`)
-      traefik.http.routers.traefik.service=api@internal
-    '';
+    "traefik-labels".content = lib.generators.toKeyValue { } {
+      "traefik.enable" = "true";
+      "traefik.http.routers.traefik.entryPoints" = "websecure";
+      "traefik.http.routers.traefik.rule" = "Host(`traefik.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.traefik.service" = "api@internal";
+    };
 
-    "traefik.yml".content = ''
-      global:
-        checkNewVersion: false
-        sendAnonymousUsage: false
-      log:
-        level: DEBUG
-      api:
-        dashboard: true
-        insecure: true
-      entryPoints:
-        web:
-          address: :80
-          http:
-            redirections:
-              entryPoint:
-                to: websecure
-                scheme: https
-        websecure:
-          address: :443
-          http:
-            tls:
-              certResolver: desec
-              domains:
-                - main: "${config.sops.placeholder."domain"}"
-                  sans:
-                    - "*.${config.sops.placeholder."domain"}"
-            middlewares:
-              - authelia@docker
-      providers:
-        docker:
-          endpoint: "unix:///var/run/docker.sock"
-          exposedByDefault: false
-        file:
-          filename: /etc/traefik/dynamic.yml
-      certificatesResolvers:
-        desec:
-          acme:
-            email: ${config.sops.placeholder."email"}
-            storage: /var/traefik/certs/desec.json
-            caServer: https://acme-v02.api.letsencrypt.org/directory
-            dnsChallenge:
-              provider: desec
-              resolvers:
-                - "ns1.desec.io:53"
-                - "ns2.desec.org:53"
-    '';
+    "traefik.yml".content = lib.generators.toYAML { } {
+      global = {
+        checkNewVersion = false;
+        sendAnonymousUsage = false;
+      };
 
+      log = {
+        level = "DEBUG";
+      };
+
+      api = {
+        dashboard = true;
+        insecure = true;
+      };
+
+      entryPoints = {
+        web = {
+          address = ":80";
+          http = {
+            redirections = {
+              entryPoint = {
+                to = "websecure";
+                scheme = "https";
+              };
+            };
+          };
+        };
+        websecure = {
+          address = ":443";
+          http = {
+            tls = {
+              certResolver = "desec";
+              domains = [
+                {
+                  main = config.sops.placeholder."domain";
+                  sans = [
+                    "*.${config.sops.placeholder."domain"}"
+                  ];
+                }
+              ];
+            };
+            middlewares = [
+              "authelia@docker"
+            ];
+          };
+        };
+      };
+
+      providers = {
+        docker = {
+          endpoint = "unix:///var/run/docker.sock";
+          exposedByDefault = false;
+        };
+        file = {
+          filename = "/etc/traefik/dynamic.yml";
+        };
+      };
+
+      certificatesResolvers = {
+        desec = {
+          acme = {
+            email = config.sops.placeholder."email";
+            storage = "/var/traefik/certs/desec.json";
+            caServer = "https://acme-v02.api.letsencrypt.org/directory";
+            dnsChallenge = {
+              provider = "desec";
+              resolvers = [
+                "ns1.desec.io:53"
+                "ns2.desec.org:53"
+              ];
+            };
+          };
+        };
+      };
+    };
   };
 
 }
