@@ -4,4 +4,4 @@ if [ -z "$1" ]; then
 fi
 
 export NIX_USER="$1"
-nixos-rebuild switch --flake ./nix#${NIX_USER}
+sudo nixos-rebuild switch --flake ./nix#${NIX_USER}

@@ -45,8 +45,12 @@
       - Network Stack:
           - Traefik:
               icon: traefik-proxy
-              href: https://traefik.{{ DOMAIN }}
+              href: https://traefik.${config.sops.placeholder."domain"}.
               description: Traefik
+          - DDNS-Updater:
+              icon: ddns-updater
+              href: https://ddns-updater.${config.sops.placeholder."domain"}.
+              description: DDNS-Updater
     '';
 
     "homepage-settings.yml".content = ''

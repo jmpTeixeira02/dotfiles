@@ -50,7 +50,6 @@
 
   sops.templates = {
     "traefik-env".content = ''
-      TZ=Europe/Lisbon
       DESEC_TOKEN=${config.sops.placeholder."network/desecToken"}
       DESEC_POLLING_INTERVAL=75
       DESEC_PROPAGATION_TIMEOUT=300

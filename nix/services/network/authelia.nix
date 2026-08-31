@@ -43,7 +43,6 @@
 
   sops.templates = {
     "authelia-env".content = ''
-      TZ = "Europe/Lisbon"
       PUID = 1000
       PGID = 1000
       AUTHELIA_JWT_SECRET=${config.sops.placeholder."network/authelia/jwt"}
