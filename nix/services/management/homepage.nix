@@ -5,13 +5,7 @@
 }:
 
 {
-  sops = {
-    secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
-    };
-  };
+  sops.secrets."domain".sopsFile = ../secrets.yaml;
 
   virtualisation.oci-containers.containers.homepage = {
     image = "ghcr.io/gethomepage/homepage:v1.11";
@@ -43,6 +37,17 @@
     };
 
     "homepage-services.yml".content = lib.generators.toYAML { } [
+      {
+        "Management" = [
+          {
+            Dockhand = {
+              icon = "dockhand";
+              href = "https://dockhand.${config.sops.placeholder."domain"}";
+              description = "Dockhand";
+            };
+          }
+        ];
+      }
       {
         "Network Stack" = [
           {
