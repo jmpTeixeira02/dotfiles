@@ -132,7 +132,7 @@ in
             LIDARR_PAYLOAD=$(jq -n --arg apiKey "$LIDARR_API_KEY" \
             '{
                 name: "Lidarr",
-                syncLevel: "addOnly",
+                syncLevel: "fullSync",
                 implementation: "Lidarr",
                 implementationName: "Lidarr",
                 configContract: "LidarrSettings",

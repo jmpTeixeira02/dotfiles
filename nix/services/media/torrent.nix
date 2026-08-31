@@ -8,7 +8,7 @@
   sops.secrets."domain".sopsFile = ../secrets.yaml;
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/downloads/torrent 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.torrent = {
@@ -17,7 +17,7 @@
     volumes = [
       "${config.mySystem.serviceData}/torrent:/config:rw,U"
       "${config.sops.templates."torrent.conf".path}:/config/qBittorrent/qBittorrent.conf:rw,U"
-      "${config.mySystem.poolMount}/downloads:/downloads:rw,U"
+      "${config.mySystem.poolMount}/downloads/torrent:/downloads:rw,U"
     ];
     ports = [
       "6881:6881"

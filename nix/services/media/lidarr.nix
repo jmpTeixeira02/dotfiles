@@ -25,7 +25,8 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/lidarr 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/music 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.lidarr = {
@@ -34,7 +35,7 @@ in
     volumes = [
       "${config.sops.templates."lidarr-config.xml".path}:/config/config.xml:rw"
       "${config.mySystem.serviceData}/lidarr:/config:rw,U"
-      "${config.mySystem.poolMount}/lidarr:/storage:rw"
+      "${config.mySystem.poolMount}/music:/storage:rw"
       "${config.mySystem.poolMount}/downloads:/downloads:rw"
     ];
     environment = {
