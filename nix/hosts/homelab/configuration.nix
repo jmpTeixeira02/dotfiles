@@ -58,6 +58,26 @@
       oci-containers.backend = "podman";
     };
 
+    systemd.services = lib.mapAttrs' (
+      name: value:
+      lib.nameValuePair "podman-${name}" {
+        after = [
+          "podman.service"
+        ];
+        requires = [
+          "podman.service"
+        ];
+        serviceConfig = {
+          Restart = lib.mkForce "on-failure";
+          RestartSec = "5s";
+        };
+        unitConfig = {
+          StartLimitBurst = 3;
+          StartLimitIntervalSec = "60";
+        };
+      }
+    ) config.virtualisation.oci-containers.containers;
+
     console.keyMap = "pt-latin1";
 
     networking = {
