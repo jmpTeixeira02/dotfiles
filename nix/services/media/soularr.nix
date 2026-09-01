@@ -36,7 +36,6 @@
     slskd = {
       image = "docker.io/slskd/slskd:latest";
       autoStart = true;
-      user = "1000:1000";
       volumes = [
         "${config.mySystem.serviceData}/slskd:/app/data:rw,U"
         "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw,U"

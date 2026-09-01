@@ -27,6 +27,7 @@ in
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.poolMount}/music 0755 1000 1000 -"
     "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
+    "d ${config.mySystem.serviceData}/lidarr 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.lidarr = {
