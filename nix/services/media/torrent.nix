@@ -18,7 +18,7 @@
     volumes = [
       "${config.mySystem.serviceData}/torrent:/config:rw,U"
       "${config.sops.templates."torrent.conf".path}:/config/qBittorrent/qBittorrent.conf:rw,U"
-      "${config.mySystem.poolMount}/downloads/torrent:/downloads:rw,U"
+      "${config.mySystem.poolMount}/downloads/torrent:/downloads:rw"
     ];
     ports = [
       "6881:6881"

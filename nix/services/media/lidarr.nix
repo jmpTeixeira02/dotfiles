@@ -5,13 +5,6 @@
   ...
 }:
 
-let
-  desiredProviders = [
-    "Nyaa.si"
-    "LimeTorrents"
-    "The Pirate Bay"
-  ];
-in
 {
   sops = {
     secrets = {
@@ -19,6 +12,9 @@ in
         sopsFile = ../secrets.yaml;
       };
       "media/lidarr/apiKey" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "media/slskd/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
     };
@@ -31,7 +27,7 @@ in
   ];
 
   virtualisation.oci-containers.containers.lidarr = {
-    image = "lscr.io/linuxserver/lidarr:latest";
+    image = "lscr.io/linuxserver/lidarr:nightly";
     autoStart = true;
     volumes = [
       "${config.sops.templates."lidarr-config.xml".path}:/config/config.xml:rw"
@@ -90,55 +86,109 @@ in
       jq
       coreutils
       gnugrep
+      unzip
     ];
+
+    preStart = ''
+      set -euo pipefail
+
+      PLUGIN_DIR="${config.mySystem.serviceData}/lidarr/plugins/TypNull/Tubifarry"
+
+      if [ ! -d "$PLUGIN_DIR" ]; then
+        echo "Downloading latest Slskd plugin..."
+        mkdir -p "$PLUGIN_DIR"
+
+        DOWNLOAD_URL=$(curl -s https://api.github.com/repos/TypNull/Tubifarry/releases/latest \
+      |   jq -r '.assets[] | select(.name | test("net8\\.0\\.zip$")) | .browser_download_url')
+
+        if [ -z "$DOWNLOAD_URL" ] || [ "$DOWNLOAD_URL" = "null" ]; then
+          echo "ERROR: Could not find Slskd plugin release asset"
+          exit 1
+        fi
+
+        curl -L -o /tmp/tubifarry-plugin.zip "$DOWNLOAD_URL"
+        unzip -o /tmp/tubifarry-plugin.zip -d "$PLUGIN_DIR"
+        rm -f /tmp/tubifarry-plugin.zip
+        chown -R 1000:1000 "${config.mySystem.serviceData}/lidarr/plugins"
+        echo "Tubifarry plugin installed."
+      fi
+    '';
 
     postStart = ''
       set -euo pipefail
 
       API_KEY=$(cat ${config.sops.secrets."media/lidarr/apiKey".path})
+      SLSKD_API_KEY=$(cat ${config.sops.secrets."media/slskd/apiKey".path})
       URL="http://localhost:8686/api/v1"
 
-      echo "Waiting for Lidarr API to become ready..."
-      until curl -s -f -H "X-Api-Key: $API_KEY" "$URL/system/status" > /dev/null; do
-        sleep 3
-      done
+      api_get()  { curl -s -H "X-Api-Key: $API_KEY" "$URL$1"; }
+      api_post() { curl -s -o /dev/null -X POST -H "X-Api-Key: $API_KEY" \
+                     -H "Content-Type: application/json" -d "$2" "$URL$1"; }
 
-      echo "API is up. Checking root folders..."
-      EXISTING_FOLDERS=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/rootfolder" | jq -r '.[].path')
+      wait_for_lidarr() {
+        echo "Waiting for Lidarr API to become ready..."
+        until curl -s -f -H "X-Api-Key: $API_KEY" "$URL/system/status" > /dev/null; do
+          sleep 3
+        done
+      }
 
-      if ! echo "$EXISTING_FOLDERS" | grep -q "^/storage$"; then
+      # Usage: has_name <endpoint> <name>  -> exit 0 if a resource with that name/path exists
+      has_name() { api_get "$1" | jq -e --arg n "$2" 'any(.[]; .name == $n)' > /dev/null; }
+      has_path() { api_get "$1" | jq -e --arg p "$2" 'any(.[]; .path == $p)' > /dev/null; }
+
+      # Usage: schema_for <endpoint> <implementation>
+      schema_for() { api_get "$1/schema" | jq -c --arg impl "$2" '[.[] | select(.implementation == $impl)][0]'; }
+
+      wait_for_lidarr
+
+      ### 1. Root folder #####################################################
+      if ! has_path "/rootfolder" "/storage"; then
         echo "Adding root folder: /storage"
-        
-        # Fetch default quality and metadata profile IDs automatically
-        QUALITY_PROFILE_ID=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/qualityprofile" | jq '.[0].id')
-        METADATA_PROFILE_ID=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/metadataprofile" | jq '.[0].id')
+        QUALITY_PROFILE_ID=$(api_get "/qualityprofile" | jq '.[0].id')
+        METADATA_PROFILE_ID=$(api_get "/metadataprofile" | jq '.[0].id')
 
         PAYLOAD=$(jq -n \
-          --arg path "/storage" \
-          --arg name "Storage" \
-          --argjson qId "$QUALITY_PROFILE_ID" \
-          --argjson mId "$METADATA_PROFILE_ID" \
+          --arg path "/storage" --arg name "Storage" \
+          --argjson qId "$QUALITY_PROFILE_ID" --argjson mId "$METADATA_PROFILE_ID" \
           '{path: $path, name: $name, defaultQualityProfileId: $qId, defaultMetadataProfileId: $mId}')
 
-        curl -s -o /dev/null -X POST "$URL/rootfolder" \
-          -H "X-Api-Key: $API_KEY" \
-          -H "Content-Type: application/json" \
-          -d "$PAYLOAD"
+        api_post "/rootfolder" "$PAYLOAD"
       fi
 
+      ### 2. Download clients #################################################
       echo "Checking download clients..."
-      EXISTING_CLIENTS=$(curl -s -H "X-Api-Key: $API_KEY" "$URL/downloadclient" | jq -r '.[].name')
 
-      if ! echo "$EXISTING_CLIENTS" | grep -q "^qBittorrent$"; then
+      if ! has_name "/downloadclient" "Slskd"; then
+        echo "Adding Slskd download client..."
+        PAYLOAD=$(jq -n --arg apiKey "$SLSKD_API_KEY" '{
+          enable: true, priority: 1,
+          name: "Slskd", implementation: "SlskdClient",
+          implementationName: "Slskd", configContract: "SlskdProviderSettings",
+          protocol: "SoulseekDownloadProtocol",
+          fields: [
+            {name: "baseUrl", value: "http://slskd:5030"},
+            {name: "host", value: "slskd"},
+            {name: "port", value: 5030},
+            {name: "apiKey", value: $apiKey},
+            {name: "useSsl", value: false}
+          ]
+        }')
+        api_post "/downloadclient" "$PAYLOAD"
+
+        PAYLOAD=$(jq -n '{
+            host: "slskd",
+            localPath: "/downloads/slskd/",
+            remotePath: "/app/downloads/",
+        }')
+        api_post "/remotepathmapping" "$PAYLOAD"
+      fi
+
+      if ! has_name "/downloadclient" "qBittorrent"; then
         echo "Adding download client: qBittorrent"
         PAYLOAD=$(jq -n '{
-          enable: true,
-          protocol: "torrent",
-          priority: 1,
-          name: "qBittorrent",
-          implementation: "QBittorrent",
-          implementationName: "qBittorrent",
-          configContract: "QBittorrentSettings",
+          enable: true, protocol: "torrent", priority: 1,
+          name: "qBittorrent", implementation: "QBittorrent",
+          implementationName: "qBittorrent", configContract: "QBittorrentSettings",
           fields: [
             {name: "host", value: "torrent"},
             {name: "port", value: 8086},
@@ -148,11 +198,36 @@ in
             {name: "useSsl", value: false}
           ]
         }')
+        api_post "/downloadclient" "$PAYLOAD"
 
-        curl -s -o /dev/null -X POST "$URL/downloadclient" \
-          -H "X-Api-Key: $API_KEY" \
-          -H "Content-Type: application/json" \
-          -d "$PAYLOAD"
+        PAYLOAD=$(jq -n '{
+            host: "torrent",
+            localPath: "/downloads/torrent/",
+            remotePath: "/downloads/",
+        }')
+        api_post "/remotepathmapping" "$PAYLOAD"
+      fi
+
+      #### 3. Indexers #########################################################
+      echo "Checking indexers..."
+      if ! has_name "/indexer" "Slskd"; then
+        echo "Adding Slskd indexer..."
+        PAYLOAD=$(jq -n --arg apiKey "$SLSKD_API_KEY" '{
+          enable: true, protocol: "SoulseekDownloadProtocol", priority: 1,
+          name: "Slskd", implementation: "SlskdIndexer",
+          implementationName: "Slskd", configContract: "SlskdSettings",
+          "enableRss": false, "enableAutomaticSearch": true,
+          "enableInteractiveSearch": true, "supportsSearch": true,
+          fields: [
+            {name: "baseUrl", value: "http://slskd:5030"},
+            {name: "host", value: "slskd"},
+            {name: "port", value: 5030},
+            {name: "apiKey", value: $apiKey},
+            {name: "useSsl", value: false}
+          ]
+        }')
+        api_post "/indexer" "$PAYLOAD"
+
       fi
     '';
   };

@@ -11,9 +11,6 @@
       "domain" = {
         sopsFile = ../secrets.yaml;
       };
-      "media/slskd/apiKey" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/slskd/user" = {
         sopsFile = ../secrets.yaml;
       };
@@ -28,7 +25,6 @@
 
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/slskd 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/soularr 0755 1000 1000 -"
     "d ${config.mySystem.poolMount}/downloads/slskd 0755 1000 1000 -"
   ];
 
@@ -38,7 +34,7 @@
       autoStart = true;
       volumes = [
         "${config.mySystem.serviceData}/slskd:/app/data:rw,U"
-        "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw,U"
+        "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw"
         "${config.sops.templates."slskd.yml".path}:/app/slskd.yml:rw,U"
       ];
       environmentFiles = [
@@ -50,40 +46,14 @@
         "50300:50300"
       ];
     };
-    soularr = {
-      image = "docker.io/mrusse08/soularr:latest";
-      autoStart = true;
-      dependsOn = [ "slskd" ];
-      volumes = [
-        "${config.sops.templates."soularr-config".path}:/data/config.ini:rw"
-        "${config.mySystem.serviceData}/soularr:/data:rw,U"
-        "${config.mySystem.poolMount}/downloads/slskd:/downloads:rw"
-      ];
-      environment = {
-        PUID = "1000";
-        PGID = "1000";
-        SCRIPT_INTERVAL = "300";
-      };
-    };
   };
 
   sops.templates = {
-    "soularr-config".content = ''
-      [Lidarr]
-      api_key = ${config.sops.placeholder."media/lidarr/apiKey"}
-      host_url = http://lidarr:8686
-      download_dir = /downloads
-      disable_sync = False
-
-      [Slskd]
-      api_key = ${config.sops.placeholder."media/slskd/apiKey"}
-      host_url = http://slskd:5030
-      url_base = /
-      download_dir = /downloads
-      delete_searches = False
-      stalled_timeout = 3600
-    '';
-
+    "slskd-labels".content = lib.generators.toKeyValue { } {
+      "traefik.enable" = "true";
+      "traefik.http.routers.slskd.entryPoints" = "websecure";
+      "traefik.http.routers.slskd.rule" = "Host(`slskd.${config.sops.placeholder."domain"}`)";
+    };
     "slskd.yml".content = lib.generators.toYAML { } {
       web = {
         authentication = {
@@ -101,9 +71,9 @@
     };
   };
 
-  systemd.services."podman-soularr" = {
+  systemd.services."podman-slskd" = {
     restartTriggers = [
-      config.sops.templates."soularr-config".content
+      config.sops.templates."slskd-labels".content
       config.sops.templates."slskd-env".content
       config.sops.templates."slskd.yml".content
     ];

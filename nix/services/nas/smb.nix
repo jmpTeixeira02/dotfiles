@@ -23,7 +23,7 @@
     image = "docker.io/dockurr/samba:latest";
     autoStart = true;
     volumes = [
-      "${config.mySystem.poolMount}:/storage:rw,U"
+      "${config.mySystem.poolMount}:/storage:rw"
     ];
     environmentFiles = [
       config.sops.templates."smb-env".path

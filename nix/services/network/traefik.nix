@@ -126,6 +126,7 @@
             email = config.sops.placeholder."email";
             storage = "/var/traefik/certs/desec.json";
             caServer = "https://acme-v02.api.letsencrypt.org/directory";
+            # caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"; # Staging
             dnsChallenge = {
               provider = "desec";
               resolvers = [
