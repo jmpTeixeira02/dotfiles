@@ -28,24 +28,25 @@
     "d ${config.mySystem.poolMount}/downloads/slskd 0755 1000 1000 -"
   ];
 
-  virtualisation.oci-containers.containers = {
-    slskd = {
-      image = "docker.io/slskd/slskd:latest";
-      autoStart = true;
-      volumes = [
-        "${config.mySystem.serviceData}/slskd:/app/data:rw,U"
-        "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw"
-        "${config.sops.templates."slskd.yml".path}:/app/slskd.yml:rw,U"
-      ];
-      environmentFiles = [
-        config.sops.templates."slskd-env".path
-      ];
-      ports = [
-        "5030:5030"
-        "5031:5031"
-        "50300:50300"
-      ];
-    };
+  virtualisation.oci-containers.containers.slskd = {
+    image = "docker.io/slskd/slskd:latest";
+    autoStart = true;
+    volumes = [
+      "${config.mySystem.serviceData}/slskd:/app/data:rw,U"
+      "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw"
+      "${config.sops.templates."slskd.yml".path}:/app/slskd.yml:rw,U"
+    ];
+    environmentFiles = [
+      config.sops.templates."slskd-env".path
+    ];
+    ports = [
+      "5030:5030"
+      "5031:5031"
+      "50300:50300"
+    ];
+    extraOptions = [
+      "--label-file=${config.sops.templates."slskd-labels".path}"
+    ];
   };
 
   sops.templates = {

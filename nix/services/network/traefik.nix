@@ -20,7 +20,7 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/traefik/certs 0755 1000 1000 -"
+    "d ${config.mySystem.serviceData}/traefik 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.traefik = {
@@ -33,7 +33,7 @@
     volumes = [
       "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
       "${config.sops.templates."traefik.yml".path}:/etc/traefik/traefik.yml:ro"
-      "${config.mySystem.serviceData}/traefik/certs:/var/traefik/certs:rw,U"
+      "${config.mySystem.serviceData}/traefik:/var/traefik:rw"
     ];
     environmentFiles = [
       config.sops.templates."traefik-env".path
@@ -92,6 +92,7 @@
         websecure = {
           address = ":443";
           http = {
+            aliasHeadersStrategy = "delete";
             tls = {
               certResolver = "desec";
               domains = [

@@ -46,10 +46,6 @@
               description = "Dockhand";
             };
           }
-        ];
-      }
-      {
-        "Network Stack" = [
           {
             Traefik = {
               icon = "traefik-proxy";
@@ -87,6 +83,20 @@
               icon = "lidarr";
               href = "https://lidarr.${config.sops.placeholder."domain"}";
               description = "Lidarr";
+            };
+          }
+          {
+            Slsskd = {
+              icon = "slskd";
+              href = "https://slskd.${config.sops.placeholder."domain"}";
+              description = "Slskd";
+            };
+          }
+          {
+            Navidrome = {
+              icon = "navidrome";
+              href = "https://navidrome.${config.sops.placeholder."domain"}";
+              description = "Navidrome";
             };
           }
         ];
