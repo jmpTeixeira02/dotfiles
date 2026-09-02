@@ -233,10 +233,10 @@
 
       ### 4. Metadata #####################
         PAYLOAD=$(jq -n --arg apiKey "$SLSKD_API_KEY" '{
-            writeAudioTags": "sync",
-            scrubAudioTags": true,
-            embedCoverArt": true,
-            id": 1
+            writeAudioTags: "sync",
+            scrubAudioTags: true,
+            embedCoverArt: true,
+            id: 1
         }')
 
         api_put "/config/metadataProvider" "$PAYLOAD"

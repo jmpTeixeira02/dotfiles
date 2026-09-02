@@ -99,6 +99,13 @@
               description = "Navidrome";
             };
           }
+          {
+            Sonarr = {
+              icon = "sonarr";
+              href = "https://sonarr.${config.sops.placeholder."domain"}";
+              description = "Sonarr";
+            };
+          }
         ];
       }
     ];

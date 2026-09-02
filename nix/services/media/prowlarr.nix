@@ -24,6 +24,9 @@ in
       "media/lidarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
+      "media/sonarr/apiKey" = {
+        sopsFile = ../secrets.yaml;
+      };
     };
   };
 
@@ -107,13 +110,13 @@ in
 
       for PROVIDER in "''${PROVIDERS[@]}"; do
       if ! echo "$EXISTING" | grep -q "^''${PROVIDER}$"; then
-          echo "Adding provider: $PROVIDER"
-          PAYLOAD=$(echo "$SCHEMAS" | jq -c ".[] | select(.name == \"$PROVIDER\") | .enable = true | .appProfileId = 1")
+         echo "Adding provider: $PROVIDER"
+         PAYLOAD=$(echo "$SCHEMAS" | jq -c ".[] | select(.name == \"$PROVIDER\") | .enable = true | .appProfileId = 1")
           
-          curl -s -o /dev/null -X POST "$INDEXER_URL" \
-          -H "X-Api-Key: $API_KEY" \
-          -H "Content-Type: application/json" \
-          -d "$PAYLOAD"
+        curl -s -o /dev/null -X POST "$INDEXER_URL" \
+        -H "X-Api-Key: $API_KEY" \
+        -H "Content-Type: application/json" \
+        -d "$PAYLOAD"
       fi
       done
 
@@ -123,7 +126,6 @@ in
       APPS=$(curl -sS -H "X-Api-Key: $API_KEY" "$APPLICATIONS_URL")
 
       LIDARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Lidarr")] | length')
-
         if [ "$LIDARR_EXISTS" -eq 0 ]; then
             echo "Adding Lidarr to Prowlarr applications..."
 
@@ -148,6 +150,31 @@ in
             -H "X-Api-Key: $API_KEY" \
             -H "Content-Type: application/json" \
             -d "$LIDARR_PAYLOAD"
+        fi
+      SONARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Sonarr")] | length')
+        if [ "$SONARR_EXISTS" -eq 0 ]; then
+            echo "Adding Lidarr to Prowlarr applications..."
+            SONARR_API_KEY=$(cat ${config.sops.secrets."media/sonarr/apiKey".path})
+
+            SONARR_PAYLOAD=$(jq -n --arg apiKey "$SONARR_API_KEY" \
+            '{
+                name: "Sonarr",
+                syncLevel: "fullSync",
+                implementation: "Sonarr",
+                implementationName: "Sonarr",
+                configContract: "SonarrSettings",
+                fields: [
+                    { name: "prowlarrUrl", value: "http://prowlarr:9696" },
+                    { name: "baseUrl", value: "http://sonarr:8989" },
+                    { name: "apiKey", value: $apiKey }
+                ],
+                tags: []
+            }')
+
+            curl -sS -f -X POST "$APPLICATIONS_URL" \
+            -H "X-Api-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$SONARR_PAYLOAD"
         fi
 
     '';
