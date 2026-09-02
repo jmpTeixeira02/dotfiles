@@ -58,8 +58,19 @@ in
       better-mouse-mode
       tmux-fzf
       sensible
-      resurrect
-      continuum
+      {
+        plugin = resurrect;
+        extraConfig = ''
+          set -g @resurrect-capture-pane-contents 'on'
+        '';
+      }
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '10'
+        '';
+      }
     ];
     extraConfig = ''
       source-file ~/.config/tmux/tmux-local.conf
