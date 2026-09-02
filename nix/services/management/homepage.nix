@@ -106,6 +106,13 @@
               description = "Sonarr";
             };
           }
+          {
+            Lidarr = {
+              icon = "radarr";
+              href = "https://radarr.${config.sops.placeholder."domain"}";
+              description = "Lidarr";
+            };
+          }
         ];
       }
     ];

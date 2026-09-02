@@ -176,6 +176,31 @@ in
             -H "Content-Type: application/json" \
             -d "$SONARR_PAYLOAD"
         fi
+      RADARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Radarr")] | length')
+        if [ "$RADARR_EXISTS" -eq 0 ]; then
+            echo "Adding Lidarr to Prowlarr applications..."
+            RADARR_API_KEY=$(cat ${config.sops.secrets."media/radarr/apiKey".path})
+
+            RADARR_PAYLOAD=$(jq -n --arg apiKey "$RADARR_API_KEY" \
+            '{
+                name: "Radarr",
+                syncLevel: "fullSync",
+                implementation: "Radarr",
+                implementationName: "Radarr",
+                configContract: "RadarrSettings",
+                fields: [
+                    { name: "prowlarrUrl", value: "http://prowlarr:9696" },
+                    { name: "baseUrl", value: "http://radarr:7878" },
+                    { name: "apiKey", value: $apiKey }
+                ],
+                tags: []
+            }')
+
+            curl -sS -f -X POST "$APPLICATIONS_URL" \
+            -H "X-Api-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$RADARR_PAYLOAD"
+        fi
 
     '';
   };

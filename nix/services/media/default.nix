@@ -6,5 +6,6 @@
     ./slskd.nix
     ./navidrome.nix
     ./sonarr.nix
+    ./radarr.nix
   ];
 }
