@@ -27,12 +27,17 @@
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "d ${config.mySystem.serviceData}/authelia 0755 1000 1000 -"
+  ];
+
   virtualisation.oci-containers.containers.authelia = {
     image = "docker.io/authelia/authelia";
     autoStart = true;
     volumes = [
       "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw,U"
       "${config.sops.secrets."users".path}:/config/users.yml:rw,U"
+      "${config.mySystem.serviceData}/authelia:/config:rw"
     ];
     environmentFiles = [
       config.sops.templates."authelia-env".path
