@@ -6,10 +6,24 @@
 }:
 
 let
+  # Now an attribute set to define specific tags per provider
   desiredProviders = [
-    "Nyaa.si"
-    "LimeTorrents"
-    "The Pirate Bay"
+    {
+      name = "Nyaa.si";
+    }
+    {
+      name = "LimeTorrents";
+    }
+    {
+      name = "The Pirate Bay";
+    }
+    {
+      name = "YTS";
+    }
+    {
+      name = "1337x";
+      tags = [ "flaresolverr" ];
+    }
   ];
 in
 {
@@ -25,6 +39,9 @@ in
         sopsFile = ../secrets.yaml;
       };
       "media/sonarr/apiKey" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "media/radarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
     };
@@ -98,29 +115,105 @@ in
 
       API_KEY=$(cat ${config.sops.secrets."media/prowlarr/apiKey".path})
       INDEXER_URL="http://localhost:9696/api/v1/indexer"
+      TAGS_URL="http://localhost:9696/api/v1/tag"
 
       echo "Waiting for Prowlarr API to become ready..."
       until curl -s -f -H "X-Api-Key: $API_KEY" "$INDEXER_URL" > /dev/null; do
         sleep 3
       done
 
+      #### 0. Ensure Flaresolverr Tag Exists (For the Proxy itself) ######################
+      FS_TAG_ID=$(curl -sS -X GET "$TAGS_URL" -H "X-Api-Key: $API_KEY" \
+          | jq -r 'try (.[] | select(.label == "flaresolverr") | .id) catch empty')
+
+      if [ -z "$FS_TAG_ID" ] || [ "$FS_TAG_ID" = "null" ]; then
+          echo "Creating Tag flaresolverr"
+          PAYLOAD=$(jq -n  '{ label: "flaresolverr" }')
+
+          RESPONSE=$(curl -sS -X POST "$TAGS_URL" \
+          -H "X-Api-Key: $API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "$PAYLOAD")
+
+          FS_TAG_ID=$(echo "$RESPONSE" | jq -r '.id // .[0].id')
+      fi
+
+      #### 1. Add Indexer Proxy ######################
+      INDEXER_PROXY_URL="http://localhost:9696/api/v1/indexerProxy"
+      INDEXER_PROXIES=$(curl -sS -H "X-Api-Key: $API_KEY" "$INDEXER_PROXY_URL")
+
+      FLARESOLVERR_EXISTS=$(echo "$INDEXER_PROXIES" | jq -r '[.[] | select(.name == "FlareSolverr")] | length')
+        if [ "$FLARESOLVERR_EXISTS" -eq 0 ]; then
+            echo "Adding Flaresolverr to Prowlarr Indexer Proxies..."
+
+            PAYLOAD=$(jq -n --argjson tagID "$FS_TAG_ID" \
+            '{
+                name: "FlareSolverr",
+                syncLevel: "fullSync",
+                implementation: "FlareSolverr",
+                implementationName: "FlareSolverr",
+                configContract: "FlareSolverrSettings",
+                fields: [
+                    { name: "host", value: "http://flaresolverr:8191" }
+                ],
+                tags: [$tagID]
+            }')
+
+            curl -sS -f -X POST "$INDEXER_PROXY_URL" \
+            -H "X-Api-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD"
+        fi
+
+      #### 2. Add Providers with Custom Tags ######################
       EXISTING=$(curl -s -H "X-Api-Key: $API_KEY" "$INDEXER_URL" | jq -r '.[].name')
       SCHEMAS=$(curl -s -H "X-Api-Key: $API_KEY" "$INDEXER_URL/schema")
-      PROVIDERS=(${lib.concatStringsSep " " (map (p: ''"${p}"'') desiredProviders)})
 
-      for PROVIDER in "''${PROVIDERS[@]}"; do
-      if ! echo "$EXISTING" | grep -q "^''${PROVIDER}$"; then
-         echo "Adding provider: $PROVIDER"
-         PAYLOAD=$(echo "$SCHEMAS" | jq -c ".[] | select(.name == \"$PROVIDER\") | .enable = true | .appProfileId = 1")
-          
-        curl -s -o /dev/null -X POST "$INDEXER_URL" \
-        -H "X-Api-Key: $API_KEY" \
-        -H "Content-Type: application/json" \
-        -d "$PAYLOAD"
-      fi
+      # Convert the Nix provider list to JSON for jq parsing
+      PROVIDERS_JSON='${builtins.toJSON desiredProviders}'
+
+      # Extract all unique tags declared across all providers in the Nix config
+      UNIQUE_TAGS=$(echo "$PROVIDERS_JSON" | jq -r '.[].tags[]?' | sort -u)
+
+      # Build a JSON map of "TagName" -> TagID
+      TAG_MAP="{}"
+      for tag in $UNIQUE_TAGS; do
+        TAG_ID=$(curl -sS -X GET "$TAGS_URL" -H "X-Api-Key: $API_KEY" | jq -r --arg t "$tag" 'try (.[] | select(.label == $t) | .id) catch empty')
+        
+        if [ -z "$TAG_ID" ] || [ "$TAG_ID" = "null" ]; then
+           echo "Creating Tag: $tag"
+           PAYLOAD=$(jq -n --arg t "$tag" '{ label: $t }')
+           RESPONSE=$(curl -sS -X POST "$TAGS_URL" -H "X-Api-Key: $API_KEY" -H "Content-Type: application/json" -d "$PAYLOAD")
+           TAG_ID=$(echo "$RESPONSE" | jq -r '.id // .[0].id')
+        fi
+        
+        # Append to our bash JSON map mapping TagName -> TagID
+        TAG_MAP=$(echo "$TAG_MAP" | jq --arg t "$tag" --arg id "$TAG_ID" '.[$t] = ($id | tonumber)')
       done
 
-      echo "Checking Prowlarr application sync for Lidarr..."
+      # Loop over the providers and apply specific configurations and tags
+      echo "$PROVIDERS_JSON" | jq -c '.[]' | while read -r providerObj; do
+        PROVIDER_NAME=$(echo "$providerObj" | jq -r '.name')
+        
+        if ! echo "$EXISTING" | grep -q "^$PROVIDER_NAME$"; then
+           echo "Adding provider: $PROVIDER_NAME"
+           
+           # Get the specific TagIDs for this provider by querying our TAG_MAP
+           TAG_IDS=$(echo "$providerObj" | jq -c --argjson map "$TAG_MAP" '[.tags[]? | $map[.]]')
+           
+           # Generate the payload with the correct tags attached
+           PAYLOAD=$(echo "$SCHEMAS" | jq -c --arg name "$PROVIDER_NAME" --argjson tags "$TAG_IDS" \
+             '.[] | select(.name == $name) | .enable = true | .appProfileId = 1 | .tags = $tags')
+            
+          curl -s -o /dev/null -X POST "$INDEXER_URL" \
+          -H "X-Api-Key: $API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "$PAYLOAD"
+        fi
+      done
+
+      #### 3. Add Apps ######################
+      echo "Checking Prowlarr application sync for Lidarr, Sonarr, Radarr..."
 
       APPLICATIONS_URL="http://localhost:9696/api/v1/applications"
       APPS=$(curl -sS -H "X-Api-Key: $API_KEY" "$APPLICATIONS_URL")
@@ -153,7 +246,7 @@ in
         fi
       SONARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Sonarr")] | length')
         if [ "$SONARR_EXISTS" -eq 0 ]; then
-            echo "Adding Lidarr to Prowlarr applications..."
+            echo "Adding Sonarr to Prowlarr applications..."
             SONARR_API_KEY=$(cat ${config.sops.secrets."media/sonarr/apiKey".path})
 
             SONARR_PAYLOAD=$(jq -n --arg apiKey "$SONARR_API_KEY" \
@@ -178,7 +271,7 @@ in
         fi
       RADARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Radarr")] | length')
         if [ "$RADARR_EXISTS" -eq 0 ]; then
-            echo "Adding Lidarr to Prowlarr applications..."
+            echo "Adding Radarr to Prowlarr applications..."
             RADARR_API_KEY=$(cat ${config.sops.secrets."media/radarr/apiKey".path})
 
             RADARR_PAYLOAD=$(jq -n --arg apiKey "$RADARR_API_KEY" \
