@@ -124,6 +124,8 @@
       api_get()  { curl -s -H "X-Api-Key: $API_KEY" "$URL$1"; }
       api_post() { curl -s -o /dev/null -X POST -H "X-Api-Key: $API_KEY" \
                      -H "Content-Type: application/json" -d "$2" "$URL$1"; }
+      api_put() { curl -s -o /dev/null -X PUT -H "X-Api-Key: $API_KEY" \
+                     -H "Content-Type: application/json" -d "$2" "$URL$1"; }
 
       wait_for_lidarr() {
         echo "Waiting for Lidarr API to become ready..."
@@ -227,8 +229,17 @@
           ]
         }')
         api_post "/indexer" "$PAYLOAD"
-
       fi
+
+      ### 4. Metadata #####################
+        PAYLOAD=$(jq -n --arg apiKey "$SLSKD_API_KEY" '{
+            writeAudioTags": "sync",
+            scrubAudioTags": true,
+            embedCoverArt": true,
+            id": 1
+        }')
+
+        api_put "/config/metadataProvider" "$PAYLOAD"
     '';
   };
 }
