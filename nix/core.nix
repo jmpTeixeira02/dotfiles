@@ -68,7 +68,6 @@ in
         # ZSH
         ".zshrc".source = linkConfig "zsh/zshrc";
         ".config/zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
-        ".config/zsh/tmux-sesh.zsh".source = linkConfig "zsh/tmux-sesh.zsh";
         ".config/zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
         ".config/zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
         ".config/zsh/macos.zsh" = lib.mkIf isMacOS {

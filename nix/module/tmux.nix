@@ -26,6 +26,7 @@ in
 
   home.file = {
     ".config/tmux/tmux-local.conf".source = linkConfig "tmux/tmux.conf";
+    ".config/zsh/tmux-sesh.zsh".source = linkConfig "zsh/tmux-sesh.zsh";
   };
 
   programs.tmux = {
