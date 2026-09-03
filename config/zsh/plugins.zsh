@@ -9,7 +9,7 @@ command -v tmux >/dev/null 2>&1 && antigen bundle tmux
 command -v kubectl >/dev/null 2>&1 && antigen bundle kubectl
 
 antigen bundle zsh-users/zsh-completions
-antigen bundle marlonrichert/zsh-autocomplete@main
+antigen bundle marlonrichert/zsh-autocomplete@26.08.04
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen apply
 
