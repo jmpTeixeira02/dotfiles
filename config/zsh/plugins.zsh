@@ -1,14 +1,16 @@
 source ~/.nix-profile/share/antigen/antigen.zsh
+
 antigen use oh-my-zsh
-antigen bundle eza
 antigen bundle command-not-found
-antigen bundle git
-antigen bundle tmux
-antigen bundle kubectl
+
+command -v git >/dev/null 2>&1 && antigen bundle git
+command -v eza >/dev/null 2>&1 && antigen bundle eza
+command -v tmux >/dev/null 2>&1 && antigen bundle tmux
+command -v kubectl >/dev/null 2>&1 && antigen bundle kubectl
+
 antigen bundle zsh-users/zsh-completions
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle marlonrichert/zsh-autocomplete@main
+antigen bundle zsh-users/zsh-syntax-highlighting
 antigen apply
 
-source <(kubectl completion zsh)
+command -v kubectl > /dev/null 2>&1 && source <(kubectl completion zsh)
