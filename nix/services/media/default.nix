@@ -8,5 +8,6 @@
     ./sonarr.nix
     ./radarr.nix
     ./flaresolverr.nix
+    ./jellyfin.nix
   ];
 }

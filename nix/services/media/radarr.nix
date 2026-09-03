@@ -100,7 +100,7 @@
       wait_for_radarr() {
         echo "Waiting for radarr API to become ready..."
         until curl -s -f -H "X-Api-Key: $API_KEY" "$URL/system/status" > /dev/null; do
-          sleep 3
+          sleep 1
         done
       }
 

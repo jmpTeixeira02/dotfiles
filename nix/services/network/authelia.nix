@@ -33,8 +33,8 @@
     image = "docker.io/authelia/authelia";
     autoStart = true;
     volumes = [
-      "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw,U"
       "${config.mySystem.serviceData}/authelia:/config:rw"
+      "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw"
     ];
     environmentFiles = [
       config.sops.templates."authelia-env".path
@@ -114,6 +114,10 @@
       access_control = {
         default_policy = "deny";
         rules = [
+          {
+            domain = "jellyfin.${config.sops.placeholder."domain"}";
+            policy = "bypass";
+          }
           {
             domain = "auth.${config.sops.placeholder."domain"}";
             policy = "bypass";
