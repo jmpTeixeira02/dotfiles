@@ -61,12 +61,10 @@ in
         ]
         ++ lib.optionals (!isMacOS) [
           gcc
-          zsh
           xclip
         ];
       file = {
         # ZSH
-        ".zshrc".source = linkConfig "zsh/zshrc";
         ".config/zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
         ".config/zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
         ".config/zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
@@ -85,6 +83,13 @@ in
 
     programs = {
       home-manager.enable = true;
+
+      zsh = {
+        enable = true;
+        initContent = ''
+          source ${linkConfig "zsh/zshrc"}
+        '';
+      };
     };
 
     nix.gc = {

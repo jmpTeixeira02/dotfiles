@@ -43,3 +43,4 @@ Create `$XDG_CONFIG_HOME/zsh/secrets.zsh` for env vars/secrets (API keys, tokens
 
 ## Notes
 - Nix also supports remote reloads through the `--target-host <host>` that was used on the install. However the reload scripts do not have it by default
+- On NixOS Zsh is set as default shell. For other OSs ZSH needs to be set as default `sudo chsh -s "$(which zsh)"`

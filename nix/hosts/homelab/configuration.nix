@@ -102,10 +102,12 @@
 
     time.timeZone = "Europe/Lisbon";
 
+    programs.zsh.enable = true;
     users.mutableUsers = false;
     users.users = {
       homelab = {
         isNormalUser = true;
+        shell = pkgs.zsh;
         extraGroups = [
           "wheel"
           "podman"
