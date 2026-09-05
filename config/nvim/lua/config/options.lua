@@ -32,7 +32,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 50
 
 vim.opt.spelllang = "en_us"
-vim.opt.spell = true
+vim.opt.spell = false
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
 

@@ -1,5 +1,6 @@
 {
   config,
+
   pkgs,
   lib,
   linkConfig,
@@ -10,6 +11,8 @@ let
   isMacOS = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
+  imports = [ ./module/nvim.nix ];
+
   options = {
     terminal = lib.mkOption {
       type = lib.types.enum [ "ghostty" ];
@@ -19,10 +22,12 @@ in
   };
 
   config = {
+    xdg.enable = true;
+
     home = {
       username = builtins.getEnv "FLAKE_USER";
       homeDirectory = builtins.getEnv "FLAKE_HOME";
-      stateVersion = "24.11";
+      stateVersion = "26.05";
       packages =
         with pkgs;
         [
@@ -43,13 +48,6 @@ in
           btop
           unzip
 
-          # IDE
-          neovim
-          tectonic
-          imagemagick_light
-          ghostscript
-          mermaid-cli
-
           git
           lazygit
           gh
@@ -63,22 +61,23 @@ in
           gcc
           xclip
         ];
-      file = {
-        # ZSH
-        ".config/zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
-        ".config/zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
-        ".config/zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
-        ".config/zsh/macos.zsh" = lib.mkIf isMacOS {
-          source = linkConfig "zsh/macos.zsh";
-        };
-        ".config/starship".source = linkConfig "starship";
-        ".config/ghostty" = lib.mkIf (config.terminal == "ghostty") {
-          source = linkConfig "ghostty";
-        };
-        ".config/nvim".source = linkConfig "nvim";
-        ".config/lazygit".source = linkConfig "lazygit";
-        ".config/git".source = linkConfig "git";
+    };
+
+    xdg.configFile = {
+      # ZSH
+      "zsh/zshrc".source = linkConfig "zsh/zshrc";
+      "zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
+      "zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
+      "zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
+      "zsh/macos.zsh" = lib.mkIf isMacOS {
+        source = linkConfig "zsh/macos.zsh";
       };
+      "starship".source = linkConfig "starship";
+      "ghostty" = lib.mkIf (config.terminal == "ghostty") {
+        source = linkConfig "ghostty";
+      };
+      "lazygit".source = linkConfig "lazygit";
+      "git".source = linkConfig "git";
     };
 
     programs = {

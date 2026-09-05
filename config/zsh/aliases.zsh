@@ -1,7 +1,7 @@
 # Alias
 alias vim="nvim"
 alias vi="nvim"
-alias src="source ~/.zshrc"
+alias src="source $XDG_CONFIG_HOME/zsh/zshrc"
 alias tree="eza --icons --tree"
 alias cat='bat --paging=never'
 alias clean_nvim='rm -rf ~/.local/share/nvim'

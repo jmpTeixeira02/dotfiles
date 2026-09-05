@@ -1,4 +1,4 @@
-ZSH_CONFIG_DIR="$HOME/.config/zsh"
+ZSH_CONFIG_DIR="$XDG_CONFIG_HOME/zsh"
 
 ZSH_TMUX_DEFAULT_SESSION_NAME="master"
 ZSH_TMUX_AUTOSTART=true
@@ -8,20 +8,13 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt interactivecomments
 
 # Variables
-export PATH="$HOME/.local/share/nvim/mason/bin:$PATH" # Export mason installed bins
-export PATH="$PATH:/opt/nvim-linux64/bin"
-export PATH=$PATH:$(go env GOPATH)/bin/
-export XDG_CONFIG_HOME="$HOME/.config" # dotfiles on ~/.config
-export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship/starship.toml
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 unset KUBECONFIG
 
-export PATH=/home/joao/.opencode/bin:$PATH
-
-
 # Source plugins first as it might override other commands
-[ -f ~/.config/zsh/plugins.zsh ] && source ~/.config/zsh/plugins.zsh
+[ -f $XDG_CONFIG_HOME/zsh/plugins.zsh ] && source $XDG_CONFIG_HOME/zsh/plugins.zsh
 
-for f in ~/.config/zsh/*.zsh; do
+for f in $XDG_CONFIG_HOME/zsh/*.zsh; do
   [[ "$f" == *"plugins.zsh" ]] && continue
   source "$f"
 done
@@ -29,4 +22,3 @@ done
 
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
-export PATH="$HOME/.local/bin:$PATH"

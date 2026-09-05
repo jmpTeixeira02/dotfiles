@@ -23,9 +23,9 @@
       opencode
     ];
 
-    home.file = {
-      ".config/opencode/opencode.jsonc".source = linkConfig "opencode/opencode.jsonc";
-      ".config/opencode/opencode.json".source = linkConfig "opencode/${config.opencodeProfile}.json";
+    xdg.configFile = {
+      "opencode/opencode.jsonc".source = linkConfig "opencode/opencode.jsonc";
+      "opencode/opencode.json".source = linkConfig "opencode/${config.opencodeProfile}.json";
     };
   };
 }
