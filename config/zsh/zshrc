@@ -11,6 +11,9 @@ setopt interactivecomments
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 unset KUBECONFIG
 
+# Needed to use bins installed via go install
+export PATH=$PATH:$(go env GOPATH)/bin/
+
 # Source plugins first as it might override other commands
 [ -f $XDG_CONFIG_HOME/zsh/plugins.zsh ] && source $XDG_CONFIG_HOME/zsh/plugins.zsh
 
