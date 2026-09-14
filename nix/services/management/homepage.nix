@@ -38,80 +38,99 @@
 
     "homepage-services.yml".content = lib.generators.toYAML { } [
       {
-        "Management" = [
+        "Media" = [
           {
-            Dockhand = {
-              icon = "dockhand";
-              href = "https://dockhand.${config.sops.placeholder."domain"}";
-              description = "Dockhand";
-            };
-          }
-          {
-            Traefik = {
-              icon = "traefik-proxy";
-              href = "https://traefik.${config.sops.placeholder."domain"}";
-              description = "Traefik";
-            };
-          }
-          {
-            DDNS-Updater = {
-              icon = "ddns-updater";
-              href = "https://ddns-updater.${config.sops.placeholder."domain"}";
-              description = "DDNS-Updater";
+            Navidrome = {
+              icon = "navidrome";
+              href = "https://navidrome.${config.sops.placeholder."domain"}";
+              description = "Music Player";
             };
           }
         ];
       }
       {
-        "Media" = [
+        "Admin" = [
           {
-            Prowlarr = {
-              icon = "prowlarr";
-              href = "https://prowlarr.${config.sops.placeholder."domain"}";
-              description = "Prowlarr";
-            };
+            "Management" = [
+              {
+                Dockhand = {
+                  icon = "dockhand";
+                  href = "https://dockhand.${config.sops.placeholder."domain"}";
+                  description = "Container Management";
+                };
+              }
+              {
+                Traefik = {
+                  icon = "traefik-proxy";
+                  href = "https://traefik.${config.sops.placeholder."domain"}";
+                  description = "Reverse Proxy";
+                };
+              }
+              {
+                DDNS-Updater = {
+                  icon = "ddns-updater";
+                  href = "https://ddns-updater.${config.sops.placeholder."domain"}";
+                  description = "Domain Name IP Updater";
+                };
+              }
+              {
+                LLDAP = {
+                  icon = "lldap";
+                  href = "https://lldap.${config.sops.placeholder."domain"}";
+                  description = "User Management";
+                };
+              }
+            ];
           }
           {
-            qBitTorrent = {
-              icon = "qbittorrent";
-              href = "https://torrent.${config.sops.placeholder."domain"}";
-              description = "qBitTorrent";
-            };
+            "ARR Stack" = [
+              {
+                Prowlarr = {
+                  icon = "prowlarr";
+                  href = "https://prowlarr.${config.sops.placeholder."domain"}";
+                  description = "Indexer";
+                };
+              }
+              {
+                Lidarr = {
+                  icon = "lidarr";
+                  href = "https://lidarr.${config.sops.placeholder."domain"}";
+                  description = "Music Management";
+                };
+              }
+              {
+                Sonarr = {
+                  icon = "sonarr";
+                  href = "https://sonarr.${config.sops.placeholder."domain"}";
+                  description = "TV Series Management";
+                };
+              }
+              {
+                Radarr = {
+                  icon = "radarr";
+                  href = "https://radarr.${config.sops.placeholder."domain"}";
+                  description = "Movie Management";
+                };
+              }
+            ];
           }
           {
-            Lidarr = {
-              icon = "lidarr";
-              href = "https://lidarr.${config.sops.placeholder."domain"}";
-              description = "Lidarr";
-            };
-          }
-          {
-            Slsskd = {
-              icon = "slskd";
-              href = "https://slskd.${config.sops.placeholder."domain"}";
-              description = "Slskd";
-            };
-          }
-          {
-            Navidrome = {
-              icon = "navidrome";
-              href = "https://navidrome.${config.sops.placeholder."domain"}";
-              description = "Navidrome";
-            };
-          }
-          {
-            Sonarr = {
-              icon = "sonarr";
-              href = "https://sonarr.${config.sops.placeholder."domain"}";
-              description = "Sonarr";
-            };
-          }
-          {
-            Lidarr = {
-              icon = "radarr";
-              href = "https://radarr.${config.sops.placeholder."domain"}";
-              description = "Lidarr";
-            };
+            "Download Clients" = [
+              {
+                qBitTorrent = {
+                  icon = "qbittorrent";
+                  href = "https://torrent.${config.sops.placeholder."domain"}";
+                  description = "Torrent Client";
+                };
+              }
+              {
+                Slskd = {
+                  icon = "slskd";
+                  href = "https://slskd.${config.sops.placeholder."domain"}";
+                  description = "Soulseek Client";
+                };
+              }
+            ];
           }
         ];
       }
@@ -121,6 +140,18 @@
       title = "Homelab Dashboard";
       theme = "dark";
       color = "neutral";
+      layout = [
+        {
+          "Admin" = {
+            style = "row";
+          };
+        }
+        {
+          "Media" = {
+            style = "row";
+          };
+        }
+      ];
     };
 
     "homepage-bookmarks.yml".content = lib.generators.toYAML { } { };
