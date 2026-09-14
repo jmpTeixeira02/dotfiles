@@ -19,10 +19,8 @@
       "network/authelia/storage_key" = {
         sopsFile = ../secrets.yaml;
       };
-      "users" = {
-        format = "yaml";
-        sopsFile = ./authelia-users-secrets.yaml;
-        key = ""; # Leaves key empty to use the whole file
+      "network/lldap/admin_pass" = {
+        sopsFile = ../secrets.yaml;
       };
     };
   };
@@ -36,7 +34,6 @@
     autoStart = true;
     volumes = [
       "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw,U"
-      "${config.sops.secrets."users".path}:/config/users.yml:rw,U"
       "${config.mySystem.serviceData}/authelia:/config:rw"
     ];
     environmentFiles = [
@@ -54,6 +51,7 @@
       AUTHELIA_JWT_SECRET = config.sops.placeholder."network/authelia/jwt";
       AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
       AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD = config.sops.placeholder."network/lldap/admin_pass";
     };
 
     "authelia-labels".content = lib.generators.toKeyValue { } {
@@ -80,11 +78,12 @@
       };
 
       authentication_backend = {
-        file = {
-          path = "/config/users.yml";
-          password = {
-            algorithm = "argon2id";
-          };
+        ldap = {
+          implementation = "lldap";
+          address = "ldap://lldap:3890";
+          base_dn = config.sops.placeholder."network/lldap/domain";
+          user = "uid=admin,ou=people,${config.sops.placeholder."network/lldap/domain"}";
+          password = "$AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD";
         };
       };
 
@@ -129,6 +128,9 @@
   };
 
   systemd.services."podman-authelia" = {
+    after = [ "podman-lldap.service" ];
+    requires = [ "podman-lldap.service" ];
+
     restartTriggers = [
       config.sops.templates."authelia-env".path
       config.sops.templates."authelia-labels".path
