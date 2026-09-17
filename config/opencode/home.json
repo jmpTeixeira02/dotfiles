@@ -1,24 +1,16 @@
 {
     "$schema": "https://opencode.ai/config.json",
     "provider": {
-        "ollama": {
+        "unsloth-studio": {
             "npm": "@ai-sdk/openai-compatible",
-            "name": "Ollama",
+            "name": "Unsloth Studio",
             "options": {
-                "baseURL": "http://172.20.224.1:11434/v1"
+                "baseURL": "http://192.168.1.77:8888/v1",
+                "apiKey": "{env:LOCAL_API_KEY}"
             },
             "models": {
-                "qwen3:14b": {
-                    "name": "qwen3:14b"
-                },
-                "gemma4:e4b": {
-                    "name": "gemma4:e4b"
-                },
-                "gemma4:12b": {
-                    "name": "gemma4:12b"
-                },
-                "qwen2.5-coder:14b": {
-                    "name": "qwen2.5-coder:14b"
+                "unsloth/qwen3.8-27b-gguf:UD-IQ2_S": {
+                    "name": "Qwen3.8-27B-GGUF UD-IQ2_S"
                 }
             }
         }
