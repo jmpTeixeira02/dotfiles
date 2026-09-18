@@ -21,6 +21,7 @@
   config = {
     home.packages = with pkgs; [
       opencode
+      claude-code
     ];
 
     xdg.configFile = {

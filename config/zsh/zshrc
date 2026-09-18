@@ -14,8 +14,11 @@ unset KUBECONFIG
 # Needed to use bins installed via go install
 export PATH=$PATH:$(go env GOPATH)/bin/
 
-# On WSL in windows opencode gives segmentation fault
+# On WSL opencode gives segmentation fault without setting this up
 export PATH=$HOME/.opencode/bin:$PATH
+
+# Add this to path for installs from binary
+export PATH=$HOME/.local/bin:$PATH
 
 # Source plugins first as it might override other commands
 [ -f $XDG_CONFIG_HOME/zsh/plugins.zsh ] && source $XDG_CONFIG_HOME/zsh/plugins.zsh

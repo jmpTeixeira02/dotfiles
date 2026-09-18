@@ -6,14 +6,14 @@
             "*": "allow",
             "*.env": "deny",
             "*.env.*": "deny",
+            "*.env.example": "allow",
             "*.sops.*": "deny",
-            "*secrets.zsh": "deny",
-            "*.env.example": "allow"
+            "*secrets.zsh": "deny"
         }
     },
-    "share": "disabled",
     "plugin": [
         "@dietrichgebert/ponytail",
         "opencode-caveman"
-    ]
+    ],
+    "share": "disabled"
 }
