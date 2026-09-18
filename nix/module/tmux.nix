@@ -1,20 +1,18 @@
 {
-  config,
   pkgs,
   linkConfig,
-  lib,
   ...
 }:
 
 let
-  kanagawa = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "kanagawa";
-    version = "stable-2024-09-12";
+  theme = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "ukiyo";
+    version = "unstable-2026-09-18";
     src = pkgs.fetchFromGitHub {
       owner = "Nybkox";
-      repo = "tmux-kanagawa";
-      rev = "master";
-      sha256 = "sFL9/PMdPJxN7tgpc4YbUHW4PkCXlKmY7a7gi7PLcn8=";
+      repo = "tmux-ukiyo";
+      rev = "b1b45a178010c228bfbb7da40862083553b549c1";
+      sha256 = "yqPc11FT+CoHF+MNbmTBSlMRy4hCHiRULiylyNe8jnY=";
     };
   };
 in
@@ -38,18 +36,17 @@ in
     clock24 = true;
     plugins = with pkgs.tmuxPlugins; [
       {
-        plugin = kanagawa;
+        plugin = theme;
         extraConfig = ''
-          set -g @kanagawa-plugins "ssh-session  time"
-          set -g @kanagawa-show-timezone false
-          set -g @kanagawa-theme dragon
-          set -g @kanagawa-day-month true
-          set -g @kanagawa-show-powerline true
-          set -g @kanagawa-military-time true
-          set -g @kanagawa-show-left-icon session
-          # set -g @kanagawa-time-colors "cyan gray"
-          set -g @kanagawa-time-format " %R"
-          set -g @kanagawa-ignore-window-colors true
+          set -g @ukiyo-plugins "ssh-session  time"
+          set -g @ukiyo-show-timezone false
+          set -g @ukiyo-theme "kanagawa/dragon"
+          set -g @ukiyo-day-month true
+          set -g @ukiyo-show-powerline true
+          set -g @ukiyo-military-time true
+          set -g @ukiyo-show-left-icon session
+          set -g @ukiyo-time-format " %R"
+          set -g @ukiyo-ignore-window-colors true
         '';
       }
       yank
