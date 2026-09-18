@@ -15,10 +15,10 @@ unset KUBECONFIG
 export PATH=$PATH:$(go env GOPATH)/bin/
 
 # On WSL opencode gives segmentation fault without setting this up
-export PATH=$HOME/.opencode/bin:$PATH
+export PATH=$PATH:$HOME/.opencode/bin
 
 # Add this to path for installs from binary
-export PATH=$HOME/.local/bin:$PATH
+export PATH=$PATH:$HOME/.local/bin
 
 # Source plugins first as it might override other commands
 [ -f $XDG_CONFIG_HOME/zsh/plugins.zsh ] && source $XDG_CONFIG_HOME/zsh/plugins.zsh
