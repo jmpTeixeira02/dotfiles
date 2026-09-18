@@ -13,7 +13,8 @@
     },
     "plugin": [
         "@dietrichgebert/ponytail",
-        "opencode-caveman"
+        "opencode-caveman",
+        "opencode-skill-creator"
     ],
     "share": "disabled"
 }

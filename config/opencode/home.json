@@ -9,8 +9,17 @@
                 "apiKey": "{env:LOCAL_API_KEY}"
             },
             "models": {
+                "unsloth/qwen3.8-27b-gguf:UD-IQ2_XXS": {
+                    "name": "Qwen3.8 27B-GGUF UD-IQ2_XXS"
+                },
                 "unsloth/qwen3.8-27b-gguf:UD-IQ2_S": {
-                    "name": "Qwen3.8-27B-GGUF UD-IQ2_S"
+                    "name": "Qwen3.8 27B-GGUF UD-IQ2_S"
+                },
+                "unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-IQ2_XXS": {
+                    "name": "Qwen3 Coder 30B-A3B"
+                },
+                "ornith-ai/Ornith-1.5-9B-GGUF:Q6_K": {
+                    "name": "Ornith-1.5 9B"
                 }
             }
         }
