@@ -47,6 +47,8 @@ in
     # Rust
     bacon
     lldb
+    rust-analyzer
+    rustfmt
 
     # JS/TS
     vtsls

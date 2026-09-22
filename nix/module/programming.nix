@@ -12,7 +12,10 @@
     buf # Protobuf
     nodejs
     python3
-    rustup
+    rustc
+    cargo
+    rust-analyzer
+
     openjdk
 
     docker
