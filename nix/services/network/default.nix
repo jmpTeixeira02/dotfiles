@@ -4,5 +4,6 @@
     ./authelia.nix
     ./lldap.nix
     ./ddns-updater.nix
+    # ./netbird.nix
   ];
 }
