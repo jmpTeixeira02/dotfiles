@@ -10,5 +10,6 @@
     ./flaresolverr.nix
     ./jellyfin.nix
     ./seerr.nix
+    ./aurral.nix
   ];
 }
