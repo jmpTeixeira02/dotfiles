@@ -9,5 +9,6 @@
     ./radarr.nix
     ./flaresolverr.nix
     ./jellyfin.nix
+    ./seerr.nix
   ];
 }

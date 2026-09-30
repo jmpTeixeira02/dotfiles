@@ -55,6 +55,13 @@
               };
             }
             {
+              Seerr = {
+                icon = "seerr";
+                href = "https://seerr.${config.sops.placeholder."domain"}";
+                description = "Movie/TV Series Request";
+              };
+            }
+            {
               Navidrome = {
                 icon = "navidrome";
                 href = "https://navidrome.${config.sops.placeholder."domain"}";
