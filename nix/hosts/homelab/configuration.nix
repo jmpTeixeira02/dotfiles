@@ -61,12 +61,8 @@
     systemd.services = lib.mapAttrs' (
       name: value:
       lib.nameValuePair "podman-${name}" {
-        after = [
-          "podman.service"
-        ];
-        requires = [
-          "podman.service"
-        ];
+        after = [ "podman.service" ];
+        requires = [ "podman.service" ];
         serviceConfig = {
           Restart = lib.mkForce "on-failure";
           RestartSec = "5s";
@@ -74,6 +70,7 @@
         unitConfig = {
           StartLimitBurst = 3;
           StartLimitIntervalSec = "60";
+          RequiresMountsFor = [ config.mySystem.poolMount ];
         };
       }
     ) config.virtualisation.oci-containers.containers;

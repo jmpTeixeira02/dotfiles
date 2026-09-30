@@ -99,6 +99,18 @@ in
   };
 
   systemd.services."podman-prowlarr" = {
+    after = [
+      "podman-lidarr.service"
+      "podman-sonarr.service"
+      "podman-radarr.service"
+      "podman-flaresolverr.service"
+    ];
+    requires = [
+      "podman-lidarr.service"
+      "podman-sonarr.service"
+      "podman-radarr.service"
+      "podman-flaresolverr.service"
+    ];
     restartTriggers = [
       config.sops.templates."prowlarr-labels".content
       config.sops.templates."prowlarr-config.xml".content

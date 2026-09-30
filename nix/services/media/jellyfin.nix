@@ -53,6 +53,7 @@ in
     ];
     extraOptions = [
       "--label-file=${config.sops.templates."jellyfin-labels".path}"
+      "--health-start-period=60s"
     ];
   };
 
@@ -107,6 +108,8 @@ in
   };
 
   systemd.services."podman-jellyfin" = {
+    after = [ "podman-lldap.service" ];
+    requires = [ "podman-lldap.service" ];
     restartTriggers = [
       config.sops.templates."jellyfin-labels".content
       config.sops.templates."jellyfin-ldap.xml".content

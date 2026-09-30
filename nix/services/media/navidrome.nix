@@ -52,6 +52,8 @@
   };
 
   systemd.services."podman-navidrome" = {
+    after = [ "podman-lldap.service" ];
+    requires = [ "podman-lldap.service" ];
     restartTriggers = [
       config.sops.templates."navidrome-labels".content
     ];
