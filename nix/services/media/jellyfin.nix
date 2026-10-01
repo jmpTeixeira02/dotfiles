@@ -68,17 +68,12 @@ in
       mode = "0600";
       content = ''
           <PluginConfiguration>
-            <LdapUsers>
-              <LdapUser> </LdapUser>
-            </LdapUsers>
           <LdapServer>lldap</LdapServer>
           <LdapPort>3890</LdapPort>
           <UseSsl>false</UseSsl>
           <UseStartTls>false</UseStartTls>
           <SkipSslVerify>false</SkipSslVerify>
-          <LdapBindUser>uid=admin,ou=people,${
-            config.sops.placeholder."network/lldap/domain"
-          }"</LdapBindUser>
+          <LdapBindUser>uid=admin,ou=people,${config.sops.placeholder."network/lldap/domain"}</LdapBindUser>
           <LdapBindPassword>${config.sops.placeholder."network/lldap/admin_pass"}</LdapBindPassword>
           <LdapBaseDn>${config.sops.placeholder."network/lldap/domain"}</LdapBaseDn>
           <LdapSearchFilter />
