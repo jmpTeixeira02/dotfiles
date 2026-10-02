@@ -5,7 +5,6 @@
 }:
 
 {
-  sops.secrets."domain".sopsFile = ../secrets.yaml;
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/homepage 0755 1000 1000 -"
   ];
@@ -31,7 +30,7 @@
 
   sops.templates = {
     "homepage-env".content = lib.generators.toKeyValue { } {
-      HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.sops.placeholder."domain"}";
+      HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.domain}";
       PUID = "1000";
       PGID = "1000";
     };
@@ -39,7 +38,7 @@
     "homepage-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.homepage.entryPoints" = "websecure";
-      "traefik.http.routers.homepage.rule" = "Host(`homepage.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.homepage.rule" = "Host(`homepage.${config.domain}`)";
     };
 
     "homepage-services.yml" = {
@@ -50,21 +49,21 @@
             {
               Jellyfin = {
                 icon = "jellyfin";
-                href = "https://jellyfin.${config.sops.placeholder."domain"}";
+                href = "https://jellyfin.${config.domain}";
                 description = "Video Player";
               };
             }
             {
               Seerr = {
                 icon = "seerr";
-                href = "https://seerr.${config.sops.placeholder."domain"}";
+                href = "https://seerr.${config.domain}";
                 description = "Movie/TV Series Request";
               };
             }
             {
               Navidrome = {
                 icon = "navidrome";
-                href = "https://navidrome.${config.sops.placeholder."domain"}";
+                href = "https://navidrome.${config.domain}";
                 description = "Music Player";
               };
             }
@@ -77,28 +76,28 @@
                 {
                   Dockhand = {
                     icon = "dockhand";
-                    href = "https://dockhand.${config.sops.placeholder."domain"}";
+                    href = "https://dockhand.${config.domain}";
                     description = "Container Management";
                   };
                 }
                 {
                   Traefik = {
                     icon = "traefik-proxy";
-                    href = "https://traefik.${config.sops.placeholder."domain"}";
+                    href = "https://traefik.${config.domain}";
                     description = "Reverse Proxy";
                   };
                 }
                 {
                   DDNS-Updater = {
                     icon = "ddns-updater";
-                    href = "https://ddns-updater.${config.sops.placeholder."domain"}";
+                    href = "https://ddns-updater.${config.domain}";
                     description = "Domain Name IP Updater";
                   };
                 }
                 {
                   LLDAP = {
                     icon = "lldap";
-                    href = "https://lldap.${config.sops.placeholder."domain"}";
+                    href = "https://lldap.${config.domain}";
                     description = "User Management";
                   };
                 }
@@ -109,28 +108,28 @@
                 {
                   Prowlarr = {
                     icon = "prowlarr";
-                    href = "https://prowlarr.${config.sops.placeholder."domain"}";
+                    href = "https://prowlarr.${config.domain}";
                     description = "Indexer";
                   };
                 }
                 {
                   Lidarr = {
                     icon = "lidarr";
-                    href = "https://lidarr.${config.sops.placeholder."domain"}";
+                    href = "https://lidarr.${config.domain}";
                     description = "Music Management";
                   };
                 }
                 {
                   Sonarr = {
                     icon = "sonarr";
-                    href = "https://sonarr.${config.sops.placeholder."domain"}";
+                    href = "https://sonarr.${config.domain}";
                     description = "TV Series Management";
                   };
                 }
                 {
                   Radarr = {
                     icon = "radarr";
-                    href = "https://radarr.${config.sops.placeholder."domain"}";
+                    href = "https://radarr.${config.domain}";
                     description = "Movie Management";
                   };
                 }
@@ -141,14 +140,14 @@
                 {
                   qBitTorrent = {
                     icon = "qbittorrent";
-                    href = "https://torrent.${config.sops.placeholder."domain"}";
+                    href = "https://torrent.${config.domain}";
                     description = "Torrent Client";
                   };
                 }
                 {
                   Slskd = {
                     icon = "slskd";
-                    href = "https://slskd.${config.sops.placeholder."domain"}";
+                    href = "https://slskd.${config.domain}";
                     description = "Soulseek Client";
                   };
                 }

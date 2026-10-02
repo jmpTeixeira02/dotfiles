@@ -6,14 +6,6 @@
 }:
 
 {
-  sops = {
-    secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
-    };
-  };
-
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/seerr 0755 1000 1000 -"
   ];
@@ -36,7 +28,7 @@
     "seerr-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.seerr.entryPoints" = "websecure";
-      "traefik.http.routers.seerr.rule" = "Host(`seerr.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.seerr.rule" = "Host(`seerr.${config.domain}`)";
     };
   };
 

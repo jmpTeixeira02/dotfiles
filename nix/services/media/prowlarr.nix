@@ -29,9 +29,6 @@ in
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/prowlarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
@@ -74,7 +71,7 @@ in
     "prowlarr-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.prowlarr.entryPoints" = "websecure";
-      "traefik.http.routers.prowlarr.rule" = "Host(`prowlarr.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.prowlarr.rule" = "Host(`prowlarr.${config.domain}`)";
     };
 
     "prowlarr-config.xml".content = ''

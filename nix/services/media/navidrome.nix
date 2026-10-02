@@ -6,14 +6,6 @@
 }:
 
 {
-  sops = {
-    secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
-    };
-  };
-
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/navidrome 0755 1000 1000 -"
     "d ${config.mySystem.poolMount}/music 0755 1000 1000 -"
@@ -40,12 +32,11 @@
     "navidrome-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.navidrome.entryPoints" = "websecure";
-      "traefik.http.routers.navidrome.rule" = "Host(`navidrome.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.navidrome.rule" = "Host(`navidrome.${config.domain}`)";
       "traefik.http.routers.navidrome.middlewares" = "authelia@docker";
 
-      "traefik.http.routers.navidrome-subsonic.rule" = "Host(`navidrome.${
-        config.sops.placeholder."domain"
-      }`) && PathPrefix(`/rest/`) && !Query(`c`, `NavidromeUI`)";
+      "traefik.http.routers.navidrome-subsonic.rule" =
+        "Host(`navidrome.${config.domain}`) && PathPrefix(`/rest/`) && !Query(`c`, `NavidromeUI`)";
       "traefik.http.routers.navidrome-subsonic.entrypoints" = "websecure";
       "traefik.http.routers.navidrome-subsonic.middlewares" = "authelia@docker";
     };

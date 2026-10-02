@@ -9,7 +9,7 @@ let
       clientId = "papra";
       clientSecret = config.sops.placeholder."other/papra/oidcSecret";
       type = "oidc";
-      discoveryUrl = "https://auth.${config.sops.placeholder."domain"}/.well-known/openid-configuration";
+      discoveryUrl = "https://auth.${config.domain}/.well-known/openid-configuration";
       scopes = [
         "openid"
         "profile"
@@ -20,7 +20,6 @@ let
 in
 {
   sops.secrets = {
-    "domain".sopsFile = ../secrets.yaml;
     "other/papra/authSecret".sopsFile = ../secrets.yaml;
     "other/papra/oidcSecret".sopsFile = ../secrets.yaml;
   };
@@ -40,13 +39,14 @@ in
     ];
     extraOptions = [
       "--label-file=${config.sops.templates."papra-labels".path}"
-      "--opt-file=${config.sops.templates."papra-flags".path}"
+      "--add-host=auth.${config.domain}:host-gateway"
+      "--add-host=papra.${config.domain}:host-gateway"
     ];
   };
 
   sops.templates = {
     "papra-env".content = ''
-      APP_BASE_URL=https://papra.${config.sops.placeholder."domain"}
+      APP_BASE_URL=https://papra.${config.domain}
       AUTH_SECRET=${config.sops.placeholder."other/papra/authSecret"}
       AUTH_IS_REGISTRATION_ENABLED=true
       AUTH_PROVIDERS_EMAIL_IS_ENABLED=false
@@ -56,12 +56,12 @@ in
     "papra-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.papra.entryPoints" = "websecure";
-      "traefik.http.routers.papra.rule" = "Host(`papra.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.papra.rule" = "Host(`papra.${config.domain}`)";
     };
 
     "papra-flags".content = ''
-      "--add-host=auth.${config.sops.placeholder."domain"}:host-gateway"
-      "--add-host=papra.${config.sops.placeholder."domain"}:host-gateway"
+      "--add-host=auth.${config.domain}:host-gateway"
+      "--add-host=papra.${config.domain}:host-gateway"
     '';
   };
 

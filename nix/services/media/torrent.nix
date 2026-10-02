@@ -5,8 +5,6 @@
 }:
 
 {
-  sops.secrets."domain".sopsFile = ../secrets.yaml;
-
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.poolMount}/downloads/torrent 0755 1000 1000 -"
     "d ${config.mySystem.serviceData}/torrent 0755 1000 1000 -"
@@ -38,7 +36,7 @@
     "torrent-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.torrent.entryPoints" = "websecure";
-      "traefik.http.routers.torrent.rule" = "Host(`torrent.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.torrent.rule" = "Host(`torrent.${config.domain}`)";
       "traefik.http.services.torrent.loadbalancer.server.port" = 8086;
     };
 

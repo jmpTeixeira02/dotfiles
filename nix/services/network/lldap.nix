@@ -70,7 +70,7 @@ in
     "lldap-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.lldap.entryPoints" = "websecure";
-      "traefik.http.routers.lldap.rule" = "Host(`lldap.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.lldap.rule" = "Host(`lldap.${config.domain}`)";
       "traefik.http.services.lldap.loadbalancer.server.port" = "17170";
     };
   }

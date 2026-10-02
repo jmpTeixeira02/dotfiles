@@ -8,9 +8,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/slskd/user" = {
         sopsFile = ../secrets.yaml;
       };
@@ -53,7 +50,7 @@
     "slskd-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.slskd.entryPoints" = "websecure";
-      "traefik.http.routers.slskd.rule" = "Host(`slskd.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.slskd.rule" = "Host(`slskd.${config.domain}`)";
     };
     "slskd.yml".content = lib.generators.toYAML { } {
       web = {

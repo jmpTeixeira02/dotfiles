@@ -7,9 +7,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "network/authelia/jwt" = {
         sopsFile = ../secrets.yaml;
       };
@@ -17,6 +14,12 @@
         sopsFile = ../secrets.yaml;
       };
       "network/authelia/storage_key" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "network/authelia/oidc/hmac_secret" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "network/authelia/oidc/key" = {
         sopsFile = ../secrets.yaml;
       };
       "network/lldap/admin_pass" = {
@@ -30,7 +33,7 @@
   ];
 
   virtualisation.oci-containers.containers.authelia = {
-    image = "docker.io/authelia/authelia";
+    image = "ghcr.io/authelia/authelia:4.39.28";
     autoStart = true;
     volumes = [
       "${config.mySystem.serviceData}/authelia:/config:rw"
@@ -48,7 +51,6 @@
     "authelia-env".content = lib.generators.toKeyValue { } {
       PUID = "1000";
       PGID = "1000";
-      AUTHELIA_JWT_SECRET = config.sops.placeholder."network/authelia/jwt";
       AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
       AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD = config.sops.placeholder."network/lldap/admin_pass";
@@ -57,7 +59,7 @@
     "authelia-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.authelia.entryPoints" = "websecure";
-      "traefik.http.routers.authelia.rule" = "Host(`auth.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.authelia.rule" = "Host(`auth.${config.domain}`)";
 
       "traefik.http.middlewares.authelia.forwardAuth.address" =
         "http://authelia:9091/api/authz/forward-auth";
@@ -77,6 +79,12 @@
         level = "info";
       };
 
+      identity_validation = {
+        reset_password = {
+          jwt_secret = config.sops.placeholder."network/authelia/jwt";
+        };
+      };
+
       authentication_backend = {
         ldap = {
           implementation = "lldap";
@@ -90,9 +98,9 @@
       session = {
         cookies = [
           {
-            domain = config.sops.placeholder."domain";
-            authelia_url = "https://auth.${config.sops.placeholder."domain"}";
-            default_redirection_url = "https://homepage.${config.sops.placeholder."domain"}";
+            domain = config.domain;
+            authelia_url = "https://auth.${config.domain}";
+            default_redirection_url = "https://homepage.${config.domain}";
             expiration = "1h";
             inactivity = "5m";
           }
@@ -115,61 +123,53 @@
         default_policy = "deny";
         rules = [
           {
-            domain = "jellyfin.${config.sops.placeholder."domain"}";
+            domain = "jellyfin.${config.domain}";
             policy = "bypass";
           }
           {
-            domain = "auth.${config.sops.placeholder."domain"}";
+            domain = "auth.${config.domain}";
             policy = "bypass";
           }
           {
-            domain = "*.${config.sops.placeholder."domain"}";
+            domain = "*.${config.domain}";
             policy = "one_factor";
           }
         ];
       };
 
-      identity_providers = {
-        oidc = {
-          cors = {
-            endpoints = [
-              "authorization"
-              "token"
-              "revocation"
-              "introspection"
-              "userinfo"
+      identity_providers.oidc = {
+        hmac_secret = config.sops.placeholder."network/authelia/oidc/hmac_secret";
+        jwks = [
+          {
+            key = config.sops.placeholder."network/authelia/oidc/key";
+          }
+        ];
+        clients = [
+          {
+            client_id = "papra";
+            client_name = "Papra";
+            client_secret = "${config.sops.placeholder."other/papra/oidcSecret"}";
+            public = false;
+            authorization_policy = "one_factor";
+            redirect_uris = [
+              "https://papra.${config.domain}/api/auth/oauth2/callback/authelia"
             ];
-            allowed_origins = [
-              "https://papra.${config.sops.placeholder."domain"}"
+            scopes = [
+              "openid"
+              "profile"
+              "email"
             ];
-          };
-          clients = [
-            {
-              client_id = "papra";
-              client_name = "Papra";
-              client_secret = "${config.sops.placeholder."other/papra/oidcSecret"}";
-              public = false;
-              authorization_policy = "one_factor";
-              redirect_uris = [
-                "https://papra.${config.sops.placeholder."domain"}/api/auth/oauth2/callback/authelia"
-              ];
-              scopes = [
-                "openid"
-                "profile"
-                "email"
-              ];
-              response_types = [
-                "code"
-              ];
-              grant_types = [
-                "authorization_code"
-              ];
-              access_token_signed_response_alg = "none";
-              userinfo_signed_response_alg = "none";
-              token_endpoint_auth_method = "client_secret_post";
-            }
-          ];
-        };
+            response_types = [
+              "code"
+            ];
+            grant_types = [
+              "authorization_code"
+            ];
+            access_token_signed_response_alg = "none";
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_post";
+          }
+        ];
       };
     };
   };

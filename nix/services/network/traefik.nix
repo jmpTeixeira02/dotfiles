@@ -7,9 +7,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "email" = {
         sopsFile = ../secrets.yaml;
       };
@@ -58,7 +55,7 @@
     "traefik-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.traefik.entryPoints" = "websecure";
-      "traefik.http.routers.traefik.rule" = "Host(`traefik.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.traefik.rule" = "Host(`traefik.${config.domain}`)";
       "traefik.http.routers.traefik.service" = "api@internal";
     };
 
@@ -97,9 +94,9 @@
               certResolver = "desec";
               domains = [
                 {
-                  main = config.sops.placeholder."domain";
+                  main = config.domain;
                   sans = [
-                    "*.${config.sops.placeholder."domain"}"
+                    "*.${config.domain}"
                   ];
                 }
               ];

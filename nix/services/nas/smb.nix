@@ -7,9 +7,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "nas/user" = {
         sopsFile = ../secrets.yaml;
       };

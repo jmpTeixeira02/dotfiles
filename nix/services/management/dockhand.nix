@@ -2,7 +2,6 @@
 { config, lib, ... }:
 
 {
-  sops.secrets."domain".sopsFile = ../secrets.yaml;
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/dockhand 0755 1000 1000 -"
   ];
@@ -23,7 +22,7 @@
     "dockhand-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.dockhand.entryPoints" = "websecure";
-      "traefik.http.routers.dockhand.rule" = "Host(`dockhand.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.dockhand.rule" = "Host(`dockhand.${config.domain}`)";
     };
   };
 

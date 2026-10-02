@@ -7,9 +7,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "network/desecToken" = {
         sopsFile = ../secrets.yaml;
       };
@@ -31,16 +28,14 @@
     "ddns-updater-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.ddns-updater.entryPoints" = "websecure";
-      "traefik.http.routers.ddns-updater.rule" = "Host(`ddns-updater.${
-        config.sops.placeholder."domain"
-      }`)";
+      "traefik.http.routers.ddns-updater.rule" = "Host(`ddns-updater.${config.domain}`)";
     };
 
     "ddns-updater.json".content = builtins.toJSON {
       settings = [
         {
           provider = "desec";
-          domain = config.sops.placeholder."domain";
+          domain = config.domain;
           token = config.sops.placeholder."network/desecToken";
           ip_version = "ipv4";
         }

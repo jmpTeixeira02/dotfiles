@@ -16,20 +16,28 @@
     ../../services/others/default.nix
   ];
 
-  options.mySystem = {
-    poolMount = lib.mkOption {
-      type = lib.types.str;
-      default = "/mnt/storage";
-      description = "Mount point for the primary mergerfs storage pool";
+  options = {
+    mySystem = {
+      poolMount = lib.mkOption {
+        type = lib.types.str;
+        default = "/mnt/storage";
+        description = "Mount point for the primary mergerfs storage pool";
+      };
+      serviceData = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/homelab";
+        description = "Directory storing service persistent state";
+      };
     };
-    serviceData = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.str;
-      default = "/var/lib/homelab";
-      description = "Directory storing service persistent state";
+      default = "yusukeeeee.dedyn.io";
+      description = "Domain of the server";
     };
   };
 
   config = {
+    domain = "yusukeeeee.dedyn.io";
     mySystem = {
       poolMount = "/mnt/storage";
       serviceData = "/var/lib/homelab";

@@ -8,9 +8,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/radarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
@@ -48,7 +45,7 @@
     "radarr-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.radarr.entryPoints" = "websecure";
-      "traefik.http.routers.radarr.rule" = "Host(`radarr.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.radarr.rule" = "Host(`radarr.${config.domain}`)";
     };
 
     "radarr-config.xml".content = ''

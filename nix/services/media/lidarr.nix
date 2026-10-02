@@ -8,9 +8,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/lidarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
@@ -51,7 +48,7 @@
     "lidarr-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.lidarr.entryPoints" = "websecure";
-      "traefik.http.routers.lidarr.rule" = "Host(`lidarr.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.lidarr.rule" = "Host(`lidarr.${config.domain}`)";
     };
 
     "lidarr-config.xml".content = ''

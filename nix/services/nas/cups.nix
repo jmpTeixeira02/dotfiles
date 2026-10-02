@@ -5,14 +5,6 @@
 }:
 
 {
-  sops = {
-    secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
-    };
-  };
-
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/cups 0755 1000 1000 -"
   ];
@@ -43,7 +35,7 @@
     "cups-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.cups.entryPoints" = "websecure";
-      "traefik.http.routers.cups.rule" = "Host(`cups.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.cups.rule" = "Host(`cups.${config.domain}`)";
     };
 
     "cups-conf".content = ''

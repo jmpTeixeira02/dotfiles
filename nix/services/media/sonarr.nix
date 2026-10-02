@@ -8,9 +8,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/sonarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
@@ -48,7 +45,7 @@
     "sonarr-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.sonarr.entryPoints" = "websecure";
-      "traefik.http.routers.sonarr.rule" = "Host(`sonarr.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.sonarr.rule" = "Host(`sonarr.${config.domain}`)";
     };
 
     "sonarr-config.xml".content = ''

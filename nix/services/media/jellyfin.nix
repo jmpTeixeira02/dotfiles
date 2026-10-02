@@ -14,9 +14,6 @@ in
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "network/lldap/admin_pass" = {
         sopsFile = ../secrets.yaml;
       };
@@ -61,7 +58,7 @@ in
     "jellyfin-labels".content = lib.generators.toKeyValue { } {
       "traefik.enable" = "true";
       "traefik.http.routers.jellyfin.entryPoints" = "websecure";
-      "traefik.http.routers.jellyfin.rule" = "Host(`jellyfin.${config.sops.placeholder."domain"}`)";
+      "traefik.http.routers.jellyfin.rule" = "Host(`jellyfin.${config.domain}`)";
       "traefik.http.services.jellyfin.loadbalancer.server.port" = 8096;
     };
     "jellyfin-ldap.xml" = {

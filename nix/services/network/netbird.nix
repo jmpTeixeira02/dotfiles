@@ -7,9 +7,6 @@
 {
   sops = {
     secrets = {
-      "domain" = {
-        sopsFile = ../secrets.yaml;
-      };
       "network/netbirdToken" = {
         sopsFile = ../secrets.yaml;
       };
