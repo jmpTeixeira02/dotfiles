@@ -23,9 +23,11 @@
     environmentFiles = [
       config.sops.templates."homepage-env".path
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."homepage-labels".path}"
-    ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.homepage.entryPoints" = "websecure";
+      "traefik.http.routers.homepage.rule" = "Host(`homepage.${config.domain}`)";
+    };
   };
 
   sops.templates = {
@@ -35,17 +37,11 @@
       PGID = "1000";
     };
 
-    "homepage-labels".content = lib.generators.toKeyValue { } {
-      "traefik.enable" = "true";
-      "traefik.http.routers.homepage.entryPoints" = "websecure";
-      "traefik.http.routers.homepage.rule" = "Host(`homepage.${config.domain}`)";
-    };
-
     "homepage-services.yml" = {
       owner = "homelab";
       content = lib.generators.toYAML { } [
         {
-          "Media" = [
+          Applications = [
             {
               Jellyfin = {
                 icon = "jellyfin";
@@ -67,12 +63,19 @@
                 description = "Music Player";
               };
             }
+            {
+              Papra = {
+                icon = "papra";
+                href = "https://papra.${config.domain}";
+                description = "Document Manager";
+              };
+            }
           ];
         }
         {
-          "Admin" = [
+          Admin = [
             {
-              "Management" = [
+              Management = [
                 {
                   Dockhand = {
                     icon = "dockhand";
@@ -166,7 +169,7 @@
         color = "neutral";
         layout = [
           {
-            Media = {
+            Applications = {
               style = "row";
               columns = 4;
               icon = "mdi-play";
@@ -207,7 +210,6 @@
   systemd.services."podman-homepage" = {
     restartTriggers = [
       config.sops.templates."homepage-env".content
-      config.sops.templates."homepage-labels".content
       config.sops.templates."homepage-services.yml".content
       config.sops.templates."homepage-settings.yml".content
       config.sops.templates."homepage-bookmarks.yml".content

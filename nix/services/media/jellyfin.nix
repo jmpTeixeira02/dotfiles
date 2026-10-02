@@ -49,18 +49,17 @@ in
       "7359:7359/udp"
     ];
     extraOptions = [
-      "--label-file=${config.sops.templates."jellyfin-labels".path}"
       "--health-start-period=60s"
     ];
-  };
-
-  sops.templates = {
-    "jellyfin-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.jellyfin.entryPoints" = "websecure";
       "traefik.http.routers.jellyfin.rule" = "Host(`jellyfin.${config.domain}`)";
-      "traefik.http.services.jellyfin.loadbalancer.server.port" = 8096;
+      "traefik.http.services.jellyfin.loadbalancer.server.port" = "8096";
     };
+  };
+
+  sops.templates = {
     "jellyfin-ldap.xml" = {
       mode = "0600";
       content = ''
@@ -103,7 +102,6 @@ in
     after = [ "podman-lldap.service" ];
     requires = [ "podman-lldap.service" ];
     restartTriggers = [
-      config.sops.templates."jellyfin-labels".content
       config.sops.templates."jellyfin-ldap.xml".content
     ];
 

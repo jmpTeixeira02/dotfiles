@@ -1,7 +1,5 @@
 {
   config,
-  pkgs,
-  lib,
   ...
 }:
 
@@ -23,13 +21,7 @@
       ND_EXTAUTH_TRUSTEDSOURCES = "0.0.0.0/0";
       ND_REVERSEPROXYUSERHEADER = "Remote-User";
     };
-    extraOptions = [
-      "--label-file=${config.sops.templates."navidrome-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "navidrome-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.navidrome.entryPoints" = "websecure";
       "traefik.http.routers.navidrome.rule" = "Host(`navidrome.${config.domain}`)";
@@ -45,8 +37,5 @@
   systemd.services."podman-navidrome" = {
     after = [ "podman-lldap.service" ];
     requires = [ "podman-lldap.service" ];
-    restartTriggers = [
-      config.sops.templates."navidrome-labels".content
-    ];
   };
 }

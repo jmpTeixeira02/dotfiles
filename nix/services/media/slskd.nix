@@ -41,17 +41,14 @@
       "5031:5031"
       "50300:50300"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."slskd-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "slskd-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.slskd.entryPoints" = "websecure";
       "traefik.http.routers.slskd.rule" = "Host(`slskd.${config.domain}`)";
     };
+  };
+
+  sops.templates = {
     "slskd.yml".content = lib.generators.toYAML { } {
       web = {
         authentication = {
@@ -71,7 +68,6 @@
 
   systemd.services."podman-slskd" = {
     restartTriggers = [
-      config.sops.templates."slskd-labels".content
       config.sops.templates."slskd-env".content
       config.sops.templates."slskd.yml".content
     ];

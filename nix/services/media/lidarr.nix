@@ -39,18 +39,14 @@
     ports = [
       "8686:8686"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."lidarr-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "lidarr-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.lidarr.entryPoints" = "websecure";
       "traefik.http.routers.lidarr.rule" = "Host(`lidarr.${config.domain}`)";
     };
+  };
 
+  sops.templates = {
     "lidarr-config.xml".content = ''
       <Config>
         <BindAddress>*</BindAddress>
@@ -75,15 +71,11 @@
 
   systemd.services."podman-lidarr" = {
     restartTriggers = [
-      config.sops.templates."lidarr-labels".content
       config.sops.templates."lidarr-config.xml".content
     ];
     path = with pkgs; [
       curl
       jq
-      coreutils
-      gnugrep
-      unzip
     ];
 
     preStart = ''

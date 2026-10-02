@@ -35,9 +35,12 @@
     environmentFiles = [
       config.sops.templates."traefik-env".path
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."traefik-labels".path}"
-    ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.traefik.entryPoints" = "websecure";
+      "traefik.http.routers.traefik.rule" = "Host(`traefik.${config.domain}`)";
+      "traefik.http.routers.traefik.service" = "api@internal";
+    };
   };
 
   networking.firewall.allowedTCPPorts = [
@@ -50,13 +53,6 @@
       DESEC_TOKEN = config.sops.placeholder."network/desecToken";
       DESEC_POLLING_INTERVAL = "75";
       DESEC_PROPAGATION_TIMEOUT = "300";
-    };
-
-    "traefik-labels".content = lib.generators.toKeyValue { } {
-      "traefik.enable" = "true";
-      "traefik.http.routers.traefik.entryPoints" = "websecure";
-      "traefik.http.routers.traefik.rule" = "Host(`traefik.${config.domain}`)";
-      "traefik.http.routers.traefik.service" = "api@internal";
     };
 
     "traefik.yml".content = lib.generators.toYAML { } {
@@ -147,7 +143,6 @@
     ];
     restartTriggers = [
       config.sops.templates."traefik-env".content
-      config.sops.templates."traefik-labels".content
       config.sops.templates."traefik.yml".content
     ];
   };

@@ -27,19 +27,15 @@
       WEBUI_PORT = "8086";
       TORRENTING_PORT = "6881";
     };
-    extraOptions = [
-      "--label-file=${config.sops.templates."torrent-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "torrent-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.torrent.entryPoints" = "websecure";
       "traefik.http.routers.torrent.rule" = "Host(`torrent.${config.domain}`)";
-      "traefik.http.services.torrent.loadbalancer.server.port" = 8086;
+      "traefik.http.services.torrent.loadbalancer.server.port" = "8086";
     };
+  };
 
+  sops.templates = {
     "torrent.conf".content = ''
       [Preferences]
       WebUI\Address=*
@@ -58,7 +54,6 @@
 
   systemd.services."podman-torrent" = {
     restartTriggers = [
-      config.sops.templates."torrent-labels".content
       config.sops.templates."torrent.conf".content
     ];
   };

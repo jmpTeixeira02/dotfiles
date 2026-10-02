@@ -1,4 +1,3 @@
-# dockhand.nix
 { config, lib, ... }:
 
 {
@@ -13,22 +12,10 @@
       "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
       "${config.mySystem.serviceData}/dockhand:/app/data:rw,U"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."dockhand-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "dockhand-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.dockhand.entryPoints" = "websecure";
       "traefik.http.routers.dockhand.rule" = "Host(`dockhand.${config.domain}`)";
     };
-  };
-
-  systemd.services."podman-dockhand" = {
-    restartTriggers = [
-      config.sops.templates."dockhand-labels".content
-    ];
   };
 }

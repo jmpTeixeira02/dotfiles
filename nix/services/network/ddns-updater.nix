@@ -19,18 +19,14 @@
     volumes = [
       "${config.sops.templates."ddns-updater.json".path}:/updater/data/config.json:ro,U"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."ddns-updater-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "ddns-updater-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.ddns-updater.entryPoints" = "websecure";
       "traefik.http.routers.ddns-updater.rule" = "Host(`ddns-updater.${config.domain}`)";
     };
+  };
 
+  sops.templates = {
     "ddns-updater.json".content = builtins.toJSON {
       settings = [
         {
@@ -45,7 +41,6 @@
 
   systemd.services."podman-ddns-updater" = {
     restartTriggers = [
-      config.sops.templates."ddns-updater-labels".content
       config.sops.templates."ddns-updater.json".content
     ];
   };

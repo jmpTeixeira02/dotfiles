@@ -53,9 +53,12 @@ in
     environmentFiles = [
       config.sops.templates."lldap-env".path
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."lldap-labels".path}"
-    ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.lldap.entryPoints" = "websecure";
+      "traefik.http.routers.lldap.rule" = "Host(`lldap.${config.domain}`)";
+      "traefik.http.services.lldap.loadbalancer.server.port" = "17170";
+    };
   };
 
   sops.templates = {
@@ -65,13 +68,6 @@ in
       LLDAP_LDAP_BASE_DN = config.sops.placeholder."network/lldap/domain";
       HTTP_PORT = "17170";
       LDAP_PORT = "3890";
-    };
-
-    "lldap-labels".content = lib.generators.toKeyValue { } {
-      "traefik.enable" = "true";
-      "traefik.http.routers.lldap.entryPoints" = "websecure";
-      "traefik.http.routers.lldap.rule" = "Host(`lldap.${config.domain}`)";
-      "traefik.http.services.lldap.loadbalancer.server.port" = "17170";
     };
   }
   // lib.mapAttrs' (
@@ -92,7 +88,6 @@ in
   systemd.services."podman-lldap" = {
     restartTriggers = [
       config.sops.templates."lldap-env".path
-      config.sops.templates."lldap-labels".path
     ]
     ++ lib.mapAttrsToList (name: _: config.sops.templates."lldap-user-${name}".path) users;
 

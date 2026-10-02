@@ -36,18 +36,15 @@
     ports = [
       "8989:8989"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."sonarr-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "sonarr-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.sonarr.entryPoints" = "websecure";
       "traefik.http.routers.sonarr.rule" = "Host(`sonarr.${config.domain}`)";
     };
 
+  };
+
+  sops.templates = {
     "sonarr-config.xml".content = ''
       <Config>
         <BindAddress>*</BindAddress>
@@ -65,13 +62,11 @@
         <InstanceName>sonarr</InstanceName>
         <UpdateMechanism>Docker</UpdateMechanism>
       </Config>
-
     '';
   };
 
   systemd.services."podman-sonarr" = {
     restartTriggers = [
-      config.sops.templates."sonarr-labels".content
       config.sops.templates."sonarr-config.xml".content
     ];
     path = with pkgs; [

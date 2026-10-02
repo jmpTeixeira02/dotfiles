@@ -26,18 +26,14 @@
       "${config.mySystem.serviceData}/cups:/etc/cups:rw"
       "${config.sops.templates."cups-conf".path}:/etc/cups/cupsd.conf:rw"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."cups-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "cups-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.cups.entryPoints" = "websecure";
       "traefik.http.routers.cups.rule" = "Host(`cups.${config.domain}`)";
     };
+  };
 
+  sops.templates = {
     "cups-conf".content = ''
       DefaultAuthType None
       ServerAlias *
@@ -68,7 +64,6 @@
 
   systemd.services."podman-cups" = {
     restartTriggers = [
-      config.sops.templates."cups-labels".content
       config.sops.templates."cups-conf".content
     ];
   };

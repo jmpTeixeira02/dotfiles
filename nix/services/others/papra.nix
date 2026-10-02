@@ -38,10 +38,14 @@ in
       config.sops.templates."papra-env".path
     ];
     extraOptions = [
-      "--label-file=${config.sops.templates."papra-labels".path}"
       "--add-host=auth.${config.domain}:host-gateway"
       "--add-host=papra.${config.domain}:host-gateway"
     ];
+    labels = {
+      "traefik.enable" = "true";
+      "traefik.http.routers.papra.entryPoints" = "websecure";
+      "traefik.http.routers.papra.rule" = "Host(`papra.${config.domain}`)";
+    };
   };
 
   sops.templates = {
@@ -52,24 +56,17 @@ in
       AUTH_PROVIDERS_EMAIL_IS_ENABLED=false
       AUTH_PROVIDERS_CUSTOMS=${lib.generators.toJSON { } oidcProviders}
     '';
-
-    "papra-labels".content = lib.generators.toKeyValue { } {
-      "traefik.enable" = "true";
-      "traefik.http.routers.papra.entryPoints" = "websecure";
-      "traefik.http.routers.papra.rule" = "Host(`papra.${config.domain}`)";
-    };
-
-    "papra-flags".content = ''
-      "--add-host=auth.${config.domain}:host-gateway"
-      "--add-host=papra.${config.domain}:host-gateway"
-    '';
   };
 
   systemd.services."podman-papra" = {
     restartTriggers = [
       config.sops.templates."papra-env".content
-      config.sops.templates."papra-labels".content
-      config.sops.templates."papra-flags".content
+    ];
+    after = [
+      "podman-authelia.service"
+    ];
+    requires = [
+      "podman-authelia.service"
     ];
   };
 }

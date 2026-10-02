@@ -62,18 +62,14 @@ in
     ports = [
       "9696:9696"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."prowlarr-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "prowlarr-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.prowlarr.entryPoints" = "websecure";
       "traefik.http.routers.prowlarr.rule" = "Host(`prowlarr.${config.domain}`)";
     };
+  };
 
+  sops.templates = {
     "prowlarr-config.xml".content = ''
       <Config>
         <BindAddress>*</BindAddress>
@@ -109,7 +105,6 @@ in
       "podman-flaresolverr.service"
     ];
     restartTriggers = [
-      config.sops.templates."prowlarr-labels".content
       config.sops.templates."prowlarr-config.xml".content
     ];
     path = with pkgs; [

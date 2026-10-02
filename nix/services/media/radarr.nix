@@ -36,18 +36,14 @@
     ports = [
       "7878:7878"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."radarr-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "radarr-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.radarr.entryPoints" = "websecure";
       "traefik.http.routers.radarr.rule" = "Host(`radarr.${config.domain}`)";
     };
+  };
 
+  sops.templates = {
     "radarr-config.xml".content = ''
       <Config>
         <BindAddress>*</BindAddress>
@@ -71,7 +67,6 @@
 
   systemd.services."podman-radarr" = {
     restartTriggers = [
-      config.sops.templates."radarr-labels".content
       config.sops.templates."radarr-config.xml".content
     ];
     path = with pkgs; [

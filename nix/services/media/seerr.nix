@@ -19,13 +19,7 @@
     ports = [
       "5055:5055"
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."seerr-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "seerr-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.seerr.entryPoints" = "websecure";
       "traefik.http.routers.seerr.rule" = "Host(`seerr.${config.domain}`)";
@@ -42,9 +36,6 @@
       "podman-sonarr.service"
       "podman-radarr.service"
       "podman-jellyfin.service"
-    ];
-    restartTriggers = [
-      config.sops.templates."seerr-labels".content
     ];
   };
 }

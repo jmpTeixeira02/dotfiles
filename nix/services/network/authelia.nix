@@ -42,21 +42,7 @@
     environmentFiles = [
       config.sops.templates."authelia-env".path
     ];
-    extraOptions = [
-      "--label-file=${config.sops.templates."authelia-labels".path}"
-    ];
-  };
-
-  sops.templates = {
-    "authelia-env".content = lib.generators.toKeyValue { } {
-      PUID = "1000";
-      PGID = "1000";
-      AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
-      AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
-      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD = config.sops.placeholder."network/lldap/admin_pass";
-    };
-
-    "authelia-labels".content = lib.generators.toKeyValue { } {
+    labels = {
       "traefik.enable" = "true";
       "traefik.http.routers.authelia.entryPoints" = "websecure";
       "traefik.http.routers.authelia.rule" = "Host(`auth.${config.domain}`)";
@@ -66,6 +52,16 @@
       "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader" = "true";
       "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders" =
         "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+    };
+  };
+
+  sops.templates = {
+    "authelia-env".content = lib.generators.toKeyValue { } {
+      PUID = "1000";
+      PGID = "1000";
+      AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
+      AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD = config.sops.placeholder."network/lldap/admin_pass";
     };
 
     "authelia.yml".content = lib.generators.toYAML { } {
@@ -180,7 +176,6 @@
 
     restartTriggers = [
       config.sops.templates."authelia-env".path
-      config.sops.templates."authelia-labels".path
       config.sops.templates."authelia.yml".path
     ];
   };
