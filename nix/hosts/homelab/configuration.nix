@@ -13,6 +13,7 @@
     ../../services/management/default.nix
     ../../services/nas/default.nix
     ../../services/media/default.nix
+    ../../services/others/default.nix
   ];
 
   options.mySystem = {
