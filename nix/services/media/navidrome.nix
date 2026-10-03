@@ -16,6 +16,9 @@
       "${config.mySystem.serviceData}/navidrome:/data:rw"
       "${config.mySystem.poolMount}/music:/music:ro"
     ];
+    ports = [
+      "4533:4533"
+    ];
     environment = {
       ND_ENABLEUSEREDITING = "false";
       ND_EXTAUTH_TRUSTEDSOURCES = "0.0.0.0/0";

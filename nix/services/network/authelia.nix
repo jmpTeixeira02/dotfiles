@@ -25,6 +25,12 @@
       "network/lldap/admin_pass" = {
         sopsFile = ../secrets.yaml;
       };
+      "other/papra/oidcSecret" = {
+        sopsFile = ../secrets.yaml;
+      };
+      "media/droppedneedle/oidcSecret" = {
+        sopsFile = ../secrets.yaml;
+      };
     };
   };
 
@@ -141,6 +147,30 @@
           }
         ];
         clients = [
+          {
+            client_id = "droppedneedle";
+            client_name = "DroppedNeedle";
+            client_secret = "${config.sops.placeholder."media/droppedneedle/oidcSecret"}";
+            public = false;
+            authorization_policy = "one_factor";
+            redirect_uris = [
+              "https://droppedneedle.${config.domain}/api/v1/auth/oidc/callback"
+            ];
+            scopes = [
+              "openid"
+              "profile"
+              "email"
+            ];
+            response_types = [
+              "code"
+            ];
+            grant_types = [
+              "authorization_code"
+            ];
+            access_token_signed_response_alg = "none";
+            userinfo_signed_response_alg = "none";
+            token_endpoint_auth_method = "client_secret_post";
+          }
           {
             client_id = "papra";
             client_name = "Papra";
