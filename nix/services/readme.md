@@ -10,6 +10,13 @@ Seerr does not have any easy way of doing the initial setup via API/Config File,
 4. Add Radarr `Default Server: true, Server Name: Homelab, Hostname: radarr, API Key: <sops.media.radarr>, Quality: HD-1080p, Root: /storage, Min. Availability: Released, Enable Scan: true`
 5. Add Sonarr `Default Server: true, Server Name: Homelab, Hostname: sonarr, API Key: <sops.media.sonarr>, Quality: HD-1080p, Root: /storage, Enable Scan: true`
 
+# DroppedNeedle
+
+DroppedNeedle is pretty much automatically created, but each user needs to setup their own integrations
+
+- ListenBrainz
+- Spotify
+
 ## Cheat Sheet
 
 See OCI Container status `sudo systemctl list-units podman-* -all`

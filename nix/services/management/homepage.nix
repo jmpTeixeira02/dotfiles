@@ -57,6 +57,13 @@
               };
             }
             {
+              DroppedNeedle = {
+                icon = "droppedneedle";
+                href = "https://droppedneedle.${config.domain}";
+                description = "Music Request";
+              };
+            }
+            {
               Navidrome = {
                 icon = "navidrome";
                 href = "https://navidrome.${config.domain}";

@@ -31,6 +31,7 @@
     volumes = [
       "${config.mySystem.serviceData}/slskd:/app/data:rw,U"
       "${config.mySystem.poolMount}/downloads/slskd:/app/downloads:rw"
+      "${config.mySystem.poolMount}/music:/music:ro"
       "${config.sops.templates."slskd.yml".path}:/app/slskd.yml:rw,U"
     ];
     environmentFiles = [
@@ -54,6 +55,11 @@
         authentication = {
           disabled = true;
         };
+      };
+      shares = {
+        directories = [
+          "/music"
+        ];
       };
       soulseek = {
         username = config.sops.placeholder."media/slskd/user";
