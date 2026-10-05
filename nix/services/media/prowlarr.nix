@@ -42,20 +42,17 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/prowlarr 0755 1000 1000 -"
+    "d ${config.mySystem.serviceData}/prowlarr 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.prowlarr = {
     image = "lscr.io/linuxserver/prowlarr:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "${config.sops.templates."prowlarr-config.xml".path}:/config/config.xml:rw,U"
       "${config.mySystem.serviceData}/prowlarr:/config:rw,U"
     ];
-    environment = {
-      PUID = "1000";
-      PGID = "1000";
-    };
     ports = [
       "9696:9696"
     ];
@@ -67,25 +64,30 @@ in
   };
 
   sops.templates = {
-    "prowlarr-config.xml".content = ''
-      <Config>
-        <BindAddress>*</BindAddress>
-        <Port>9696</Port>
-        <SslPort>6969</SslPort>
-        <EnableSsl>False</EnableSsl>
-        <LaunchBrowser>True</LaunchBrowser>
-        <ApiKey>${config.sops.placeholder."media/prowlarr/apiKey"}</ApiKey>
-        <AuthenticationMethod>External</AuthenticationMethod>
-        <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
-        <Branch>master</Branch>
-        <LogLevel>debug</LogLevel>
-        <SslCertPath></SslCertPath>
-        <SslCertPassword></SslCertPassword>
-        <UrlBase></UrlBase>
-        <InstanceName>Prowlarr</InstanceName>
-        <UpdateMechanism>Docker</UpdateMechanism>
-      </Config>
-    '';
+    "prowlarr-config.xml" = {
+      owner = "homelab";
+      group = config.users.users.homelab.group;
+      mode = "0400";
+      content = ''
+        <Config>
+          <BindAddress>*</BindAddress>
+          <Port>9696</Port>
+          <SslPort>6969</SslPort>
+          <EnableSsl>False</EnableSsl>
+          <LaunchBrowser>True</LaunchBrowser>
+          <ApiKey>${config.sops.placeholder."media/prowlarr/apiKey"}</ApiKey>
+          <AuthenticationMethod>External</AuthenticationMethod>
+          <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
+          <Branch>master</Branch>
+          <LogLevel>debug</LogLevel>
+          <SslCertPath></SslCertPath>
+          <SslCertPassword></SslCertPassword>
+          <UrlBase></UrlBase>
+          <InstanceName>Prowlarr</InstanceName>
+          <UpdateMechanism>Docker</UpdateMechanism>
+        </Config>
+      '';
+    };
   };
 
   systemd.services."podman-prowlarr" = {

@@ -109,9 +109,13 @@
     time.timeZone = "Europe/Lisbon";
 
     programs.zsh.enable = true;
+
+    users.groups.homelab.gid = 1000;
     users.mutableUsers = false;
     users.users = {
       homelab = {
+        uid = 1000;
+        group = "homelab";
         isNormalUser = true;
         shell = pkgs.zsh;
         extraGroups = [

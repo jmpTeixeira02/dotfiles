@@ -15,24 +15,21 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/movies 0755 1000 1000 -"
-    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/radarr 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/movies 0755 homelab homelab -"
+    "d ${config.mySystem.poolMount}/downloads 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/radarr 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.radarr = {
     image = "ghcr.io/linuxserver/radarr:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "${config.sops.templates."radarr-config.xml".path}:/config/config.xml:rw"
-      "${config.mySystem.serviceData}/radarr:/config:rw,U"
+      "${config.mySystem.serviceData}/radarr:/config:rw"
       "${config.mySystem.poolMount}/movies:/storage:rw"
       "${config.mySystem.poolMount}/downloads:/downloads:rw"
     ];
-    environment = {
-      PUID = "1000";
-      PGID = "1000";
-    };
     ports = [
       "7878:7878"
     ];
@@ -44,25 +41,29 @@
   };
 
   sops.templates = {
-    "radarr-config.xml".content = ''
-      <Config>
-        <BindAddress>*</BindAddress>
-        <Port>7878</Port>
-        <EnableSsl>False</EnableSsl>
-        <LaunchBrowser>True</LaunchBrowser>
-        <ApiKey>${config.sops.placeholder."media/radarr/apiKey"}</ApiKey>
-        <AuthenticationMethod>External</AuthenticationMethod>
-        <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
-        <Branch>master</Branch>
-        <LogLevel>debug</LogLevel>
-        <SslCertPath></SslCertPath>
-        <SslCertPassword></SslCertPassword>
-        <UrlBase></UrlBase>
-        <InstanceName>radarr</InstanceName>
-        <UpdateMechanism>Docker</UpdateMechanism>
-      </Config>
-
-    '';
+    "radarr-config.xml" = {
+      owner = "homelab";
+      group = config.users.users.homelab.group;
+      mode = "0400";
+      content = ''
+        <Config>
+          <BindAddress>*</BindAddress>
+          <Port>7878</Port>
+          <EnableSsl>False</EnableSsl>
+          <LaunchBrowser>True</LaunchBrowser>
+          <ApiKey>${config.sops.placeholder."media/radarr/apiKey"}</ApiKey>
+          <AuthenticationMethod>External</AuthenticationMethod>
+          <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
+          <Branch>master</Branch>
+          <LogLevel>debug</LogLevel>
+          <SslCertPath></SslCertPath>
+          <SslCertPassword></SslCertPassword>
+          <UrlBase></UrlBase>
+          <InstanceName>radarr</InstanceName>
+          <UpdateMechanism>Docker</UpdateMechanism>
+        </Config>
+      '';
+    };
   };
 
   systemd.services."podman-radarr" = {
@@ -72,9 +73,6 @@
     path = with pkgs; [
       curl
       jq
-      coreutils
-      gnugrep
-      unzip
     ];
 
     postStart = ''

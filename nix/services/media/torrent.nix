@@ -6,13 +6,14 @@
 
 {
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/downloads/torrent 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/torrent 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/downloads/torrent 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/torrent 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.torrent = {
     image = "lscr.io/linuxserver/qbittorrent:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "${config.mySystem.serviceData}/torrent:/config:rw,U"
       "${config.sops.templates."torrent.conf".path}:/config/qBittorrent/qBittorrent.conf:rw,U"
@@ -22,8 +23,6 @@
       "6881:6881"
     ];
     environment = {
-      PUID = "1000";
-      PGID = "1000";
       WEBUI_PORT = "8086";
       TORRENTING_PORT = "6881";
     };

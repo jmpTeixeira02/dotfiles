@@ -24,10 +24,12 @@ in
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/movies 0755 1000 1000 -"
-    "d ${config.mySystem.poolMount}/tvseries 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/jellyfin/config 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/jellyfin/cache 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/movies 0755 homelab homelab -"
+    "d ${config.mySystem.poolMount}/tvseries 0755 homelab homelab -"
+
+    "d ${config.mySystem.serviceData}/jellyfin 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/jellyfin/config 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/jellyfin/cache 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.jellyfin = {

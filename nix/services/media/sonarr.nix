@@ -15,24 +15,21 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/tvseries 0755 1000 1000 -"
-    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/sonarr 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/tvseries 0755 homelab homelab -"
+    "d ${config.mySystem.poolMount}/downloads 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/sonarr 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.sonarr = {
     image = "ghcr.io/linuxserver/sonarr:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "${config.sops.templates."sonarr-config.xml".path}:/config/config.xml:rw"
       "${config.mySystem.serviceData}/sonarr:/config:rw,U"
       "${config.mySystem.poolMount}/tvseries:/storage:rw"
       "${config.mySystem.poolMount}/downloads:/downloads:rw"
     ];
-    environment = {
-      PUID = "1000";
-      PGID = "1000";
-    };
     ports = [
       "8989:8989"
     ];
@@ -45,24 +42,29 @@
   };
 
   sops.templates = {
-    "sonarr-config.xml".content = ''
-      <Config>
-        <BindAddress>*</BindAddress>
-        <Port>8989</Port>
-        <EnableSsl>False</EnableSsl>
-        <LaunchBrowser>True</LaunchBrowser>
-        <ApiKey>${config.sops.placeholder."media/sonarr/apiKey"}</ApiKey>
-        <AuthenticationMethod>External</AuthenticationMethod>
-        <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
-        <Branch>master</Branch>
-        <LogLevel>debug</LogLevel>
-        <SslCertPath></SslCertPath>
-        <SslCertPassword></SslCertPassword>
-        <UrlBase></UrlBase>
-        <InstanceName>sonarr</InstanceName>
-        <UpdateMechanism>Docker</UpdateMechanism>
-      </Config>
-    '';
+    "sonarr-config.xml" = {
+      owner = "homelab";
+      group = config.users.users.homelab.group;
+      mode = "0400";
+      content = ''
+        <Config>
+          <BindAddress>*</BindAddress>
+          <Port>8989</Port>
+          <EnableSsl>False</EnableSsl>
+          <LaunchBrowser>True</LaunchBrowser>
+          <ApiKey>${config.sops.placeholder."media/sonarr/apiKey"}</ApiKey>
+          <AuthenticationMethod>External</AuthenticationMethod>
+          <AuthenticationRequired>DisabledForLocalAddresses</AuthenticationRequired>
+          <Branch>master</Branch>
+          <LogLevel>debug</LogLevel>
+          <SslCertPath></SslCertPath>
+          <SslCertPassword></SslCertPassword>
+          <UrlBase></UrlBase>
+          <InstanceName>sonarr</InstanceName>
+          <UpdateMechanism>Docker</UpdateMechanism>
+        </Config>
+      '';
+    };
   };
 
   systemd.services."podman-sonarr" = {

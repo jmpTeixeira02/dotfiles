@@ -6,12 +6,13 @@
 
 {
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/homepage 0755 1000 1000 -"
+    "d ${config.mySystem.serviceData}/homepage 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.homepage = {
     image = "ghcr.io/gethomepage/homepage:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
       "${config.sops.templates."homepage-settings.yml".path}:/app/config/settings.yaml:rw"
@@ -33,8 +34,6 @@
   sops.templates = {
     "homepage-env".content = lib.generators.toKeyValue { } {
       HOMEPAGE_ALLOWED_HOSTS = "homepage.${config.domain}";
-      PUID = "1000";
-      PGID = "1000";
     };
 
     "homepage-services.yml" = {

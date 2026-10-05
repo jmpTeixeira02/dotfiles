@@ -23,10 +23,10 @@
   };
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.poolMount}/music 0755 1000 1000 -"
-    "d ${config.mySystem.poolMount}/downloads 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/droppedneedle/config 0755 1000 1000 -"
-    "d ${config.mySystem.serviceData}/droppedneedle/cache 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/music 0755 homelab homelab -"
+    "d ${config.mySystem.poolMount}/downloads 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/droppedneedle/config 0755 homelab homelab -"
+    "d ${config.mySystem.serviceData}/droppedneedle/cache 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.droppedneedle = {

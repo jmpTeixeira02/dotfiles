@@ -37,7 +37,7 @@ in
   );
 
   systemd.tmpfiles.rules = [
-    "d ${config.mySystem.serviceData}/lldap 0755 1000 1000 -"
+    "d ${config.mySystem.serviceData}/lldap 0755 homelab homelab -"
   ];
 
   virtualisation.oci-containers.containers.lldap = {
