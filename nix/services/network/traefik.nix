@@ -67,7 +67,6 @@
 
       api = {
         dashboard = true;
-        insecure = true;
       };
 
       entryPoints = {

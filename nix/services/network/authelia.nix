@@ -84,6 +84,12 @@
           level = "info";
         };
 
+        regulation = {
+          max_retries = 3;
+          find_time = "5m";
+          ban_time = "1h";
+        };
+
         identity_validation = {
           reset_password = {
             jwt_secret = config.sops.placeholder."network/authelia/jwt";
