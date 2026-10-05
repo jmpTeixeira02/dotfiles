@@ -32,9 +32,6 @@ in
       "media/prowlarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
-      "media/lidarr/apiKey" = {
-        sopsFile = ../secrets.yaml;
-      };
       "media/sonarr/apiKey" = {
         sopsFile = ../secrets.yaml;
       };
@@ -93,13 +90,11 @@ in
 
   systemd.services."podman-prowlarr" = {
     after = [
-      "podman-lidarr.service"
       "podman-sonarr.service"
       "podman-radarr.service"
       "podman-flaresolverr.service"
     ];
     requires = [
-      "podman-lidarr.service"
       "podman-sonarr.service"
       "podman-radarr.service"
       "podman-flaresolverr.service"
@@ -217,37 +212,11 @@ in
       done
 
       #### 3. Add Apps ######################
-      echo "Checking Prowlarr application sync for Lidarr, Sonarr, Radarr..."
+      echo "Checking Prowlarr application sync for Sonarr, Radarr..."
 
       APPLICATIONS_URL="http://localhost:9696/api/v1/applications"
       APPS=$(curl -sS -H "X-Api-Key: $API_KEY" "$APPLICATIONS_URL")
 
-      LIDARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Lidarr")] | length')
-        if [ "$LIDARR_EXISTS" -eq 0 ]; then
-            echo "Adding Lidarr to Prowlarr applications..."
-
-            LIDARR_API_KEY=$(cat ${config.sops.secrets."media/lidarr/apiKey".path})
-
-            LIDARR_PAYLOAD=$(jq -n --arg apiKey "$LIDARR_API_KEY" \
-            '{
-                name: "Lidarr",
-                syncLevel: "fullSync",
-                implementation: "Lidarr",
-                implementationName: "Lidarr",
-                configContract: "LidarrSettings",
-                fields: [
-                    { name: "prowlarrUrl", value: "http://prowlarr:9696" },
-                    { name: "baseUrl", value: "http://lidarr:8686" },
-                    { name: "apiKey", value: $apiKey }
-                ],
-                tags: []
-            }')
-
-            curl -sS -f -X POST "$APPLICATIONS_URL" \
-            -H "X-Api-Key: $API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "$LIDARR_PAYLOAD"
-        fi
       SONARR_EXISTS=$(echo "$APPS" | jq -r '[.[] | select(.name == "Sonarr")] | length')
         if [ "$SONARR_EXISTS" -eq 0 ]; then
             echo "Adding Sonarr to Prowlarr applications..."

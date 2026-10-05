@@ -123,13 +123,6 @@
                   };
                 }
                 {
-                  Lidarr = {
-                    icon = "lidarr";
-                    href = "https://lidarr.${config.domain}";
-                    description = "Music Management";
-                  };
-                }
-                {
                   Sonarr = {
                     icon = "sonarr";
                     href = "https://sonarr.${config.domain}";

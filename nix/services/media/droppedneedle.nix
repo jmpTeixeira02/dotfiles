@@ -32,6 +32,7 @@
   virtualisation.oci-containers.containers.droppedneedle = {
     image = "ghcr.io/droppedneedle/droppedneedle:latest";
     autoStart = true;
+    user = "1000:1000";
     volumes = [
       "${config.mySystem.serviceData}/droppedneedle/config:/app/config"
       "${config.mySystem.serviceData}/droppedneedle/cache:/app/cache"
@@ -73,11 +74,9 @@
       DROPPED_NEEDLE_URL="http://localhost:8688"
       PASS=$(cat ${config.sops.secrets."network/lldap/admin_pass".path})
 
-      echo "--- Waiting for service to be up ---"
-      until required=$(curl -s --max-time 2 "$DROPPED_NEEDLE_URL/api/v1/auth/setup/status" | jq -er '.required | select(type == "boolean")') ; do
+      until required=$(curl -sf --max-time 2 "$DROPPED_NEEDLE_URL/api/v1/auth/setup/status" | jq -er '.required | select(type == "boolean") | tostring'); do
         sleep 2
       done
-      echo "--- Service is up ---"
 
       if [ "$required" == "true" ]; then
         echo "--- Setup Admin User ---"

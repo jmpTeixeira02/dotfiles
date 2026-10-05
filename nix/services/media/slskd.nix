@@ -14,15 +14,13 @@
       "media/slskd/pass" = {
         sopsFile = ../secrets.yaml;
       };
-      "media/lidarr/apiKey" = {
-        sopsFile = ../secrets.yaml;
-      };
     };
   };
 
   systemd.tmpfiles.rules = [
     "d ${config.mySystem.serviceData}/slskd 0755 1000 1000 -"
     "d ${config.mySystem.poolMount}/downloads/slskd 0755 1000 1000 -"
+    "d ${config.mySystem.poolMount}/music 0755 1000 1000 -"
   ];
 
   virtualisation.oci-containers.containers.slskd = {
@@ -69,6 +67,8 @@
 
     "slskd-env".content = lib.generators.toKeyValue { } {
       SLSKD_REMOTE_CONFIGURATION = "false";
+      PUID = 1000;
+      PGID = 1000;
     };
   };
 
