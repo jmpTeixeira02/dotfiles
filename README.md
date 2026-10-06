@@ -1,46 +1,52 @@
 # Dotfiles
 
-Nix Home Manager-based dotfiles with per-machine profiles.
+Nix dotfiles with per-machine profiles. This contains both full NixOS configurations as well as dotfiles link
 
 ## Profiles
 
-| Profile | Platform       |
-| ------- | -------------- |
-| `home`  | x86_64-linux   |
-| `homelab`  | x86_64-linux   |
-| `work`  | aarch64-darwin |
+| Profile   | Platform       |
+| --------- | -------------- |
+| `home`    | x86_64-linux   |
+| `homelab` | x86_64-linux   |
+| `work`    | aarch64-darwin |
 
-## Nix Setup
+## Dots Tool
+
+This repo has a cli tool to manage the nix actions, such as install, reload, clean and update instead of relying on shell scripts or big commands. The tool needs to be executed on the root of this repo and get via curl on the release
+
+Run the binary with `-h` to get more information on each command and it's flags
+
+## Install
 
 ### NixOS Machine Deployment
+
 This setup supports both local and remote deployments. It assumes there is an internet connection, and will wipe all drives
 
 1. Run the NixOS Minimal ISO on the remote machine
 2. Set a temporary password `passwd`. This will be wiped on the install
-3. Execute `./setup.sh <machine> <ip>`
+3. Execute `./dots install nixos -k --user <user>`
 
 Note: If you dont have a private key for the host, you need to generate one and update `.sops.yaml` by adding it there and updating the secrets
 
+### Nix
 
-### Nix Install
-1. Execute `./setup.sh`
+1. Execute `./dots install nix`
 
-### OS Rebuilds
-Whenever there are changes on an OS level execute `sh reload_os.sh <profile>`
+## Reload System
 
-##  Homemanager Setup
-This step will install all the selected dependencies and sync it's configuration files through system links. Whenever there is a change in any of those the following command will propagate those changes
+### OS
 
-```sh
-# Apply profile
-sh reload_dotfiles.sh <profile>
-```
+1. Execute `./dots reload nix --target nix-os -u <user>`
+
+### Home-Manager
+
+1. Execute `./dots reload nix --target home-manager -u <user>`
 
 ### Post-Setup
 
 Create `$XDG_CONFIG_HOME/zsh/secrets.zsh` for env vars/secrets (API keys, tokens, etc). This file is sourced by zsh but not tracked in git.
 
-
 ## Notes
+
 - Nix also supports remote reloads through the `--target-host <host>` that was used on the install. However the reload scripts do not have it by default
 - On NixOS Zsh is set as default shell. For other OSs ZSH needs to be set as default `sudo chsh -s "$(which zsh)"`
