@@ -16,6 +16,8 @@ This repo has a cli tool to manage the nix actions, such as install, reload, cle
 
 Run the binary with `-h` to get more information on each command and it's flags
 
+To download via curl `curl -L -O https://github.com/jmpTeixeira02/dotfiles/releases/download/<version>/<arch>`
+
 ## Install
 
 ### NixOS Machine Deployment

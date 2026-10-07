@@ -1,0 +1,113 @@
+name: Release Dots
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (e.g., v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build ${{ matrix.asset }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            asset: dots-linux-x86_64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            asset: dots-macos-aarch64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Install musl tools
+        if: contains(matrix.target, 'musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: Cache Cargo dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "tools/dots -> target"
+          key: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --locked --target ${{ matrix.target }} --manifest-path tools/dots/Cargo.toml
+
+      - name: Prepare binary
+        run: |
+          cp tools/dots/target/${{ matrix.target }}/release/dots ${{ matrix.asset }}
+          shasum -a 256 ${{ matrix.asset }} > ${{ matrix.asset }}.sha256
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: |
+            ${{ matrix.asset }}
+            ${{ matrix.asset }}.sha256
+
+  release:
+    name: Create release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate release notes
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Find the previous release tag for this tool 
+          PREFIX="${VERSION%%v*}v"
+          PREV_TAG=$(git tag --list "${PREFIX}*" --sort=-v:refname | grep -vx "$VERSION" | head -n1 || true)
+
+          if [ -n "$PREV_TAG" ]; then
+            RANGE="${PREV_TAG}..${GITHUB_SHA}"
+          else
+            RANGE="${GITHUB_SHA}"
+          fi
+
+          {
+            echo "## Changes"
+            echo
+            COMMITS=$(git log "$RANGE" --no-merges --pretty=format:"- %s (%h)" -- tools/dots)
+            if [ -n "$COMMITS" ]; then
+              echo "$COMMITS"
+            else
+              echo "No changes to the CLI tool in this release."
+            fi
+            if [ -n "$PREV_TAG" ]; then
+              echo
+              echo "**Full diff:** https://github.com/${GITHUB_REPOSITORY}/compare/${PREV_TAG}...${VERSION}"
+            fi
+          } > release-notes.md
+
+          cat release-notes.md
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          target_commitish: ${{ github.sha }}
+          name: "Dots ${{ inputs.version }}"
+          body_path: release-notes.md
+          files: artifacts/*
