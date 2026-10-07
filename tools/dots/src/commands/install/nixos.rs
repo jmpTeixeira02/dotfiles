@@ -1,32 +1,8 @@
 use std::{fs, io::Write, process::Command};
 
-use clap::Args;
+use super::InstallArgs;
 
-use crate::Users;
-
-#[derive(Args, Debug)]
-pub struct NixosArgs {
-    /// Nix User
-    user: Users,
-
-    /// Host instalation
-    #[arg(default_value = "localhost")]
-    host: String,
-
-    /// Format disks according to disko setup
-    #[arg(short, long)]
-    format_disks: bool,
-
-    /// Add Age Key
-    #[arg(short, long)]
-    key: bool,
-
-    /// Directory of the flake
-    #[arg(long, default_value = "./nix")]
-    flake_dir: String,
-}
-
-pub fn command(args: NixosArgs) -> Command {
+pub fn command(args: InstallArgs) -> Command {
     let mut phases = Vec::new();
     if args.host != "localhost" {
         phases.push("kexec");
@@ -36,10 +12,11 @@ pub fn command(args: NixosArgs) -> Command {
     }
     phases.extend(["install", "reboot"]);
 
-    let flake = format!("{}#{}", args.flake_dir, args.user);
+    let flake = format!("{}#{}", args.flake_dir(), args.user);
     let hardware_config = format!(
-        "{}/hosts/{}/hardware-configuration.nix",
-        args.flake_dir, args.user
+        "{}/modules/hosts/_{}/hardware-configuration.nix",
+        args.flake_dir(),
+        args.user
     );
 
     let mut cmd = Command::new("nix");
@@ -95,9 +72,10 @@ pub fn command(args: NixosArgs) -> Command {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Users;
 
-    fn args(host: &str, format_disks: bool, flake_dir: &str) -> NixosArgs {
-        NixosArgs {
+    fn args(host: &str, format_disks: bool, flake_dir: &str) -> InstallArgs {
+        InstallArgs {
             user: Users::Home,
             host: host.to_string(),
             format_disks,
@@ -127,7 +105,7 @@ mod tests {
             "--generate-hardware-config".to_string(),
             "nixos-generate-config".to_string(),
             format!(
-                "{flake_dir}/hosts/{}/hardware-configuration.nix",
+                "{flake_dir}/modules/hosts/_{}/hardware-configuration.nix",
                 Users::Home
             ),
             "--target-host".to_string(),

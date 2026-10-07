@@ -1,65 +1,64 @@
-use std::{env, process::Command};
+use std::{path::Path, process::Command};
 
-use clap::{Args, ValueEnum};
+use clap::Args;
 
-use crate::Users;
-
-#[derive(ValueEnum, Clone, Debug)]
-pub enum ReloadTarget {
-    NixOS,
-    HomeManager,
-}
+use crate::{Target, Users};
 
 #[derive(Args, Debug)]
 pub struct ReloadArgs {
     /// Nix User
     #[arg(short, long)]
-    pub target: ReloadTarget,
-
-    /// Nix User
-    #[arg(short, long)]
     user: Users,
 
     /// Directory of the flake
-    #[arg(long, default_value = "./nix")]
+    #[arg(long, env = "FLAKE", default_value = "$HOME/dotfiles/nix")]
     flake_dir: String,
 }
 
-pub fn command(args: ReloadArgs) -> Command {
-    let flake = format!("{}#{}", args.flake_dir, args.user);
+impl ReloadArgs {
+    pub fn flake_dir(&self) -> String {
+        shellexpand::full(&self.flake_dir)
+            .unwrap_or_else(|_| self.flake_dir.as_str().into())
+            .to_string()
+    }
 
-    let cmd = match args.target {
-        ReloadTarget::NixOS => {
+    pub fn dotfiles_dir(&self) -> String {
+        let expanded = self.flake_dir();
+        let clean = expanded.trim_end_matches('/');
+
+        Path::new(clean)
+            .parent()
+            .and_then(|p| p.to_str())
+            .filter(|s| !s.is_empty())
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| ".".to_string())
+    }
+}
+
+pub fn command(args: ReloadArgs) -> Command {
+    let flake = format!("{}#{}", args.flake_dir(), args.user);
+
+    let mut cmd = match args.user.target() {
+        Target::Nixos => {
             let mut cmd = Command::new("sudo");
-            cmd.args(["nixos-rebuild", "switch", "--flake", &flake]);
+            cmd.args(["nixos-rebuild", "switch", "--flake", &flake, "--impure"]);
             cmd
         }
-        ReloadTarget::HomeManager => {
+        Target::HomeManager => {
             let mut cmd = Command::new("nix");
-            cmd.env("NIX_USER", args.user.to_string())
-                .env(
-                    "FLAKE_USER",
-                    env::var("USER").expect("User environment variable is not set"),
-                )
-                .env(
-                    "FLAKE_HOME",
-                    env::var("HOME").expect("Home environment variable is not set"),
-                )
-                .env("NIXPKGS_ALLOW_BROKEN", "1")
-                .env("NIXPKGS_ALLOW_UNFREE", "1")
-                .args([
-                    "run",
-                    "home-manager",
-                    "--",
-                    "switch",
-                    "--flake",
-                    &flake,
-                    "--impure",
-                ]);
-
+            cmd.args([
+                "run",
+                "home-manager",
+                "--",
+                "switch",
+                "--flake",
+                &flake,
+                "--impure",
+            ]);
             cmd
         }
     };
+    cmd.env("FLAKE_DOTFILES", args.dotfiles_dir());
     cmd
 }
 
@@ -67,30 +66,35 @@ pub fn command(args: ReloadArgs) -> Command {
 mod tests {
     use super::*;
 
-    fn args(target: ReloadTarget, flake_dir: &str) -> ReloadArgs {
+    fn args(user: Users, flake_dir: &str) -> ReloadArgs {
         ReloadArgs {
-            target,
-            user: Users::Home,
+            user,
             flake_dir: flake_dir.to_string(),
         }
     }
 
     #[test]
-    fn nixos_target_runs_nixos_rebuild() {
-        let cmd = command(args(ReloadTarget::NixOS, "./nix"));
+    fn nixos_user_runs_nixos_rebuild() {
+        let cmd = command(args(Users::Home, "./nix"));
         let flake = format!("./nix#{}", Users::Home);
 
         assert_eq!(cmd.get_program(), "sudo");
         assert_eq!(
             cmd.get_args().collect::<Vec<_>>(),
-            ["nixos-rebuild", "switch", "--flake", flake.as_str()]
+            [
+                "nixos-rebuild",
+                "switch",
+                "--flake",
+                flake.as_str(),
+                "--impure"
+            ]
         );
     }
 
     #[test]
-    fn home_manager_target_runs_home_manager_switch() {
-        let cmd = command(args(ReloadTarget::HomeManager, "./nix"));
-        let flake = format!("./nix#{}", Users::Home);
+    fn home_manager_user_runs_home_manager_switch() {
+        let cmd = command(args(Users::Work, "./nix"));
+        let flake = format!("./nix#{}", Users::Work);
 
         assert_eq!(cmd.get_program(), "nix");
         assert_eq!(
@@ -102,19 +106,25 @@ mod tests {
                 "switch",
                 "--flake",
                 flake.as_str(),
-                "--impure",
+                "--impure"
             ]
         );
     }
 
     #[test]
     fn flake_dir_changes_flake_path() {
-        let cmd = command(args(ReloadTarget::NixOS, "/etc/flake"));
+        let cmd = command(args(Users::Home, "/etc/flake"));
         let flake = format!("/etc/flake#{}", Users::Home);
 
         assert_eq!(
             cmd.get_args().collect::<Vec<_>>(),
-            ["nixos-rebuild", "switch", "--flake", flake.as_str()]
+            [
+                "nixos-rebuild",
+                "switch",
+                "--flake",
+                flake.as_str(),
+                "--impure"
+            ]
         );
     }
 }

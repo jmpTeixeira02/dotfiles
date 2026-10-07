@@ -16,9 +16,11 @@ This repo has a cli tool to manage the nix actions, such as install, reload, cle
 
 Run the binary with `-h` to get more information on each command and it's flags
 
-To download via curl `curl -L -O https://github.com/jmpTeixeira02/dotfiles/releases/download/<version>/<arch>`
+To download via curl `https://github.com/jmpTeixeira02/dotfiles/releases/latest/download/dots-<arch>`
 
 ## Install
+
+The command picks the right installer from the host: NixOS hosts (`home`, `homelab`) deploy via `nixos-anywhere`, Home Manager hosts (`wsl`, `work`) run the Determinate Nix installer. The `--host`, `--format-disks` and `--key` flags only take effect on NixOS hosts.
 
 ### NixOS Machine Deployment
 
@@ -26,23 +28,17 @@ This setup supports both local and remote deployments. It assumes there is an in
 
 1. Run the NixOS Minimal ISO on the remote machine
 2. Set a password `passwd`
-3. Execute `./dots install nixos -k --user <user>`
+3. Execute `./dots install <host> -k`
 
 Note: If you dont have a private key for the host, you need to generate one and update `.sops.yaml` by adding it there and updating the secrets
 
 ### Nix
 
-1. Execute `./dots install nix`
+1. Execute `./dots install <host>`
 
 ## Reload System
 
-### OS
-
-1. Execute `./dots reload nix --target nix-os -u <user>`
-
-### Home-Manager
-
-1. Execute `./dots reload nix --target home-manager -u <user>`
+1. Execute `./dots reload -u <host>`
 
 ### Post-Setup
 

@@ -3,11 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:denful/import-tree";
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,96 +27,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
   outputs =
-    {
-      nixpkgs,
-      home-manager,
-      disko,
-      sops-nix,
-      ...
-    }:
-    let
-      dotfilesRoot = builtins.getEnv "FLAKE_DOTFILES";
-      mkConfigPath =
-        homeDirectory:
-        if dotfilesRoot != "" then "${dotfilesRoot}/config" else "${homeDirectory}/dotfiles/config";
-
-      pathsModule = { config, ... }: {
-        options.paths.configPath = nixpkgs.lib.mkOption {
-          type = nixpkgs.lib.types.str;
-          default = mkConfigPath config.home.homeDirectory;
-        };
-      };
-
-      baseModules = [
-        pathsModule
-        ./core.nix
-        ./lib/utils.nix
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        inputs.flake-parts.flakeModules.modules
+        inputs.home-manager.flakeModules.home-manager
+        (inputs.import-tree ./modules)
       ];
-
-    in
-    {
-      homeConfigurations = {
-        home = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = baseModules ++ [
-            ./module/tmux.nix
-            ./module/ai.nix
-            ./module/programming.nix
-            {
-              opencodeProfile = "home";
-            }
-          ];
-        };
-        wsl = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = baseModules ++ [
-            ./module/tmux.nix
-            ./module/ai.nix
-            ./module/programming.nix
-            {
-              opencodeProfile = "home";
-            }
-          ];
-        };
-        homelab = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          modules = baseModules ++ [
-            ./module/programming.nix
-          ];
-        };
-        work = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          modules = baseModules ++ [
-            ./module/colima.nix
-            ./module/tmux.nix
-            ./module/ai.nix
-            ./module/programming.nix
-            {
-              opencodeProfile = "work";
-            }
-          ];
-        };
-      };
-
-      nixosConfigurations = {
-        home = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            disko.nixosModules.disko
-            ./hosts/home/disks/disko.nix
-            ./hosts/home/configuration.nix
-          ];
-        };
-        homelab = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            disko.nixosModules.disko
-            sops-nix.nixosModules.sops
-            ./hosts/homelab/disks/disko.nix
-            ./hosts/homelab/configuration.nix
-          ];
-        };
-      };
+      systems = [
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
     };
 }

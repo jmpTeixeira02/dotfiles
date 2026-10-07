@@ -30,14 +30,30 @@ enum Action {
 #[derive(ValueEnum, Clone, Debug)]
 pub enum Users {
     Home,
+    WSL,
     Homelab,
     Work,
+}
+
+pub enum Target {
+    Nixos,
+    HomeManager,
+}
+
+impl Users {
+    pub fn target(&self) -> Target {
+        match self {
+            Users::Home | Users::Homelab => Target::Nixos,
+            Users::WSL | Users::Work => Target::HomeManager,
+        }
+    }
 }
 
 impl fmt::Display for Users {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Users::Home => write!(f, "home"),
+            Users::WSL => write!(f, "wsl"),
             Users::Homelab => write!(f, "homelab"),
             Users::Work => write!(f, "work"),
         }

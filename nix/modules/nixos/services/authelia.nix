@@ -1,0 +1,225 @@
+{
+  flake.modules.nixos.containers =
+    {
+      config,
+      lib,
+      ...
+    }:
+
+    {
+      sops = {
+        secrets = {
+          "network/authelia/jwt" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "network/authelia/session" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "network/authelia/storage_key" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "network/authelia/oidc/hmac_secret" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "network/authelia/oidc/key" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "network/lldap/admin_pass" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "other/papra/oidcSecret" = {
+            sopsFile = ./secrets.yaml;
+          };
+          "media/droppedneedle/oidcSecret" = {
+            sopsFile = ./secrets.yaml;
+          };
+        };
+      };
+
+      systemd.tmpfiles.rules = [
+        "d ${config.mySystem.serviceData}/authelia 0755 homelab homelab -"
+      ];
+
+      virtualisation.oci-containers.containers.authelia = {
+        image = "ghcr.io/authelia/authelia:4.39.28";
+        autoStart = true;
+        user = "1000:1000";
+        volumes = [
+          "${config.mySystem.serviceData}/authelia:/config:rw"
+          "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw"
+        ];
+        environmentFiles = [
+          config.sops.templates."authelia-env".path
+        ];
+        labels = {
+          "traefik.enable" = "true";
+          "traefik.http.routers.authelia.entryPoints" = "websecure";
+          "traefik.http.routers.authelia.rule" = "Host(`auth.${config.domain}`)";
+
+          "traefik.http.middlewares.authelia.forwardAuth.address" =
+            "http://authelia:9091/api/authz/forward-auth";
+          "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader" = "true";
+          "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders" =
+            "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+        };
+      };
+
+      sops.templates = {
+        "authelia-env".content = lib.generators.toKeyValue { } {
+          AUTHELIA_SESSION_SECRET = config.sops.placeholder."network/authelia/session";
+          AUTHELIA_STORAGE_ENCRYPTION_KEY = config.sops.placeholder."network/authelia/storage_key";
+          AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD = config.sops.placeholder."network/lldap/admin_pass";
+        };
+
+        "authelia.yml" = {
+          owner = "homelab";
+          group = config.users.users.homelab.group;
+          mode = "0400";
+          content = lib.generators.toYAML { } {
+            theme = "dark";
+
+            server = {
+              address = "tcp://0.0.0.0:9091";
+            };
+
+            log = {
+              level = "info";
+            };
+
+            regulation = {
+              max_retries = 3;
+              find_time = "5m";
+              ban_time = "1h";
+            };
+
+            identity_validation = {
+              reset_password = {
+                jwt_secret = config.sops.placeholder."network/authelia/jwt";
+              };
+            };
+
+            authentication_backend = {
+              ldap = {
+                implementation = "lldap";
+                address = "ldap://lldap:3890";
+                base_dn = config.sops.placeholder."network/lldap/domain";
+                user = "uid=admin,ou=people,${config.sops.placeholder."network/lldap/domain"}";
+                password = "$AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD";
+              };
+            };
+
+            session = {
+              cookies = [
+                {
+                  domain = config.domain;
+                  authelia_url = "https://auth.${config.domain}";
+                  default_redirection_url = "https://homepage.${config.domain}";
+                  expiration = "1h";
+                  inactivity = "5m";
+                }
+              ];
+            };
+
+            storage = {
+              local = {
+                path = "/config/db.sqlite3";
+              };
+            };
+
+            notifier = {
+              filesystem = {
+                filename = "/config/notifications.txt";
+              };
+            };
+
+            access_control = {
+              default_policy = "deny";
+              rules = [
+                {
+                  domain = "jellyfin.${config.domain}";
+                  policy = "bypass";
+                }
+                {
+                  domain = "auth.${config.domain}";
+                  policy = "bypass";
+                }
+                {
+                  domain = "*.${config.domain}";
+                  policy = "one_factor";
+                }
+              ];
+            };
+
+            identity_providers.oidc = {
+              hmac_secret = config.sops.placeholder."network/authelia/oidc/hmac_secret";
+              jwks = [
+                {
+                  key = config.sops.placeholder."network/authelia/oidc/key";
+                }
+              ];
+              clients = [
+                {
+                  client_id = "droppedneedle";
+                  client_name = "DroppedNeedle";
+                  client_secret = "${config.sops.placeholder."media/droppedneedle/oidcSecret"}";
+                  public = false;
+                  authorization_policy = "one_factor";
+                  redirect_uris = [
+                    "https://droppedneedle.${config.domain}/api/v1/auth/oidc/callback"
+                  ];
+                  scopes = [
+                    "openid"
+                    "profile"
+                    "email"
+                  ];
+                  response_types = [
+                    "code"
+                  ];
+                  grant_types = [
+                    "authorization_code"
+                  ];
+                  access_token_signed_response_alg = "none";
+                  userinfo_signed_response_alg = "none";
+                  token_endpoint_auth_method = "client_secret_post";
+                }
+                {
+                  client_id = "papra";
+                  client_name = "Papra";
+                  client_secret = "${config.sops.placeholder."other/papra/oidcSecret"}";
+                  public = false;
+                  authorization_policy = "one_factor";
+                  redirect_uris = [
+                    "https://papra.${config.domain}/api/auth/oauth2/callback/authelia"
+                  ];
+                  scopes = [
+                    "openid"
+                    "profile"
+                    "email"
+                  ];
+                  response_types = [
+                    "code"
+                  ];
+                  grant_types = [
+                    "authorization_code"
+                  ];
+                  access_token_signed_response_alg = "none";
+                  userinfo_signed_response_alg = "none";
+                  token_endpoint_auth_method = "client_secret_post";
+                }
+              ];
+            };
+          };
+        };
+      };
+
+      systemd.services."podman-authelia" = {
+        after = [ "podman-lldap.service" ];
+        requires = [ "podman-lldap.service" ];
+
+        restartTriggers = [
+          config.sops.templates."authelia-env".path
+          config.sops.templates."authelia.yml".path
+        ];
+      };
+    };
+}

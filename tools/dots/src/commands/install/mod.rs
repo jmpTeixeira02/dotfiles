@@ -1,27 +1,44 @@
 pub mod nix;
 pub mod nixos;
 
-use clap::{Args, Subcommand};
+use clap::Args;
 use std::process::Command;
+
+use crate::{Target, Users};
 
 #[derive(Args, Debug)]
 pub struct InstallArgs {
-    #[command(subcommand)]
-    command: InstallCommand,
+    /// Nix User
+    pub user: Users,
+
+    /// Host installation target (only takes effect on NixOS hosts)
+    #[arg(long, default_value = "localhost")]
+    pub host: String,
+
+    /// Format disks according to disko setup (only takes effect on NixOS hosts)
+    #[arg(short, long)]
+    pub format_disks: bool,
+
+    /// Add Age Key (only takes effect on NixOS hosts)
+    #[arg(short, long)]
+    pub key: bool,
+
+    /// Directory of the flake
+    #[arg(long, env = "FLAKE", default_value = "$HOME/dotfiles/nix")]
+    pub flake_dir: String,
 }
 
-#[derive(Subcommand, Debug)]
-enum InstallCommand {
-    /// Install NixOS
-    Nixos(nixos::NixosArgs),
-    /// Install Nix
-    Nix,
+impl InstallArgs {
+    pub fn flake_dir(&self) -> String {
+        shellexpand::full(&self.flake_dir)
+            .unwrap_or_else(|_| self.flake_dir.as_str().into())
+            .to_string()
+    }
 }
 
 pub fn command(args: InstallArgs) -> Command {
-    let cmd = match args.command {
-        InstallCommand::Nix => nix::command(),
-        InstallCommand::Nixos(args) => nixos::command(args),
-    };
-    cmd
+    match args.user.target() {
+        Target::Nixos => nixos::command(args),
+        Target::HomeManager => nix::command(),
+    }
 }

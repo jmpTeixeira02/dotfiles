@@ -1,2 +1,3 @@
-dots-linux-x86_64
-dots-macos-aarch64
+dots*
+!/tools/
+!/tools/**

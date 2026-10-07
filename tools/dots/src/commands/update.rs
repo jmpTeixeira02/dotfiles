@@ -4,7 +4,7 @@ use std::process::Command;
 #[derive(Args, Debug)]
 pub struct UpdateArgs {
     /// Directory of the flake
-    #[arg(long, default_value = "./nix")]
+    #[arg(long, env = "FLAKE", default_value = "./nix")]
     flake_dir: String,
 }
 
