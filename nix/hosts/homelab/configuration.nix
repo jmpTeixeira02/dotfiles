@@ -7,6 +7,7 @@
 
 {
   imports = [
+    ./hardware-configuration.nix
     ./disks/disko.nix
     ./disks/pool.nix
     ../../services/network/default.nix

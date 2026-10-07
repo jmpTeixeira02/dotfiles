@@ -1,6 +1,5 @@
 {
   config,
-
   pkgs,
   lib,
   linkConfig,
@@ -11,15 +10,10 @@ let
   isMacOS = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
-  imports = [ ./module/nvim.nix ];
-
-  options = {
-    terminal = lib.mkOption {
-      type = lib.types.enum [ "ghostty" ];
-      default = "ghostty";
-      description = "Terminal emulator";
-    };
-  };
+  imports = [
+    ./module/nvim.nix
+    ./module/ghostty.nix
+  ];
 
   config = {
     xdg.enable = true;
@@ -73,9 +67,6 @@ in
         source = linkConfig "zsh/macos.zsh";
       };
       "starship".source = linkConfig "starship";
-      "ghostty" = lib.mkIf (config.terminal == "ghostty") {
-        source = linkConfig "ghostty";
-      };
       "lazygit".source = linkConfig "lazygit";
       "git".source = linkConfig "git";
     };

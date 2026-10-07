@@ -25,7 +25,7 @@ To download via curl `curl -L -O https://github.com/jmpTeixeira02/dotfiles/relea
 This setup supports both local and remote deployments. It assumes there is an internet connection, and will wipe all drives
 
 1. Run the NixOS Minimal ISO on the remote machine
-2. Set a temporary password `passwd`. This will be wiped on the install
+2. Set a password `passwd`
 3. Execute `./dots install nixos -k --user <user>`
 
 Note: If you dont have a private key for the host, you need to generate one and update `.sops.yaml` by adding it there and updating the secrets

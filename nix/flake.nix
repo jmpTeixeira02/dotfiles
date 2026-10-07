@@ -12,6 +12,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,6 +65,17 @@
             }
           ];
         };
+        wsl = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          modules = baseModules ++ [
+            ./module/tmux.nix
+            ./module/ai.nix
+            ./module/programming.nix
+            {
+              opencodeProfile = "home";
+            }
+          ];
+        };
         homelab = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.x86_64-linux;
           modules = baseModules ++ [
@@ -79,6 +97,14 @@
       };
 
       nixosConfigurations = {
+        home = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            disko.nixosModules.disko
+            ./hosts/home/disks/disko.nix
+            ./hosts/home/configuration.nix
+          ];
+        };
         homelab = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
@@ -86,7 +112,6 @@
             sops-nix.nixosModules.sops
             ./hosts/homelab/disks/disko.nix
             ./hosts/homelab/configuration.nix
-            ./hosts/homelab/hardware-configuration.nix
           ];
         };
       };
