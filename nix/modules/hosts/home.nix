@@ -22,7 +22,6 @@ in
           users.joao = {
             imports = [
               hm.default
-              hm.tmux
               hm.ai
               hm.programming
               hm.desktop

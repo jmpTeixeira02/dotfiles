@@ -19,7 +19,6 @@ in
     modules = [
       hm.default
       hm.colima
-      hm.tmux
       hm.ai
       hm.programming
       {

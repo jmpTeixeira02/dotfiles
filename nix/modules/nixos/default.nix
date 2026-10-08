@@ -15,5 +15,10 @@
     fonts.packages = with pkgs; [
       nerd-fonts.hack
     ];
+
+    programs.zsh = {
+      enable = true;
+      enableGlobalCompInit = false; # let zsh-autocomplete run the first compinit
+    };
   };
 }

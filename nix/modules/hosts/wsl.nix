@@ -18,7 +18,6 @@ in
     extraSpecialArgs = { inherit inputs; };
     modules = [
       hm.default
-      hm.tmux
       hm.ai
       hm.programming
       {

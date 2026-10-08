@@ -17,7 +17,6 @@
           gnumake
           bison
 
-          antigen
           starship
           zoxide
           eza
@@ -28,6 +27,11 @@
           ripgrep
           btop
           unzip
+
+          # Here just for the zsh plugins
+          git
+          tmux
+          kubectl
         ]
         ++ lib.optionals (!isMacOS) [
           gcc
@@ -38,7 +42,6 @@
       xdg.configFile = {
         # ZSH
         "zsh/aliases.zsh".source = linkConfig "zsh/aliases.zsh";
-        "zsh/plugins.zsh".source = linkConfig "zsh/plugins.zsh";
         "zsh/fzf.zsh".source = linkConfig "zsh/fzf.zsh";
         "zsh/macos.zsh" = lib.mkIf isMacOS {
           source = linkConfig "zsh/macos.zsh";
@@ -48,9 +51,40 @@
 
       programs = {
         zsh = {
-          enable = true;
           sessionVariables = config.home.sessionVariables;
+
+          enable = true;
+          enableCompletion = false;
+          syntaxHighlighting.enable = true;
+
+          oh-my-zsh = {
+            enable = true;
+            plugins = [
+              "git"
+              "eza"
+              "tmux"
+              "kubectl"
+            ];
+          };
+
+          plugins = [
+            {
+              name = "zsh-autocomplete";
+              src = pkgs.zsh-autocomplete;
+              file = "share/zsh-autocomplete/zsh-autocomplete.plugin.zsh";
+            }
+          ];
+
           initContent = ''
+            ZSH_TMUX_DEFAULT_SESSION_NAME="master"
+            ZSH_TMUX_UNICODE=true
+
+            if [[ -n "$SSH_CONNECTION" ]]; then
+                ZSH_TMUX_AUTOSTART=false
+            else
+                ZSH_TMUX_AUTOSTART=true
+            fi
+
             export FLAKE="${config.paths.dotfiles}/nix"
             export FLAKE_DOTFILES="${config.paths.dotfiles}"
             source ${config.paths.dotfiles}/config/zsh/zshrc

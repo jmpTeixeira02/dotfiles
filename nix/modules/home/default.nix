@@ -8,6 +8,7 @@
       config.flake.modules.homeManager.git
       config.flake.modules.homeManager.nvim
       config.flake.modules.homeManager.shell
+      config.flake.modules.homeManager.tmux
     ];
 
     programs.home-manager.enable = true;

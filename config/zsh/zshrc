@@ -20,14 +20,9 @@ export PATH=$PATH:$HOME/.opencode/bin
 # Add this to path for installs from binary
 export PATH=$PATH:$HOME/.local/bin
 
-# Source plugins first as it might override other commands
-[ -f $XDG_CONFIG_HOME/zsh/plugins.zsh ] && source $XDG_CONFIG_HOME/zsh/plugins.zsh
-
 for f in $XDG_CONFIG_HOME/zsh/*.zsh; do
-  [[ "$f" == *"plugins.zsh" ]] && continue
   source "$f"
 done
-
 
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
