@@ -28,7 +28,7 @@ jobs:
             target: aarch64-apple-darwin
             asset: dots-macos-aarch64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Rust target
         run: rustup target add ${{ matrix.target }}
@@ -51,7 +51,7 @@ jobs:
           cp tools/dots/target/${{ matrix.target }}/release/dots ${{ matrix.asset }}
           shasum -a 256 ${{ matrix.asset }} > ${{ matrix.asset }}.sha256
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.asset }}
           path: |
@@ -63,7 +63,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
