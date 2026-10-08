@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.modules.nixos.default = {
+  flake.modules.nixos.default = { pkgs, ... }: {
     imports = [
       inputs.disko.nixosModules.disko
       inputs.sops-nix.nixosModules.sops
@@ -11,5 +11,9 @@
       allowUnfree = true;
       allowBroken = true;
     };
+
+    fonts.packages = with pkgs; [
+      nerd-fonts.hack
+    ];
   };
 }
