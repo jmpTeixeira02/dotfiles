@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "cargo"
+    directory: "/tools/dots"
+    schedule:
+      interval: "weekly"
+    groups:
+      rust-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "nix"
+    directory: "/nix"
+    schedule:
+      interval: "weekly"
+    groups:
+      nix-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
