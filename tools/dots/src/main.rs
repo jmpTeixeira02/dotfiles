@@ -1,7 +1,7 @@
 mod commands;
 use clap::{Parser, Subcommand, ValueEnum};
 use commands::clean;
-use std::{error::Error, fmt, process::Command};
+use std::{error::Error, fmt, os::unix::process::ExitStatusExt, process::Command};
 
 use crate::commands::{install, reload, update};
 
@@ -76,10 +76,15 @@ fn main() {
 }
 
 pub fn run(mut cmd: Command) -> Result<(), Box<dyn Error>> {
+    ctrlc::set_handler(|| {}).expect("failed to set signal handler");
+
     let name = cmd.get_program().to_string_lossy().into_owned();
     let status = cmd
         .status()
         .map_err(|e| format!("failed to run {name}: {e}"))?;
+    if let Some(sig) = status.signal() {
+        std::process::exit(128 + sig);
+    }
     if !status.success() {
         return Err(format!("{name} failed ({status})").into());
     }

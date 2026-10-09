@@ -9,6 +9,7 @@ use crate::{Target, Users};
 #[derive(Args, Debug)]
 pub struct InstallArgs {
     /// Nix User
+    #[arg(short, long)]
     pub user: Users,
 
     /// Host installation target (only takes effect on NixOS hosts)
