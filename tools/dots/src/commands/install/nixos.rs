@@ -3,31 +3,49 @@ use std::{fs, io::Write, process::Command};
 use super::InstallArgs;
 
 pub fn command(args: InstallArgs) -> Command {
-    let mut phases = Vec::new();
-    if args.host != "localhost" {
-        phases.push("kexec");
+    if args.host == "localhost" {
+        local_command(&args)
+    } else {
+        remote_command(&args)
     }
+}
+
+fn local_command(args: &InstallArgs) -> Command {
+    let flake = args.flake();
+
+    let mut steps = vec![format!(
+        "nixos-generate-config --no-filesystems --show-hardware-config > {}",
+        args.hardware_config()
+    )];
+    if args.format_disks {
+        steps.push(format!(
+            "nix --extra-experimental-features 'nix-command flakes' \
+             run github:nix-community/disko -- --mode destroy,format,mount --flake {flake}"
+        ));
+    }
+    steps.push(format!("nixos-install --flake {flake}"));
+
+    let mut cmd = Command::new("sh");
+    cmd.args(["-c", &steps.join(" && ")]);
+    cmd
+}
+
+fn remote_command(args: &InstallArgs) -> Command {
+    let mut phases = vec!["kexec"];
     if args.format_disks {
         phases.push("disko");
     }
     phases.extend(["install", "reboot"]);
 
-    let flake = format!("{}#{}", args.flake_dir(), args.user);
-    let hardware_config = format!(
-        "{}/modules/hosts/_{}/hardware-configuration.nix",
-        args.flake_dir(),
-        args.user
-    );
-
     let mut cmd = Command::new("nix");
     cmd.args(["--extra-experimental-features", "nix-command flakes"])
         .args(["run", "github:nix-community/nixos-anywhere", "--"])
         .args(["--phases", &phases.join(",")])
-        .args(["--flake", &flake])
+        .args(["--flake", &args.flake()])
         .args([
             "--generate-hardware-config",
             "nixos-generate-config",
-            &hardware_config,
+            &args.hardware_config(),
         ])
         .args(["--target-host", &format!("nixos@{}", args.host)]);
 
@@ -113,21 +131,39 @@ mod tests {
         ]
     }
 
-    #[test]
-    fn localhost_skips_kexec() {
-        let cmd = command(args("localhost", false, "./nix"));
+    /// The `sh -c <script>` the localhost path runs.
+    fn script_of(cmd: &Command) -> String {
+        assert_eq!(cmd.get_program(), "sh");
+        let args = args_of(cmd);
+        assert_eq!(args[0], "-c");
+        args[1].clone()
+    }
 
-        assert_eq!(cmd.get_program(), "nix");
+    #[test]
+    fn localhost_generates_hardware_config_and_installs() {
+        let script = script_of(&command(args("localhost", false, "./nix")));
+
         assert_eq!(
-            args_of(&cmd),
-            expected("install,reboot", "./nix", "localhost")
+            script,
+            "nixos-generate-config --no-filesystems --show-hardware-config \
+             > ./nix/modules/hosts/_home/hardware-configuration.nix \
+             && nixos-install --flake ./nix#home"
         );
     }
 
     #[test]
-    fn remote_host_adds_kexec_phase() {
+    fn localhost_formats_disks_with_disko() {
+        let script = script_of(&command(args("localhost", true, "./nix")));
+
+        assert!(script.contains("github:nix-community/disko"));
+        assert!(script.contains("--mode destroy,format,mount --flake ./nix#home"));
+    }
+
+    #[test]
+    fn remote_host_uses_nixos_anywhere_with_kexec() {
         let cmd = command(args("example.com", false, "./nix"));
 
+        assert_eq!(cmd.get_program(), "nix");
         assert_eq!(
             args_of(&cmd),
             expected("kexec,install,reboot", "./nix", "example.com")
@@ -135,22 +171,22 @@ mod tests {
     }
 
     #[test]
-    fn format_disks_adds_disko_phase() {
-        let cmd = command(args("localhost", true, "./nix"));
+    fn remote_format_disks_adds_disko_phase() {
+        let cmd = command(args("example.com", true, "./nix"));
 
         assert_eq!(
             args_of(&cmd),
-            expected("disko,install,reboot", "./nix", "localhost")
+            expected("kexec,disko,install,reboot", "./nix", "example.com")
         );
     }
 
     #[test]
-    fn flake_dir_changes_flake_and_hardware_config_paths() {
-        let cmd = command(args("localhost", false, "/etc/flake"));
+    fn remote_flake_dir_changes_flake_and_hardware_config_paths() {
+        let cmd = command(args("example.com", false, "/etc/flake"));
 
         assert_eq!(
             args_of(&cmd),
-            expected("install,reboot", "/etc/flake", "localhost")
+            expected("kexec,install,reboot", "/etc/flake", "example.com")
         );
     }
 }

@@ -35,6 +35,18 @@ impl InstallArgs {
             .unwrap_or_else(|_| self.flake_dir.as_str().into())
             .to_string()
     }
+
+    pub fn flake(&self) -> String {
+        format!("{}#{}", self.flake_dir(), self.user)
+    }
+
+    pub fn hardware_config(&self) -> String {
+        format!(
+            "{}/modules/hosts/_{}/hardware-configuration.nix",
+            self.flake_dir(),
+            self.user
+        )
+    }
 }
 
 pub fn command(args: InstallArgs) -> Command {
