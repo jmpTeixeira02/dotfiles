@@ -14,6 +14,7 @@ in
     modules = [
       ./_home/configuration.nix
       nixos.default
+      nixos.gamming
       {
         home-manager = {
           useGlobalPkgs = true;
@@ -22,9 +23,10 @@ in
           users.joao = {
             imports = [
               hm.default
+              hm.desktop-default
+              hm.desktop-gamming
               hm.ai
               hm.programming
-              hm.desktop
             ];
             opencodeProfile = "home";
             home = {

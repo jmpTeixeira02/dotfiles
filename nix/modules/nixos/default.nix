@@ -1,10 +1,11 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 {
   flake.modules.nixos.default = { pkgs, ... }: {
     imports = [
       inputs.disko.nixosModules.disko
       inputs.sops-nix.nixosModules.sops
       inputs.home-manager.nixosModules.home-manager
+      config.flake.modules.nixos.audio
     ];
 
     nixpkgs.config = {
@@ -18,7 +19,7 @@
 
     programs.zsh = {
       enable = true;
-      enableGlobalCompInit = false; # let zsh-autocomplete run the first compinit
+      enableGlobalCompInit = false;
     };
   };
 }
