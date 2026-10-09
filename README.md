@@ -30,7 +30,7 @@ This setup supports both local and remote deployments. It assumes there is an in
 2. Set a password `passwd`
 3. Execute `./dots install <host> -k`
 
-Note: If you dont have a private key for the host, you need to generate one and update `.sops.yaml` by adding it there and updating the secrets
+Note: If you dont have a private key for the host, you need to generate one and update `.sops.yaml` by adding it there and updating the secrets. This can also be ran locally. If so remember to also set a password to the sudo user `sudo passwd`
 
 ### Nix
 
