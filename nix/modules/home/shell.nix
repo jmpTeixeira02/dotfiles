@@ -79,11 +79,7 @@
             ZSH_TMUX_DEFAULT_SESSION_NAME="master"
             ZSH_TMUX_UNICODE=true
 
-            if [[ -n "$SSH_CONNECTION" ]]; then
-                ZSH_TMUX_AUTOSTART=false
-            else
-                ZSH_TMUX_AUTOSTART=true
-            fi
+            ZSH_TMUX_AUTOSTART=true
 
             export FLAKE="${config.paths.dotfiles}/nix"
             export FLAKE_DOTFILES="${config.paths.dotfiles}"
