@@ -65,6 +65,12 @@
               "tmux"
               "kubectl"
             ];
+            extraConfig = ''
+              ZSH_TMUX_DEFAULT_SESSION_NAME="master"
+              ZSH_TMUX_UNICODE=true
+              [[ -z "$SSH_CONNECTION" ]] && ZSH_TMUX_AUTOSTART=true
+            '';
+
           };
 
           plugins = [
