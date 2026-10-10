@@ -48,6 +48,7 @@
         };
         "starship".source = linkConfig "starship";
       };
+      xdg.dataFile."zsh/.keep".text = "do not delete me";
 
       programs = {
         zsh = {
@@ -55,6 +56,7 @@
 
           enable = true;
           enableCompletion = false;
+          autosuggestion.enable = true;
           syntaxHighlighting.enable = true;
 
           oh-my-zsh = {
@@ -82,11 +84,6 @@
           ];
 
           initContent = ''
-            ZSH_TMUX_DEFAULT_SESSION_NAME="master"
-            ZSH_TMUX_UNICODE=true
-
-            ZSH_TMUX_AUTOSTART=true
-
             export FLAKE="${config.paths.dotfiles}/nix"
             export FLAKE_DOTFILES="${config.paths.dotfiles}"
             source ${config.paths.dotfiles}/config/zsh/zshrc
