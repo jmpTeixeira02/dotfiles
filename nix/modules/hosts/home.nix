@@ -14,6 +14,7 @@ in
     modules = [
       ./_home/configuration.nix
       nixos.default
+      nixos.desktop
       nixos.gamming
       {
         home-manager = {
