@@ -20,7 +20,6 @@
     services = {
       btrfs.autoScrub.enable = true;
       fstrim.enable = true;
-      desktopManager.plasma6.enable = true;
     };
 
     console.keyMap = "pt-latin1";
