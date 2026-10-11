@@ -5,8 +5,15 @@ alias src="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias tree="eza --icons --tree"
 alias cat='bat --paging=never'
 alias clean_nvim='rm -rf ~/.local/share/nvim'
-alias nix_clean="nix-collect-garbage -d"
-alias nix_update_store="nix flake update --flake ./nix"
+
+dots() {
+    if [ -z "${FLAKE_DOTFILES:-}" ]; then 
+        echo "Environment variable FLAKE_DOTFILES is not setup"
+        echo "This should be automatically setup on first run of the dotfiles, if not run the binary directly"
+        exit 1
+    fi
+    command $FLAKE_DOTFILES/dots "$@"
+}
 
 # Lazygit switch dir on exit
 lg()
