@@ -126,7 +126,7 @@ icon_size = 40
 item_spacing = 8
 launcher_position = "start"
 magnification_scale = 1.2500000037252903
-pinned = [ "zen-beta", "com.mitchellh.ghostty" ]
+pinned = [ "zen-beta", "com.mitchellh.ghostty", "vesktop" ]
 show_dots = true
 
 [lockscreen_widgets]
@@ -186,6 +186,10 @@ community_palette = "Kanagawa Dragon"
 mode = "dark"
 source = "community"
 wallpaper_scheme = "m3-content"
+
+    [theme.templates]
+    builtin_ids = [ "btop" ]
+    community_ids = [ "discord" ]
 
 [wallpaper]
 directory = "/home/joao/Pictures/wallpapers"
