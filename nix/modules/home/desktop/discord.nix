@@ -15,7 +15,6 @@
         enable = true;
         vencord.settings.enabledThemes = lib.mkIf noctaliaActive [
           "noctalia.theme.css"
-          "noctalia-material.theme.css"
         ];
       };
 

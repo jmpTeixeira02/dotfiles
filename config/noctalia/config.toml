@@ -124,9 +124,8 @@ active_monitor_only = true
 enabled = true
 icon_size = 40
 item_spacing = 8
-launcher_position = "start"
 magnification_scale = 1.2500000037252903
-pinned = [ "zen-beta", "com.mitchellh.ghostty", "vesktop" ]
+pinned = [ "zen-beta", "com.mitchellh.ghostty", "vesktop", "spotify" ]
 show_dots = true
 
 [lockscreen_widgets]
@@ -189,7 +188,7 @@ wallpaper_scheme = "m3-content"
 
     [theme.templates]
     builtin_ids = [ "btop" ]
-    community_ids = [ "discord" ]
+    community_ids = [ "spicetify", "discord" ]
 
 [wallpaper]
 directory = "/home/joao/Pictures/wallpapers"
