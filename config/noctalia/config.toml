@@ -1,6 +1,5 @@
 [bar.default]
-center = [ "clock", "media" ]
-end = [ "notifications", "clipboard", "bluetooth", "volume", "session" ]
+end = [ "media", "notifications", "clipboard", "bluetooth", "volume", "session" ]
 start = [ "launcher", "workspaces" ]
 thickness = 48
 
