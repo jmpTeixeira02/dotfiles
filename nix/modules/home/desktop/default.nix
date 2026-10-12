@@ -7,6 +7,8 @@
       config.flake.modules.homeManager.desktop-display
       config.flake.modules.homeManager.desktop-discord
       config.flake.modules.homeManager.desktop-spotify
+      config.flake.modules.homeManager.desktop-tilling-manager
+      config.flake.modules.homeManager.desktop-file-manager
     ];
 
     programs.home-manager.enable = true;

@@ -1,3 +1,4 @@
 theme = Kanagawa Dragon
 font-family = Hack Nerd Font Mono Bolda
 macos-option-as-alt = left
+confirm-close-surface = false

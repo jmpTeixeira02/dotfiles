@@ -108,6 +108,9 @@
 
         # Treesitter
         tree-sitter
+
+        # KDL
+        kdlfmt
       ];
 
       xdg.enable = true;

@@ -19,6 +19,7 @@
       xdg.enable = true;
       xdg.configFile = {
         "gowall".source = linkConfig "gowall";
+        "noctalia".source = linkConfig "noctalia";
       };
 
     };
