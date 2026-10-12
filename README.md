@@ -22,6 +22,8 @@ To download via curl `https://github.com/jmpTeixeira02/dotfiles/releases/latest/
 
 The command picks the right installer from the host: NixOS hosts (`home`, `homelab`) deploy via `nixos-anywhere`, Home Manager hosts (`wsl`, `work`) run the Determinate Nix installer. The `--host`, `--format-disks` and `--key` flags only take effect on NixOS hosts.
 
+Note: NixOS install might fail installation stating no disk space available. If this happens, increase the /nix/.rw-store as necessary as this won't be applied whenever the install finishes `mount -o remount,size=10G,noatime /nix/.rw-store`
+
 ### NixOS Machine Deployment
 
 This setup supports both local and remote deployments. It assumes there is an internet connection, and will wipe all drives

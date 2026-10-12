@@ -19,11 +19,11 @@ fn local_command(args: &InstallArgs) -> Command {
     )];
     if args.format_disks {
         steps.push(format!(
-            "nix --extra-experimental-features 'nix-command flakes' \
+            "sudo nix --extra-experimental-features 'nix-command flakes' \
              run github:nix-community/disko -- --mode destroy,format,mount --flake {flake}"
         ));
     }
-    steps.push(format!("nixos-install --flake {flake}"));
+    steps.push(format!("sudo nixos-install --flake {flake}"));
 
     let mut cmd = Command::new("sh");
     cmd.args(["-c", &steps.join(" && ")]);
