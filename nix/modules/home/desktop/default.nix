@@ -10,6 +10,7 @@
       config.flake.modules.homeManager.desktop-security
       config.flake.modules.homeManager.desktop-tilling-manager
       config.flake.modules.homeManager.desktop-file-manager
+      config.flake.modules.homeManager.desktop-office
     ];
 
     programs.home-manager.enable = true;
