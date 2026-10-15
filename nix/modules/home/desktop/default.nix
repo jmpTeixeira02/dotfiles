@@ -11,6 +11,7 @@
       config.flake.modules.homeManager.desktop-tilling-manager
       config.flake.modules.homeManager.desktop-file-manager
       config.flake.modules.homeManager.desktop-office
+      config.flake.modules.homeManager.desktop-media
     ];
 
     programs.home-manager.enable = true;
