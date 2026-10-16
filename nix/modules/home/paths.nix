@@ -1,6 +1,6 @@
 {
   flake.modules.homeManager.paths =
-    { config, lib, ... }:
+    { config, lib, pkgs, ... }:
     let
       envRoot = builtins.getEnv "FLAKE_DOTFILES";
     in
@@ -20,6 +20,11 @@
           FLAKE_DOTFILES = config.paths.dotfiles;
           FLAKE = "${config.paths.dotfiles}/nix";
         };
+        home.activation.cloneDotfiles = lib.hm.dag.entryBefore [ "linkGeneration" ] ''
+          if [ ! -d "${config.paths.dotfiles}" ]; then
+            ${lib.getExe pkgs.git} clone https://github.com/jmpTeixeira02/dotfiles "${config.paths.dotfiles}"
+          fi
+        '';
       };
     };
 }

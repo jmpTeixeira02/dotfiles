@@ -22,7 +22,7 @@ To download via curl `https://github.com/jmpTeixeira02/dotfiles/releases/latest/
 
 The command picks the right installer from the host: NixOS hosts (`home`, `homelab`) deploy via `nixos-anywhere`, Home Manager hosts (`wsl`, `work`) run the Determinate Nix installer. The `--host`, `--format-disks` and `--key` flags only take effect on NixOS hosts.
 
-Note: NixOS install might fail installation stating no disk space available. If this happens, increase the /nix/.rw-store as necessary as this won't be applied whenever the install finishes `sudo mount -o remount,size=10G,noatime /nix/.rw-store`
+Note: NixOS install might fail installation stating no disk space available. If this happens, increase the /nix/.rw-store as necessary as this won't be applied whenever the install finishes `sudo mount -o remount,size=10G,noatime /nix/.rw-store`. If there are DNS errors on resolving github.com do as sudo `echo "nameserver 8.8.8.8 > /etc/resolv.conf"`
 
 ### NixOS Machine Deployment
 
