@@ -1,0 +1,39 @@
+name: Nix Build
+
+on:
+  pull_request:
+    paths:
+      - "nix/**"
+  push:
+    branches: [main]
+    paths:
+      - "nix/**"
+
+jobs:
+  build:
+    name: ${{ matrix.host }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - host: work
+            os: macos-latest
+            attr: homeConfigurations.work.activationPackage
+          - host: home
+            os: ubuntu-latest
+            attr: nixosConfigurations.home.config.system.build.toplevel
+          - host: homelab
+            os: ubuntu-latest
+            attr: nixosConfigurations.homelab.config.system.build.toplevel
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v14
+
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Build ${{ matrix.host }}
+        run: nix build .?submodules=1#${{ matrix.attr }} --no-link
+        working-directory: nix

@@ -5,21 +5,15 @@ updates:
     schedule:
       interval: "weekly"
     groups:
-      rust-minor-and-patch:
+      rust:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
 
   - package-ecosystem: "nix"
     directory: "/nix"
     schedule:
       interval: "weekly"
     groups:
-      nix-minor-and-patch:
+      nix:
         patterns:
           - "*"
-        update-types:
-          - "minor"
-          - "patch"
