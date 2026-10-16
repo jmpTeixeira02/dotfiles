@@ -42,3 +42,6 @@ jobs:
 
       - name: Build
         run: cargo build --release --locked --target ${{ matrix.target }} --manifest-path tools/dots/Cargo.toml
+
+      - name: Test
+        run: cargo test --locked --manifest-path tools/dots/Cargo.toml

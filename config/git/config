@@ -1,0 +1,21 @@
+[user]
+	name = Joao Teixeira
+	email = joaompt2002@hotmail.com
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[includeIf "hasconfig:remote.*.url:git@github.com:openkcm/**"]
+	path = work.gitconfig
+
+[includeIf "hasconfig:remote.*.url:https://github.com/openkcm/**"]
+	path = work.gitconfig
+
+[includeIf "hasconfig:remote.*.url:git@github.tools.sap:*/**"]
+	path = work.gitconfig
+
+[includeIf "hasconfig:remote.*.url:https://github.tools.sap/*/**"]
+	path = work.gitconfig

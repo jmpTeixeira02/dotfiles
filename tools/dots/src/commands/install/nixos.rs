@@ -147,7 +147,7 @@ mod tests {
             script,
             "nixos-generate-config --no-filesystems --show-hardware-config \
              > ./nix/modules/hosts/_home/hardware-configuration.nix \
-             && nixos-install --flake ./nix#home"
+             && sudo nixos-install --flake ./nix#home"
         );
     }
 
