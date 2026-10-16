@@ -28,6 +28,8 @@
           btop
           unzip
 
+          fastfetch
+
           # Here just for the zsh plugins
           git
           tmux
