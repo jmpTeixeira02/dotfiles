@@ -8,6 +8,8 @@
 
         heroic
         bottles
+
+        deadlock-mod-manager
       ];
     };
 }

@@ -126,6 +126,9 @@ input {
     mouse {
         accel-profile "adaptive"
         accel-speed -0.5
+
+        scroll-method "on-button-down"
+        scroll-button 274
     }
 }
 
@@ -133,17 +136,24 @@ output "DP-1" {
     mode "2560x1440@143.912"
     scale 1
     position x=0 y=0
-    variable-refresh-rate
+    variable-refresh-rate on-demand=true
+    focus-at-startup
 }
 
 output "DP-2" {
     mode "1920x1080@60.000"
     scale 1
-    position x=2048 y=0
+    position x=2560 y=0
 }
 
 output "HDMI-A-1" {
     off
+}
+
+
+window-rule {
+    match app-id="^steam_app_.*"
+    variable-refresh-rate true
 }
 
 include "noctalia.kdl"
