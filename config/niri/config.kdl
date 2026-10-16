@@ -124,5 +124,22 @@ input {
     }
 }
 
+output "DP-1" {
+    mode "2560x1440@143.912"
+    scale 1
+    position x=0 y=0
+    variable-refresh-rate
+}
+
+output "DP-2" {
+    mode "1920x1080@60.000"
+    scale 1
+    position x=2048 y=0
+}
+
+output "HDMI-A-1" {
+    off
+}
+
 include "noctalia.kdl"
 include "my-noctalia.kdl"
