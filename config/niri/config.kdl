@@ -122,6 +122,11 @@ input {
         repeat-delay 200
         repeat-rate 40
     }
+
+    mouse {
+        accel-profile "adaptive"
+        accel-speed -0.5
+    }
 }
 
 output "DP-1" {

@@ -1,6 +1,6 @@
 {
   flake.modules.homeManager.desktop-browser =
-    { inputs, ... }:
+    { inputs,pkgs, ... }:
     let
       mkExtensionSettings = builtins.mapAttrs (
         _: pluginId: {
@@ -12,6 +12,10 @@
     {
       imports = [
         inputs.zen-browser.homeModules.beta
+      ];
+
+      home.packages = with pkgs; [
+        google-chrome
       ];
 
       programs.zen-browser = {

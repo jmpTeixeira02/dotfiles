@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.desktop-discord =
+  flake.modules.homeManager.desktop-communication =
     {
       inputs,
       pkgs,
@@ -17,6 +17,10 @@
           "noctalia.theme.css"
         ];
       };
+
+      home.packages = with pkgs; [
+        whatsie
+      ];
 
       xdg.desktopEntries.vesktop = {
         name = "Discord";
