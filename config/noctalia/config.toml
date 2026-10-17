@@ -7,7 +7,7 @@ margin_ends = 0
 radius = 0
 radius_top_left = 0
 radius_top_right = 0
-start = [ "launcher", "workspaces", "privacy" ]
+start = [ "launcher", "workspaces", "privacy", "tray" ]
 thickness = 48
 
 [brightness]
@@ -445,16 +445,19 @@ widget_order = [
 
 [dock]
 active_monitor_only = true
-background_opacity = 0.79999998211860657
+auto_hide = true
+background_opacity = 0.4999999888241291
+concave_edge_corners = false
 enabled = true
-icon_size = 40
+icon_size = 48
 item_spacing = 8
 layer = "overlay"
 magnification_scale = 1.2500000037252903
-pinned = [ "zen-beta", "com.mitchellh.ghostty", "vesktop", "spotify" ]
+pinned = []
+position = "left"
 reserve_space = false
 show_dots = true
-smart_auto_hide = true
+smart_auto_hide = false
 
 [lockscreen_widgets]
 enabled = false
@@ -679,3 +682,8 @@ max_length = 300
 rotate_album_art = true
 show_progress = true
 title_scroll = "always"
+
+[widget.tray]
+drawer = true
+pinned = [ "zapzap" ]
+scale = 1.4000000000000001
