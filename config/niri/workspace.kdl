@@ -2,7 +2,7 @@ spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
 spawn-sh-at-startup "MANGOHUD=1 steam"
 spawn-at-startup "whatsie"
-spawn-at-startup "vesktop"
+spawn-sh-at-startup "sleep 2 && discord" // Possible fix for default muted
 spawn-at-startup "spotify"
 workspace "browser" {
     open-on-output "DP-1"
@@ -37,7 +37,7 @@ workspace "chat" {
     open-on-output "DP-2"
 }
 window-rule {
-    match at-startup=true app-id="vesktop"
+    match at-startup=true app-id="discord"
     match at-startup=true app-id="com.ktechpit.whatsie"
     open-on-workspace "chat"
 }
