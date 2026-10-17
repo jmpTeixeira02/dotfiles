@@ -1,0 +1,50 @@
+spawn-at-startup "zen-beta"
+spawn-at-startup "ghostty"
+spawn-at-startup "steam"
+spawn-at-startup "whatsie"
+spawn-at-startup "vesktop"
+spawn-at-startup "spotify"
+workspace "browser" {
+    open-on-output "DP-1"
+}
+window-rule {
+    match at-startup=true app-id="zen-beta"
+    open-on-workspace "browser"
+    open-maximized true
+}
+workspace "terminal" {
+    open-on-output "DP-1"
+}
+window-rule {
+    match at-startup=true app-id="com.mitchellh.ghostty"
+    open-on-workspace "terminal"
+    open-maximized true
+}
+workspace "steam" {
+    open-on-output "DP-1"
+}
+window-rule {
+    match at-startup=true app-id="steam"
+    open-on-workspace "steam"
+}
+window-rule {
+    match at-startup=true app-id="steam" title="Steam"
+    open-on-workspace "steam"
+    open-maximized true
+}
+workspace "chat" {
+    open-on-output "DP-2"
+}
+window-rule {
+    match at-startup=true app-id="vesktop"
+    match at-startup=true app-id="com.ktechpit.whatsie"
+    open-on-workspace "chat"
+}
+workspace "music" {
+    open-on-output "DP-2"
+}
+window-rule {
+    match at-startup=true app-id="spotify"
+    open-on-workspace "music"
+    open-maximized true
+}

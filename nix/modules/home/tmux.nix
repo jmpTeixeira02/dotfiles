@@ -72,6 +72,7 @@
           }
         ];
         extraConfig = ''
+          set -g update-environment "NIRI_SOCKET WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
           source-file ~/.config/tmux/tmux-local.conf
         '';
       };
