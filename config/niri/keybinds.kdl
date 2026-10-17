@@ -29,6 +29,9 @@ binds {
     Mod+Ctrl+K { move-window-up-or-to-workspace-up; }
     Mod+Ctrl+L { move-column-right; }
 
+    Mod+Ctrl+U { move-window-to-workspace-up; }
+    Mod+Ctrl+D   { move-window-to-workspace-down; }
+
     Mod+Shift+Left { focus-monitor-left; }
     Mod+Shift+Down { focus-monitor-down; }
     Mod+Shift+Up { focus-monitor-up; }
@@ -103,4 +106,5 @@ binds {
     Mod+I { focus-window-previous; }
 
     Mod+F1 { show-hotkey-overlay; }
+    Mod+Ctrl+V { spawn "nirius" "toggle-follow-mode"; }
 }

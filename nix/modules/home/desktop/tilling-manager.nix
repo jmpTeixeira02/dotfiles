@@ -10,6 +10,7 @@
     {
       home.packages = with pkgs; [
         niri
+        nirius
       ];
 
       xdg.enable = true;

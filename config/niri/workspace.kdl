@@ -1,3 +1,4 @@
+spawn-at-startup "niriusd"
 spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
 spawn-sh-at-startup "MANGOHUD=1 steam"
