@@ -12,6 +12,8 @@
       allowBroken = true;
     };
 
+    hardware.bluetooth.enable = true;
+
     programs.zsh = {
       enable = true;
       enableGlobalCompInit = false;
