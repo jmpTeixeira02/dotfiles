@@ -32,10 +32,6 @@ window-rule {
     open-on-workspace "steam"
 }
 window-rule {
-    match app-id="steam" title="^notificationtoasts_\\d+_desktop$"
-    default-floating-position x=10 y=10 relative-to="bottom-right"
-}
-window-rule {
     match at-startup=true app-id="steam" title="^Steam$"
     open-on-workspace "steam"
     open-maximized true

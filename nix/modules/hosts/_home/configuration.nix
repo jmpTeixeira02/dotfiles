@@ -41,7 +41,7 @@
         1002:73DF-1DA2:E445-0000:0b:00.0:
           fan_control_enabled: false
           performance_level: auto
-          voltage_offset: -100
+          voltage_offset: -70
       current_profile: null
       auto_switch_profiles: false
     '';
