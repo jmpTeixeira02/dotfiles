@@ -1,6 +1,6 @@
 spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
-spawn-at-startup "steam"
+spawn-sh-at-startup "MANGOHUD=1 steam"
 spawn-at-startup "whatsie"
 spawn-at-startup "vesktop"
 spawn-at-startup "spotify"
