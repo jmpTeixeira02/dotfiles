@@ -1,11 +1,12 @@
 prefer-no-csd
 spawn-at-startup "noctalia"
+spawn-at-startup "niri-float-sticky"
 
 binds {
     Mod+T { spawn "ghostty"; }
     Mod+Q { close-window; }
-    Mod+Shift+Ctrl+E { spawn "nautilus"; }
-    Mod+Shift+E { quit; }
+    Mod+Alt+E { spawn "nautilus"; }
+    Mod+Shift+Alt+Q { quit; }
 
     Mod+O { toggle-overview; }
 
@@ -91,7 +92,8 @@ binds {
     Mod+Shift+F { fullscreen-window; }
     Mod+Ctrl+F { expand-column-to-available-width; }
     Mod+C { center-column; }
-    Mod+Alt+F { toggle-window-floating; }
+    Mod+V { toggle-window-floating; }
+    Mod+Alt+V { switch-focus-between-floating-and-tiling; }
 
     Mod+I { focus-window-previous; }
 
@@ -154,6 +156,12 @@ output "HDMI-A-1" {
 window-rule {
     match app-id="^steam_app_.*"
     variable-refresh-rate true
+}
+
+window-rule {
+    match app-id="firefox$" title="^Picture-in-Picture$"
+    open-floating true
+    default-floating-position x=32 y=32 relative-to="bottom-right"
 }
 
 include "noctalia.kdl"

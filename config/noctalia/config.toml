@@ -283,11 +283,11 @@ widget_order = [
     [lockscreen_widgets.widget."lockscreen-login-box@winit"]
     box_height = 196.0
     box_width = 810.0
-    cx = 640.0
-    cy = 618.0
+    cx = 634.0
+    cy = 1062.9599609375
     output = "winit"
-    placement_height = 800.0
-    placement_width = 1280.0
+    placement_height = 1376.0
+    placement_width = 1268.0
     rotation = 0.0
     type = "login_box"
 
@@ -307,9 +307,19 @@ widget_order = [
         show_unlock_hint = true
         show_weather = true
 
+[nightlight]
+autoSchedule = true
+enabled = true
+force = false
+temperature_day = 10000
+temperature_night = 2100
+
 [osd]
 background_opacity = 0.79999998211860657
 hide_delay_ms = 1000
+
+[plugins]
+enabled = [ "autumn/network-toolkit", "noctalia/bitwarden", "liamwh/emoji-picker" ]
 
 [shell]
 font_family = "Hack Nerd Font"
