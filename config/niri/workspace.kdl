@@ -2,8 +2,10 @@ spawn-at-startup "niriusd"
 spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
 spawn-sh-at-startup "MANGOHUD=1 steam"
-spawn-at-startup "whatsie"
-spawn-sh-at-startup "sleep 2 && discord" // Possible fix for default muted
+spawn-at-startup "niri-float-sticky" "-app-id" "^steam$" "-title" "^notificationtoasts_\\d+_desktop$"
+spawn-at-startup "zapzap"
+// Possible fix for default muted
+spawn-sh-at-startup "sleep 2 && discord"
 spawn-at-startup "spotify"
 workspace "browser" {
     open-on-output "DP-1"
@@ -30,6 +32,10 @@ window-rule {
     open-on-workspace "steam"
 }
 window-rule {
+    match app-id="steam" title="^notificationtoasts_\\d+_desktop$"
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+window-rule {
     match at-startup=true app-id="steam" title="^Steam$"
     open-on-workspace "steam"
     open-maximized true
@@ -39,7 +45,7 @@ workspace "chat" {
 }
 window-rule {
     match at-startup=true app-id="discord"
-    match at-startup=true app-id="com.ktechpit.whatsie"
+    match at-startup=true app-id="com.rtosta.zapzap"
     open-on-workspace "chat"
 }
 workspace "music" {
