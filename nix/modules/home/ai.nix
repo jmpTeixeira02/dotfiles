@@ -22,7 +22,6 @@
       config = {
         home.packages = with pkgs; [
           opencode
-          claude-code
         ];
 
         xdg.enable = true;
