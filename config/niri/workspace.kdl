@@ -25,10 +25,11 @@ workspace "steam" {
 }
 window-rule {
     match at-startup=true app-id="steam"
+    exclude title="^notificationtoasts_"
     open-on-workspace "steam"
 }
 window-rule {
-    match at-startup=true app-id="steam" title="Steam"
+    match at-startup=true app-id="steam" title="^Steam$"
     open-on-workspace "steam"
     open-maximized true
 }

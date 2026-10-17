@@ -1,12 +1,10 @@
 prefer-no-csd
 spawn-at-startup "noctalia"
 spawn-at-startup "niri-float-sticky"
-
 window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
 }
-
 layout {
     gaps 8
 }
@@ -18,20 +16,16 @@ input {
             variant "mac"
         }
         numlock
-
         repeat-delay 200
         repeat-rate 40
     }
-
     mouse {
         accel-profile "adaptive"
         accel-speed -0.5
-
         scroll-method "on-button-down"
         scroll-button 274
     }
 }
-
 output "DP-1" {
     mode "2560x1440@143.912"
     scale 1
@@ -39,29 +33,23 @@ output "DP-1" {
     variable-refresh-rate on-demand=true
     focus-at-startup
 }
-
 output "DP-2" {
     mode "1920x1080@60.000"
     scale 1
     position x=2560 y=0
 }
-
 output "HDMI-A-1" {
     off
 }
-
-
 window-rule {
     match app-id="^steam_app_.*"
     variable-refresh-rate true
 }
-
 window-rule {
     match app-id="zen-beta" title="^Picture-in-Picture$"
     open-floating true
     default-floating-position x=32 y=32 relative-to="bottom-right"
 }
-
 include "workspace.kdl"
 include "keybinds.kdl"
 include "noctalia.kdl"
