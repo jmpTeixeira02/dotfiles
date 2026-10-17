@@ -15,7 +15,7 @@
         enable = true;
         settings = {
           no_display = true;
-          toggle_hud = "Shift_R+F12";
+          toggle_hud = "Shift_R+F1";
           fps = true;
           frametime = true;
           frame_timing = true;
@@ -23,7 +23,5 @@
           cpu_stats = true;
         };
       };
-      home.sessionVariables.MANGOHUD = "1";
-      systemd.user.sessionVariables.MANGOHUD = "1";
     };
 }

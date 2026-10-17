@@ -107,4 +107,8 @@ binds {
 
     Mod+F1 { show-hotkey-overlay; }
     Mod+Ctrl+V { spawn "nirius" "toggle-follow-mode"; }
+
+    Mod+Insert { set-dynamic-cast-window; }
+    Mod+Home { set-dynamic-cast-monitor; }
+    Mod+Delete {clear-dynamic-cast-target;}
 }

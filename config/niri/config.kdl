@@ -51,6 +51,7 @@ window-rule {
     default-floating-position x=32 y=32 relative-to="bottom-right"
 }
 include "workspace.kdl"
+include "broadcast.kdl"
 include "keybinds.kdl"
 include "noctalia.kdl"
 include "my-noctalia.kdl"
