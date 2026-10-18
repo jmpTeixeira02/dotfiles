@@ -1,11 +1,9 @@
 spawn-at-startup "niriusd"
 spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
-spawn-sh-at-startup "MANGOHUD=1 steam"
-spawn-at-startup "niri-float-sticky" "-app-id" "^steam$" "-title" "^notificationtoasts_\\d+_desktop$"
+spawn-sh-at-startup "MANGOHUD=1 gamemoderun steam"
+spawn-sh-at-startup "sleep 1 && discord"
 spawn-at-startup "zapzap"
-// Possible fix for default muted
-spawn-sh-at-startup "sleep 2 && discord"
 spawn-at-startup "spotify"
 workspace "browser" {
     open-on-output "DP-1"
@@ -25,6 +23,10 @@ window-rule {
 }
 workspace "steam" {
     open-on-output "DP-1"
+}
+window-rule {
+    match app-id="^steam_app_\\d+$"
+    open-on-workspace "steam"
 }
 window-rule {
     match at-startup=true app-id="steam"

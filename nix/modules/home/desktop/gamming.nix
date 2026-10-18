@@ -16,11 +16,11 @@
         settings = {
           no_display = true;
           toggle_hud = "Shift_R+F1";
-          fps = true;
-          frametime = true;
-          frame_timing = true;
-          gpu_stats = true;
-          cpu_stats = true;
+          preset = 3;
+          core_load = false;
+          gpu_mem_clock = true;
+          vram = true;
+          gtt = true;
         };
       };
     };
