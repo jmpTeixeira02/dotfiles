@@ -448,7 +448,7 @@ active_monitor_only = true
 auto_hide = true
 background_opacity = 0.4999999888241291
 concave_edge_corners = false
-enabled = true
+enabled = false
 icon_size = 48
 item_spacing = 8
 layer = "overlay"
@@ -617,6 +617,9 @@ force = false
 temperature_day = 10000
 temperature_night = 2100
 
+[notification]
+background_opacity = 0.4999999888241291
+
 [osd]
 background_opacity = 0.79999998211860657
 hide_delay_ms = 1000
@@ -675,6 +678,9 @@ enabled = false
 format = "{:%H:%M, %a %d %b}"
 
 [widget.control-center]
+enabled = false
+
+[widget.launcher]
 enabled = false
 
 [widget.media]
