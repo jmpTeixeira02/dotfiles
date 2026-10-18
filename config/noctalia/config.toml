@@ -459,6 +459,11 @@ reserve_space = false
 show_dots = true
 smart_auto_hide = false
 
+[location]
+custom_schedule = true
+sunrise = "08:30"
+sunset = "21:30"
+
 [lockscreen_widgets]
 enabled = false
 schema_version = 2

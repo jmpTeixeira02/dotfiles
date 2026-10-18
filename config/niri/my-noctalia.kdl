@@ -3,7 +3,6 @@ binds {
     Mod+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Mod+S { spawn-sh "noctalia msg panel-toggle control-center"; }
     Mod+Comma { spawn-sh "noctalia msg settings-toggle"; }
-    Alt+Tab { spawn-sh "noctalia msg window-switcher hold"; }
 
     Print { spawn-sh "noctalia msg screenshot-region"; }
     Mod+Print { spawn-sh "noctalia msg screenshot-annotate"; }
