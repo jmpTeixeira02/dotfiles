@@ -1,5 +1,6 @@
 {
-  flake.modules.nixos.tilling-manager = { pkgs, lib, ... }:
+  flake.modules.nixos.tilling-manager =
+    { pkgs, lib, ... }:
     let
       # https://github.com/niri-wm/niri/pull/4392
       niriSrc = pkgs.fetchFromGitHub {
@@ -23,10 +24,13 @@
         package = niriForceRender;
       };
 
-      services = {
-        displayManager.sddm = {
-          enable = true;
-          wayland.enable = true;
+      services.displayManager.noctalia-greeter = {
+        enable = true;
+        settings = {
+          keyboard = {
+            layout = "pt";
+            variant = "mac";
+          };
         };
       };
 

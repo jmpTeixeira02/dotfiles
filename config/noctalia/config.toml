@@ -637,6 +637,9 @@ font_family = "Hack Nerd Font"
 niri_overview_type_to_launch_enabled = true
 polkit_agent = true
 
+    [shell.greeter_sync]
+    auto_sync = true
+
     [shell.panel]
     control_center_position = "top_right"
 
