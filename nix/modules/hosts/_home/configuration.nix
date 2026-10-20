@@ -49,7 +49,6 @@
       };
       amdgpu.overdrive.enable = true;
     };
-    powerManagement.cpuFreqGovernor = "performance";
 
     console.keyMap = "pt-latin1";
 
@@ -72,6 +71,7 @@
           "networkmanager"
           "video"
           "audio"
+          "gamemode"
         ];
         shell = pkgs.zsh;
         initialPassword = "temp";
