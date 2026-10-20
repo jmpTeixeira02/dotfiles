@@ -10,6 +10,7 @@
     {
       programs.discord = {
         enable = true;
+        package = pkgs.discord-ptb;
       };
 
       home.packages = with pkgs; [

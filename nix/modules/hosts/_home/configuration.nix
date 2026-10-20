@@ -17,6 +17,7 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
+    boot.kernelPackages = pkgs.linuxPackages_latest;
     services = {
       btrfs.autoScrub.enable = true;
       fstrim.enable = true;
