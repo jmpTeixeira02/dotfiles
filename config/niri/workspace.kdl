@@ -1,7 +1,7 @@
 spawn-at-startup "niriusd"
 spawn-at-startup "zen-beta"
 spawn-at-startup "ghostty"
-spawn-sh-at-startup "MANGOHUD=1 gamemoderun steam"
+spawn-sh-at-startup "mangohud steam"
 spawn-sh-at-startup "sleep 1 && discord"
 spawn-at-startup "zapzap"
 spawn-at-startup "spotify"
