@@ -1,10 +1,11 @@
 spawn-at-startup "niriusd"
 spawn-at-startup "zen-beta"
-spawn-at-startup "GTK_IM_MODULE=simple ghostty"
+spawn-sh-at-startup "GTK_IM_MODULE=simple ghostty"
 spawn-sh-at-startup "mangohud steam"
 spawn-sh-at-startup "sleep 1 && discordptb"
 spawn-at-startup "zapzap"
 spawn-at-startup "spotify"
+spawn-at-startup "thunderbird"
 workspace "browser" {
     open-on-output "DP-1"
 }
