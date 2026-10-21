@@ -1,0 +1,19 @@
+name: Release Bunker
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (e.g., v1.0.0)"
+        required: true
+
+jobs:
+  release:
+    uses: ./.github/workflows/_release.yml
+    with:
+      tool: bunker
+      version: ${{ inputs.version }}
+      targets: |
+        [
+          {"os": "ubuntu-latest", "target": "x86_64-unknown-linux-musl", "asset": "bunker-linux-x86_64"}
+        ]

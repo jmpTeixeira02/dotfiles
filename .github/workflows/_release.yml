@@ -1,11 +1,18 @@
-name: Release Dots
+name: Release (reusable)
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
-      version:
-        description: "Version tag (e.g., v1.0.0)"
+      tool:
         required: true
+        type: string
+      version:
+        required: true
+        type: string
+      targets:
+        description: "JSON array of {os, target, asset} objects"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -20,13 +27,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-musl
-            asset: dots-linux-x86_64
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            asset: dots-macos-aarch64
+        include: ${{ fromJson(inputs.targets) }}
+
     steps:
       - uses: actions/checkout@v7
 
@@ -37,18 +39,17 @@ jobs:
         if: contains(matrix.target, 'musl')
         run: sudo apt-get update && sudo apt-get install -y musl-tools
 
-      - name: Cache Cargo dependencies
-        uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "tools/dots -> target"
+          workspaces: "tools/${{ inputs.tool }} -> target"
           key: ${{ matrix.target }}
 
       - name: Build
-        run: cargo build --release --locked --target ${{ matrix.target }} --manifest-path tools/dots/Cargo.toml
+        run: cargo build --release --locked --target ${{ matrix.target }} --manifest-path tools/${{ inputs.tool }}/Cargo.toml
 
       - name: Prepare binary
         run: |
-          cp tools/dots/target/${{ matrix.target }}/release/dots ${{ matrix.asset }}
+          cp tools/${{ inputs.tool }}/target/${{ matrix.target }}/release/${{ inputs.tool }} ${{ matrix.asset }}
           shasum -a 256 ${{ matrix.asset }} > ${{ matrix.asset }}.sha256
 
       - uses: actions/upload-artifact@v7
@@ -75,8 +76,8 @@ jobs:
       - name: Generate release notes
         env:
           VERSION: ${{ inputs.version }}
+          TOOL: ${{ inputs.tool }}
         run: |
-          # Find the previous release tag for this tool 
           PREFIX="${VERSION%%v*}v"
           PREV_TAG=$(git tag --list "${PREFIX}*" --sort=-v:refname | grep -vx "$VERSION" | head -n1 || true)
 
@@ -89,7 +90,7 @@ jobs:
           {
             echo "## Changes"
             echo
-            COMMITS=$(git log "$RANGE" --no-merges --pretty=format:"- %s (%h)" -- tools/dots)
+            COMMITS=$(git log "$RANGE" --no-merges --pretty=format:"- %s (%h)" -- "tools/${TOOL}")
             if [ -n "$COMMITS" ]; then
               echo "$COMMITS"
             else
@@ -108,6 +109,6 @@ jobs:
         with:
           tag_name: ${{ inputs.version }}
           target_commitish: ${{ github.sha }}
-          name: "Dots ${{ inputs.version }}"
+          name: "${{ inputs.tool }} ${{ inputs.version }}"
           body_path: release-notes.md
           files: artifacts/*
