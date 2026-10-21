@@ -1,0 +1,45 @@
+name: Rust Build (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      tool:
+        required: true
+        type: string
+      targets:
+        description: "JSON array of {os, target} objects"
+        required: true
+        type: string
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(inputs.targets) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Install musl tools
+        if: contains(matrix.target, 'musl')
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "tools/${{ inputs.tool }} -> target"
+          key: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --locked --target ${{ matrix.target }} --manifest-path tools/${{ inputs.tool }}/Cargo.toml
+
+      - name: Test
+        run: cargo test --locked --manifest-path tools/${{ inputs.tool }}/Cargo.toml
