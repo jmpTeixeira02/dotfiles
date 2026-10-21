@@ -2,6 +2,7 @@ mod backup;
 mod bitwarden;
 mod commands;
 mod drives;
+mod ente;
 
 use clap::{Parser, Subcommand};
 use commands::{list, watch};

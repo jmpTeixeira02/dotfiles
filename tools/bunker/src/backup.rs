@@ -5,7 +5,7 @@ use std::{
     process::Command,
 };
 
-use crate::bitwarden;
+use crate::{bitwarden, ente};
 
 pub fn run(drive: &Path) -> Result<(), Box<dyn Error>> {
     let dir_name = build_dir_name();
@@ -14,6 +14,10 @@ pub fn run(drive: &Path) -> Result<(), Box<dyn Error>> {
     println!("Exporting Bitwarden…");
     io::stdout().flush()?;
     bitwarden::export(&dir.join("bitwarden.json"))?;
+
+    println!("Exporting Ente Auth…");
+    io::stdout().flush()?;
+    ente::export(&dir.join("ente.txt"))?;
 
     println!("Backup complete: {}", dir.display());
     Ok(())
