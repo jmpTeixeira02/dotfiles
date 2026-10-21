@@ -54,3 +54,11 @@ window-rule {
     open-on-workspace "music"
     open-maximized true
 }
+workspace "email" {
+    open-on-output "DP-2"
+}
+window-rule {
+    match at-startup=true app-id="thunderbird"
+    open-on-workspace "email"
+    open-maximized true
+}
