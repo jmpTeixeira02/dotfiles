@@ -3,7 +3,7 @@ hotkey-overlay {
 }
 
 binds {
-    Mod+T { spawn "ghostty"; }
+    Mod+T { spawn "env" "GTK_IM_MODULE=simple" "ghostty"; }
     Mod+B { spawn "zen-beta"; }
     Mod+Q { close-window; }
     Mod+Alt+E { spawn "nautilus"; }
