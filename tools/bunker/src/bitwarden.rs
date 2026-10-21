@@ -34,8 +34,36 @@ fn setup_server() -> Result<(), Box<dyn Error>> {
 fn is_logged_in() -> Result<bool, Box<dyn Error>> {
     let status_out = Command::new("bw").arg("status").output()?;
     let status_json = String::from_utf8_lossy(&status_out.stdout);
-    Ok(status_json.contains("\"status\":\"locked\"")
-        || status_json.contains("\"status\":\"unlocked\""))
+    Ok(is_logged_in_from_json(&status_json))
+}
+
+fn is_logged_in_from_json(json: &str) -> bool {
+    json.contains("\"status\":\"locked\"") || json.contains("\"status\":\"unlocked\"")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn locked_status_is_logged_in() {
+        assert!(is_logged_in_from_json(r#"{"status":"locked"}"#));
+    }
+
+    #[test]
+    fn unlocked_status_is_logged_in() {
+        assert!(is_logged_in_from_json(r#"{"status":"unlocked"}"#));
+    }
+
+    #[test]
+    fn unauthenticated_status_not_logged_in() {
+        assert!(!is_logged_in_from_json(r#"{"status":"unauthenticated"}"#));
+    }
+
+    #[test]
+    fn empty_json_not_logged_in() {
+        assert!(!is_logged_in_from_json(""));
+    }
 }
 
 fn get_session() -> Result<(String, bool), Box<dyn Error>> {
