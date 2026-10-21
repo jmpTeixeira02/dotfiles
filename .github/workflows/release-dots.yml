@@ -7,6 +7,9 @@ on:
         description: "Version tag (e.g., v1.0.0)"
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   release:
     uses: ./.github/workflows/_release.yml
