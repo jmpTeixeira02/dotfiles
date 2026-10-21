@@ -73,13 +73,24 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      - name: Generate release notes
+      - name: Generate release notes and format tool name
         env:
           VERSION: ${{ inputs.version }}
           TOOL: ${{ inputs.tool }}
         run: |
-          PREFIX="${VERSION%%v*}v"
-          PREV_TAG=$(git tag --list "${PREFIX}*" --sort=-v:refname | grep -vx "$VERSION" | head -n1 || true)
+          # 1. Capitalize the first letter of the tool name
+          TOOL_CAP="$(tr '[:lower:]' '[:upper:]' <<< "${TOOL:0:1}")${TOOL:1}"
+          echo "TOOL_NAME=$TOOL_CAP" >> $GITHUB_ENV
+
+          # 2. Find the previous tag STRICTLY for this tool (no global v* fallback)
+          TAG_PATTERN="${TOOL}-v*"
+          PREV_TAG=$(git tag --list "$TAG_PATTERN" --sort=-creatordate | grep -vx "$VERSION" | head -n1 || true)
+
+          # Fallback to broader tool prefix if needed, but never cross-contaminate with other tools
+          if [ -z "$PREV_TAG" ]; then
+            TAG_PATTERN="${TOOL}-*"
+            PREV_TAG=$(git tag --list "$TAG_PATTERN" --sort=-creatordate | grep -vx "$VERSION" | head -n1 || true)
+          fi
 
           if [ -n "$PREV_TAG" ]; then
             RANGE="${PREV_TAG}..${GITHUB_SHA}"
@@ -87,10 +98,11 @@ jobs:
             RANGE="${GITHUB_SHA}"
           fi
 
+          # 3. Generate release notes
           {
             echo "## Changes"
             echo
-            COMMITS=$(git log "$RANGE" --no-merges --pretty=format:"- %s (%h)" -- "tools/${TOOL}")
+            COMMITS=$(git log "$RANGE" --no-merges --pretty=format:"- %s (%h)" -- "tools/${TOOL}" || true)
             if [ -n "$COMMITS" ]; then
               echo "$COMMITS"
             else
@@ -109,6 +121,6 @@ jobs:
         with:
           tag_name: ${{ inputs.version }}
           target_commitish: ${{ github.sha }}
-          name: "${{ inputs.tool }} ${{ inputs.version }}"
+          name: "${{ env.TOOL_NAME }} ${{ inputs.version }}"
           body_path: release-notes.md
           files: artifacts/*

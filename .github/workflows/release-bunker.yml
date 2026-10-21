@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   release:
-    uses: ./.github/workflows/_release.yml
+    uses: ./.github/workflows/release.yml
     with:
       tool: bunker
       version: ${{ inputs.version }}
