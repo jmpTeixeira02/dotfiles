@@ -2,8 +2,8 @@
   disko.devices = {
     disk = {
       os-disk = {
-        device = "/dev/sda";
         type = "disk";
+        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
@@ -28,7 +28,7 @@
         };
       };
       data-disk1 = {
-        device = "/dev/sdb";
+        device = "/dev/vdb";
         type = "disk";
         content = {
           type = "gpt";
@@ -45,7 +45,7 @@
         };
       };
       data-disk2 = {
-        device = "/dev/sdc";
+        device = "/dev/vdc";
         type = "disk";
         content = {
           type = "gpt";

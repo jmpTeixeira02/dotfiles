@@ -73,6 +73,7 @@
           "video"
           "audio"
           "gamemode"
+          "libvirtd"
         ];
         shell = pkgs.zsh;
         initialPassword = "temp";

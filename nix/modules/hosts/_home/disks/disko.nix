@@ -125,7 +125,7 @@
               mountOptions = [
                 "nofail"
                 "x-gvfs-show"
-                "x-gvfs-name=Storage-SSD"
+                "x-gvfs-name=Storage-HDD"
               ];
             };
           };
