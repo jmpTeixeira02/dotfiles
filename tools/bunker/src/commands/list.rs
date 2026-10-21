@@ -15,8 +15,10 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         return Err("no drives selected".into());
     }
 
+    let sources = backup::prepare()?;
+
     for path in &chosen {
-        if let Err(e) = backup::run(std::path::Path::new(path)) {
+        if let Err(e) = backup::run(std::path::Path::new(path), &sources) {
             eprintln!("Backup to {path} failed: {e:#}");
         }
     }

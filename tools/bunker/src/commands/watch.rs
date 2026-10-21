@@ -21,13 +21,15 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         flag.store(true, Ordering::Relaxed);
     })?;
 
+    let sources = backup::prepare()?;
+
     let mut known: Vec<std::path::PathBuf> = Vec::new();
     loop {
         let Some(drive) = wait_for_new_drive(&known, &shutdown) else {
             eprintln!("Shutdown complete.");
             break;
         };
-        if let Err(e) = backup::run(&drive) {
+        if let Err(e) = backup::run(&drive, &sources) {
             eprintln!("Backup to {} failed: {e:#}", drive.display());
         }
         known.push(drive);

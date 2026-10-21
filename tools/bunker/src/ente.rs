@@ -15,7 +15,6 @@ pub fn export(out: &Path) -> Result<(), Box<dyn Error>> {
     }
 
     fs::copy(&source_file, out)?;
-    fs::remove_file(&source_file)?;
 
     Ok(())
 }
