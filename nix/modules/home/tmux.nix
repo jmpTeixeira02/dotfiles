@@ -73,6 +73,7 @@
         ];
         extraConfig = ''
           set -g update-environment "NIRI_SOCKET WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          set-hook -g client-session-changed 'refresh-client -S'
           source-file ~/.config/tmux/tmux-local.conf
         '';
       };
