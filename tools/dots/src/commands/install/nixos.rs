@@ -1,4 +1,8 @@
-use std::{fs, io::Write, process::Command};
+use std::{
+    fs,
+    io::{Read, Write},
+    process::Command,
+};
 
 use super::InstallArgs;
 
@@ -8,6 +12,12 @@ pub fn command(args: InstallArgs) -> Command {
     } else {
         remote_command(&args)
     }
+}
+
+fn write_age_key(root: &std::path::Path, key: &str) -> std::io::Result<()> {
+    let keys_dir = root.join("var/lib/sops-nix");
+    fs::create_dir_all(&keys_dir)?;
+    fs::write(keys_dir.join("key.txt"), key)
 }
 
 fn local_command(args: &InstallArgs) -> Command {
@@ -53,23 +63,15 @@ fn remote_command(args: &InstallArgs) -> Command {
         return cmd;
     }
 
-    let key = rpassword::prompt_password("Paste your age private key")
-        .expect("Failed to get the private key");
-    let key = key.trim();
+    eprint!("Paste your age private key, then press Ctrl-D: ");
+    std::io::stderr().flush().ok();
 
+    let mut key = String::new();
+    std::io::stdin()
+        .read_to_string(&mut key)
+        .expect("Failed to read the private key");
     let temp = tempfile::tempdir().expect("Failed to create temp dir to hold the secret key");
-    let keys_dir = temp.path().join("var/lib/sops-nix");
-    fs::DirBuilder::new()
-        .recursive(true)
-        .create(&keys_dir)
-        .expect("Failed to create path for the key");
-    fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(keys_dir.join("key.txt"))
-        .expect("Failed to open key file")
-        .write_all(format!("{key}\n").as_bytes())
-        .expect("Failed to write key");
+    write_age_key(temp.path(), &key).expect("Failed to write key");
 
     let dir = temp.keep();
     cmd.arg("--extra-files").arg(&dir);
@@ -137,6 +139,21 @@ mod tests {
         let args = args_of(cmd);
         assert_eq!(args[0], "-c");
         args[1].clone()
+    }
+
+    #[test]
+    fn multiline_paste_is_written_verbatim() {
+        let pasted = "# created: 2026-10-22T20:00:00Z\n\
+                      # public key: age1dmy85g90rlkxtx2kv34p79u97lv9mp0a336sz59g4f0lat975spswpcc3z\n\
+                      AGE-SECRET-KEY-1XYZ\n";
+        let dir = tempfile::tempdir().unwrap();
+
+        write_age_key(dir.path(), pasted).unwrap();
+
+        assert_eq!(
+            fs::read_to_string(dir.path().join("var/lib/sops-nix/key.txt")).unwrap(),
+            pasted
+        );
     }
 
     #[test]
