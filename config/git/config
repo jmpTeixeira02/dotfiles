@@ -9,13 +9,13 @@
 	rebase = true
 
 [includeIf "hasconfig:remote.*.url:git@github.com:openkcm/**"]
-	path = work.gitconfig
+	path = work
 
 [includeIf "hasconfig:remote.*.url:https://github.com/openkcm/**"]
-	path = work.gitconfig
+	path = work
 
 [includeIf "hasconfig:remote.*.url:git@github.tools.sap:*/**"]
-	path = work.gitconfig
+	path = work
 
 [includeIf "hasconfig:remote.*.url:https://github.tools.sap/*/**"]
-	path = work.gitconfig
+	path = work
