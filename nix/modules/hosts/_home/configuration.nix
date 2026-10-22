@@ -58,6 +58,26 @@
       networkmanager.enable = true;
     };
 
+    # Needed for Homelab VM
+    networking.hosts."192.168.122.11" = map (s: "${s}.yusukeeeee.dedyn.io") [
+      "homepage"
+      "auth"
+      "jellyfin"
+      "seerr"
+      "droppedneedle"
+      "navidrome"
+      "papra"
+      "dockhand"
+      "traefik"
+      "ddns-updater"
+      "lldap"
+      "prowlarr"
+      "sonarr"
+      "radarr"
+      "torrent" # qBittorrent
+      "slskd"
+    ];
+
     time.timeZone = "Europe/Lisbon";
 
     programs.zsh.enable = true;
