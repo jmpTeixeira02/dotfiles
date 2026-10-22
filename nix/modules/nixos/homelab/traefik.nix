@@ -20,6 +20,7 @@
 
       systemd.tmpfiles.rules = [
         "d ${config.mySystem.serviceData}/traefik 0755 homelab homelab -"
+        "d ${config.mySystem.serviceData}/traefik/certs 0755 homelab homelab -"
       ];
 
       virtualisation.oci-containers.containers.traefik = {
