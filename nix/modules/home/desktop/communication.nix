@@ -15,7 +15,7 @@
       programs = {
         discord = {
           enable = true;
-          package = pkgs.discord-ptb;
+          package = pkgs.discord-canary;
         };
         # Wait for vesktop 1.6.8 to be merged in nixpkgs to fix screenshare audio volume spikes
         # vesktop.enable = true
