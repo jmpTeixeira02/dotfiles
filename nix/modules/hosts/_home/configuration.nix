@@ -34,7 +34,8 @@
           gpus = {
             "1002:73DF-1DA2:E445-0000:0b:00.0" = {
               fan_control_enabled = false;
-              performance_level = "auto";
+              performance_level = "manual";
+              power_profile_mode_index = 1; # #3D_APPLICATIONS
               voltage_offset = -100;
             };
           };
