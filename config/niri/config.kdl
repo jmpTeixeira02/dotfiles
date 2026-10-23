@@ -8,6 +8,11 @@ window-rule {
 layout {
     gaps 8
 }
+gestures {
+    hot-corners {
+        off
+    }
+}
 input {
     keyboard {
         xkb {
