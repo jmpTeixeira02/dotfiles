@@ -26,7 +26,7 @@
       xdg.enable = true;
       xdg.configFile = {
         "tmux/tmux-local.conf".source = linkConfig "tmux/tmux.conf";
-        "zsh/tmux-sesh.zsh".source = linkConfig "zsh/tmux-sesh.zsh";
+        "zsh/kubectl-sesh.zsh".source = linkConfig "zsh/kubectl-sesh.zsh";
       };
 
       programs.tmux = {
