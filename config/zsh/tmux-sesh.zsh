@@ -60,8 +60,6 @@ bindkey '^[k' kubectl-switch-context # Alt-k
 
 
 
-
-
 # Run a selection prompt and run an action on an item
 function _select_and_handle_(){
     local title="$1"
@@ -78,3 +76,27 @@ function _select_and_handle_(){
 
     "$action" "$session"
 } 
+
+# Switch between TMUX servers (local + ssh hosts)
+function _tmux_servers_(){
+    echo "local"
+    grep -hE '^Host ' ~/.ssh/config | grep -v '[*?]' | awk '{print $2}'
+}
+
+function _tmux_server_connect_(){
+    local host="$1"
+    [[ "$host" == "local" ]] && return   # already on local
+
+    local cmd="ssh -t ${(q)host} 'tmux new -A -s main'"
+    if [[ -n "$TMUX" ]]; then
+        # leave local tmux, run ssh in the same terminal, return to local when it ends
+        tmux detach-client -E "$cmd; tmux attach -t ${ZSH_TMUX_DEFAULT_SESSION_NAME:-master}"
+    else
+        eval "$cmd"
+    fi
+}
+
+function tmux-switch-server() {
+    _select_and_handle_ "Select TMUX Server" _tmux_servers_ _tmux_server_connect_
+}
+zle     -N             tmux-switch-server
