@@ -56,7 +56,13 @@
 
     networking = {
       hostName = "joao";
-      networkmanager.enable = true;
+      networkmanager = {
+        enable = true;
+        unmanaged = [
+          "interface-name:virbr*"
+          "interface-name:vnet*"
+        ];
+      };
     };
 
     # Needed for Homelab VM
