@@ -59,7 +59,7 @@
                 }
                 {
                   DroppedNeedle = {
-                    icon = "droppedneedle";
+                    icon = "listenbrainz";
                     href = "https://droppedneedle.${config.domain}";
                     description = "Music Request";
                   };
@@ -110,6 +110,13 @@
                         icon = "lldap";
                         href = "https://lldap.${config.domain}";
                         description = "User Management";
+                      };
+                    }
+                    {
+                      CUPS = {
+                        icon = "cups";
+                        href = "https://cups.${config.domain}";
+                        description = "Printing Server";
                       };
                     }
                   ];

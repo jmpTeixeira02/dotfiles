@@ -83,6 +83,7 @@
       "radarr"
       "torrent" # qBittorrent
       "slskd"
+      "cups"
     ];
 
     time.timeZone = "Europe/Lisbon";

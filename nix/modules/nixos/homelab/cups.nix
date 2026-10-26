@@ -32,6 +32,7 @@
           "traefik.enable" = "true";
           "traefik.http.routers.cups.entryPoints" = "websecure";
           "traefik.http.routers.cups.rule" = "Host(`cups.${config.domain}`)";
+          "traefik.http.services.cups.loadbalancer.server.port" = "631";
         };
       };
 
