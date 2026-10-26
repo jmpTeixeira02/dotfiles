@@ -38,6 +38,7 @@
         inputs.flake-parts.flakeModules.modules
         inputs.home-manager.flakeModules.home-manager
         (inputs.import-tree ./modules)
+        (inputs.import-tree ./hosts)
       ];
       systems = [
         "x86_64-linux"
