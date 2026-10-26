@@ -3,6 +3,7 @@
   flake.modules.nixos.homelab-containers = { pkgs, ... }: {
     imports = [
       # config.flake.modules.nixos.homelab-containers-netbird
+      config.flake.modules.nixos.homelab-containers-crowdsec
       config.flake.modules.nixos.homelab-containers-authelia
       config.flake.modules.nixos.homelab-containers-cups
       config.flake.modules.nixos.homelab-containers-ddns-updater

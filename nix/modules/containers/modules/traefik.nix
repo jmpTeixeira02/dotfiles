@@ -15,12 +15,16 @@
           "network/desecToken" = {
             sopsFile = ./secrets.yaml;
           };
+          "crowdsec/traefik" = {
+            sopsFile = ./secrets.yaml;
+          };
         };
       };
 
       systemd.tmpfiles.rules = [
         "d ${config.mySystem.serviceData}/traefik 0755 homelab homelab -"
         "d ${config.mySystem.serviceData}/traefik/certs 0755 homelab homelab -"
+        "d ${config.mySystem.serviceData}/traefik/logs 0755 homelab homelab -"
       ];
 
       virtualisation.oci-containers.containers.traefik = {
@@ -33,7 +37,9 @@
         volumes = [
           "/var/run/podman/podman.sock:/var/run/docker.sock:ro"
           "${config.sops.templates."traefik.yml".path}:/etc/traefik/traefik.yml:ro"
+          "${config.sops.templates."traefik-dynamic.yml".path}:/etc/traefik/dynamic.yml:ro" # NEW
           "${config.mySystem.serviceData}/traefik:/var/traefik:rw"
+          "${config.mySystem.serviceData}/traefik/logs:/var/logs/traefik:rw"
         ];
         environmentFiles = [
           config.sops.templates."traefik-env".path
@@ -58,6 +64,16 @@
           DESEC_PROPAGATION_TIMEOUT = "300";
         };
 
+        "traefik-dynamic.yml".content = lib.generators.toYAML { } {
+          http.middlewares.crowdsec.plugin.bouncer = {
+            enabled = true;
+            crowdsecMode = "live";
+            crowdsecLapiScheme = "http";
+            crowdsecLapiHost = "crowdsec:8080";
+            crowdsecLapiKey = config.sops.placeholder."crowdsec/traefik";
+          };
+        };
+
         "traefik.yml".content = lib.generators.toYAML { } {
           global = {
             checkNewVersion = false;
@@ -66,6 +82,7 @@
 
           log = {
             level = "DEBUG";
+            filePath = "/var/logs/traefik/traefik.log";
           };
 
           api = {
@@ -76,6 +93,7 @@
             web = {
               address = ":80";
               http = {
+                aliasHeadersStrategy = "delete";
                 redirections = {
                   entryPoint = {
                     to = "websecure";
@@ -100,10 +118,16 @@
                   ];
                 };
                 middlewares = [
+                  "crowdsec@file"
                   "authelia@docker"
                 ];
               };
             };
+          };
+
+          experimental.plugins.bouncer = {
+            moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
+            version = "v1.7.1";
           };
 
           providers = {
@@ -139,13 +163,16 @@
       systemd.services."podman-traefik" = {
         after = [
           "podman-authelia.service"
+          "podman-crowdsec.service"
         ];
         requires = [
           "podman-authelia.service"
+          "podman-crowdsec.service"
         ];
         restartTriggers = [
           config.sops.templates."traefik-env".content
           config.sops.templates."traefik.yml".content
+          config.sops.templates."traefik-dynamic.yml".content
         ];
       };
 

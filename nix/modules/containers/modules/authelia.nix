@@ -38,6 +38,7 @@
 
       systemd.tmpfiles.rules = [
         "d ${config.mySystem.serviceData}/authelia 0755 homelab homelab -"
+        "d ${config.mySystem.serviceData}/authelia/logs 0755 homelab homelab -"
       ];
 
       virtualisation.oci-containers.containers.authelia = {
@@ -46,6 +47,7 @@
         user = "1000:1000";
         volumes = [
           "${config.mySystem.serviceData}/authelia:/config:rw"
+          "${config.mySystem.serviceData}/authelia/logs:/var/log/authelia:rw"
           "${config.sops.templates."authelia.yml".path}:/config/configuration.yml:rw"
         ];
         environmentFiles = [
@@ -84,6 +86,9 @@
 
             log = {
               level = "info";
+              format = "text";
+              file_path = "/var/log/authelia/authelia.log";
+              keep_stdout = true;
             };
 
             regulation = {
