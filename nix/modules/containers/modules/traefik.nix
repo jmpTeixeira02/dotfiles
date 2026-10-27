@@ -101,7 +101,7 @@
           };
 
           log = {
-            level = "DEBUG";
+            level = "INFO";
             filePath = "/var/logs/traefik/traefik.log";
           };
 
@@ -165,6 +165,19 @@
             file = {
               filename = "/etc/traefik/dynamic.yml";
             };
+          };
+
+          metrics = {
+            otlp = {
+              addEntryPointsLabels = true;
+              addRoutersLabels = true;
+              addServicesLabels = true;
+              http.endpoint = "http://otel-collector:4318/v1/metrics";
+            };
+          };
+
+          tracing = {
+            otlp.http.endpoint = "http://otel-collector:4318/v1/traces";
           };
 
           certificatesResolvers = {

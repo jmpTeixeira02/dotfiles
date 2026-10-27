@@ -84,6 +84,7 @@
       "torrent" # qBittorrent
       "slskd"
       "cups"
+      "grafana"
     ];
 
     time.timeZone = "Europe/Lisbon";

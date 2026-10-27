@@ -119,6 +119,13 @@
                         description = "Printing Server";
                       };
                     }
+                    {
+                      Grafana = {
+                        icon = "grafana";
+                        href = "https://grafana.${config.domain}";
+                        description = "Monitoring Dashboards";
+                      };
+                    }
                   ];
                 }
                 {

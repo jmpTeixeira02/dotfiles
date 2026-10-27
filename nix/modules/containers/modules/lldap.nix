@@ -11,8 +11,10 @@
       users = {
         joao = {
           displayName = "joao";
+          groups = [ "admin" ];
         };
       };
+      groups = [ "admin" ];
     in
     {
       sops.secrets = {
@@ -50,7 +52,13 @@
         ++ lib.mapAttrsToList (
           name: _:
           "${config.sops.templates."lldap-user-${name}".path}:/bootstrap/user-configs/${name}.json:ro"
-        ) users;
+        ) users
+        ++ map (
+          g:
+          "${
+            pkgs.writeText "lldap-group-${g}.json" (builtins.toJSON { name = g; })
+          }:/bootstrap/group-configs/${g}.json:ro"
+        ) groups;
         environmentFiles = [
           config.sops.templates."lldap-env".path
         ];
