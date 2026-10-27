@@ -65,12 +65,32 @@
         };
 
         "traefik-dynamic.yml".content = lib.generators.toYAML { } {
-          http.middlewares.crowdsec.plugin.bouncer = {
-            enabled = true;
-            crowdsecMode = "live";
-            crowdsecLapiScheme = "http";
-            crowdsecLapiHost = "crowdsec:8080";
-            crowdsecLapiKey = config.sops.placeholder."crowdsec/traefik";
+          http.middlewares = {
+            crowdsec.plugin.bouncer = {
+              enabled = true;
+              crowdsecMode = "live";
+              crowdsecLapiScheme = "http";
+              crowdsecLapiHost = "crowdsec:8080";
+              crowdsecLapiKey = config.sops.placeholder."crowdsec/traefik";
+            };
+            geoblock.plugin.geoblock = {
+              silentStartUp = false;
+              allowLocalRequests = true;
+              logLocalRequests = false;
+              logAllowedRequests = false;
+              logApiRequests = true;
+              api = "https://get.geojs.io/v1/ip/country/{ip}";
+              apiTimeoutMs = 750;
+              cacheSize = 15;
+              cacheTtlSeconds = 0;
+              forceMonthlyUpdate = true;
+              blackListMode = false;
+              countries = [ "PT" ];
+              allowUnknownCountries = false;
+              unknownCountryApiResponse = "nil";
+              addCountryHeader = false;
+              httpStatusCodeDeniedRequest = 403;
+            };
           };
         };
 
@@ -119,15 +139,22 @@
                 };
                 middlewares = [
                   "crowdsec@file"
+                  "geoblock@file"
                   "authelia@docker"
                 ];
               };
             };
           };
 
-          experimental.plugins.bouncer = {
-            moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
-            version = "v1.7.1";
+          experimental.plugins = {
+            bouncer = {
+              moduleName = "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin";
+              version = "v1.7.1";
+            };
+            geoblock = {
+              moduleName = "github.com/PascalMinder/geoblock";
+              version = "v0.3.8";
+            };
           };
 
           providers = {
