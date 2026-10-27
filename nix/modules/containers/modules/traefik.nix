@@ -65,12 +65,25 @@
         };
 
         "traefik-dynamic.yml".content = lib.generators.toYAML { } {
-          http.middlewares.crowdsec.plugin.bouncer = {
-            enabled = true;
-            crowdsecMode = "live";
-            crowdsecLapiScheme = "http";
-            crowdsecLapiHost = "crowdsec:8080";
-            crowdsecLapiKey = config.sops.placeholder."crowdsec/traefik";
+          http.middlewares = {
+            crowdsec.plugin.bouncer = {
+              enabled = true;
+              crowdsecMode = "live";
+              crowdsecLapiScheme = "http";
+              crowdsecLapiHost = "crowdsec:8080";
+              crowdsecLapiKey = config.sops.placeholder."crowdsec/traefik";
+            };
+          };
+          geoblock.plugin.geoblock = {
+            silentStartUp = false;
+            allowLocalRequests = true;
+            logLocalRequests = false;
+            logAllowedRequests = false;
+            logApiRequests = false;
+            blackListMode = false;
+            countries = [ "PT" ];
+            addCountryHeader = false;
+            httpStatusCodeDeniedRequest = 403;
           };
         };
 
@@ -119,6 +132,7 @@
                 };
                 middlewares = [
                   "crowdsec@file"
+                  "geoblock@file"
                   "authelia@docker"
                 ];
               };
@@ -138,6 +152,11 @@
             file = {
               filename = "/etc/traefik/dynamic.yml";
             };
+          };
+
+          experimental.plugins.geoblock = {
+            moduleName = "github.com/PascalMinder/geoblock";
+            version = "v0.3.7";
           };
 
           certificatesResolvers = {
