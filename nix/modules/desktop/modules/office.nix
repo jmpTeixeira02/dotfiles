@@ -10,8 +10,8 @@
       photogimp = pkgs.fetchFromGitHub {
         owner = "Diolinux";
         repo = "PhotoGIMP";
-        rev = "master";
-        sha256 = "sha256-LNopObpXTkYbjqZMkwu0DhdLROuTkE+LYsnwdaICTd0=";
+        rev = "fc61a8f4518eaf18659b749e9464ff32b6607739";
+        sha256 = "sha256-JjK9W59xauzjl88aN1666gCJwUbKurrddFt9rGSMONQ=";
       };
     in
     {
