@@ -12,6 +12,15 @@
           tsdb:
             out_of_order_time_window: 30m
       '';
+      dashboardProvider = pkgs.writeText "dashboards.yaml" ''
+        apiVersion: 1
+        providers:
+          - name: default
+            type: file
+            allowUiUpdates: true
+            options:
+              path: /var/lib/grafana-dashboards
+      '';
       lokiConfig = pkgs.writeText "loki.yaml" ''
         auth_enabled: false
 
@@ -282,6 +291,8 @@
           volumes = [
             "${config.mySystem.serviceData}/grafana:/var/lib/grafana:rw"
             "${grafanaDatasources}:/etc/grafana/provisioning/datasources/datasources.yaml:ro"
+            "${dashboardProvider}:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro"
+            "${./dashboards}:/var/lib/grafana-dashboards:ro"
           ];
           labels = {
             "traefik.enable" = "true";
@@ -348,6 +359,8 @@
         ];
         restartTriggers = [
           config.sops.templates."grafana-auth-env".content
+          "${./dashboards}"
+          "${dashboardProvider}"
         ];
       };
 
