@@ -15,7 +15,7 @@
       programs = {
         discord = {
           enable = true;
-          package = pkgs.discord-canary;
+          package = pkgs.discord-ptb;
         };
       };
     };
