@@ -15,6 +15,12 @@
       ];
 
       services.udiskie.enable = true;
+
+      xdg.userDirs = {
+        enable = true;
+        createDirectories = true;
+        download = "${config.home.homeDirectory}/Downloads";
+      };
     };
 
   flake.modules.nixos.file-manager = { pkgs, lib, ... }: {

@@ -26,7 +26,7 @@ input {
     mouse {
         accel-profile "adaptive"
         accel-speed -0.7
-        scroll-method "on-button-down"
+        // scroll-method "on-button-down"
         scroll-button 274
     }
 }
