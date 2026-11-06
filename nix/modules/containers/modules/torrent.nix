@@ -13,7 +13,7 @@
       ];
 
       virtualisation.oci-containers.containers.torrent = {
-        image = "lscr.io/linuxserver/qbittorrent:latest";
+        image = "lscr.io/linuxserver/qbittorrent@sha256:0f8c20d15d18f5bb0b29ed4811c82c462960b5d3c441d07b59f38c2d337ad20c";
         autoStart = true;
         user = "1000:1000";
         volumes = [

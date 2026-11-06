@@ -23,7 +23,7 @@
       ];
 
       virtualisation.oci-containers.containers.radarr = {
-        image = "ghcr.io/linuxserver/radarr:latest";
+        image = "ghcr.io/linuxserver/radarr@sha256:a466ac12c33425ec22ec4bb0d71c3edb79fd5e5f845bba0e2901c1a6aa59b075";
         autoStart = true;
         user = "1000:1000";
         volumes = [

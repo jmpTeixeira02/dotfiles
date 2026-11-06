@@ -13,7 +13,7 @@
       ];
 
       virtualisation.oci-containers.containers.seerr = {
-        image = "ghcr.io/seerr-team/seerr:latest";
+        image = "ghcr.io/seerr-team/seerr@sha256:2636191726a315dbd75228537f7be74b2fa7498998bb22e37b5b5c8756018fba";
         autoStart = true;
         volumes = [
           "${config.mySystem.serviceData}/seerr:/app/config:rw,U"

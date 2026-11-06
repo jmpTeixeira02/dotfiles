@@ -203,7 +203,7 @@
 
       virtualisation.oci-containers.containers = {
         cadvisor = {
-          image = "ghcr.io/google/cadvisor:latest";
+          image = "ghcr.io/google/cadvisor@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a";
           autoStart = true;
           extraOptions = [
             "--privileged"
@@ -225,7 +225,7 @@
           ];
         };
         prometheus = {
-          image = "docker.io/prom/prometheus:latest";
+          image = "docker.io/prom/prometheus@sha256:d445d1806b38f85b5c394a1b87f94113fde0473b45245922c2e8b1bd41fa68ae";
           autoStart = true;
           user = "1000:1000";
           cmd = [
@@ -239,7 +239,7 @@
           ];
         };
         "node-exporter" = {
-          image = "quay.io/prometheus/node-exporter:latest";
+          image = "quay.io/prometheus/node-exporter@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0";
           autoStart = true;
           cmd = [
             "--path.rootfs=/host"
@@ -265,7 +265,7 @@
           ];
         };
         tempo = {
-          image = "docker.io/grafana/tempo:latest";
+          image = "docker.io/grafana/tempo@sha256:1ce31d6d7ffab62189685e8c47881d4a561c5d38bd0dbd66e40ca83cef07923d";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -277,7 +277,7 @@
           ];
         };
         grafana = {
-          image = "docker.io/grafana/grafana:latest";
+          image = "docker.io/grafana/grafana@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205";
           autoStart = true;
           user = "1000:1000";
           environment = {
@@ -305,7 +305,7 @@
           ];
         };
         otel-collector = {
-          image = "docker.io/otel/opentelemetry-collector-contrib:latest";
+          image = "docker.io/otel/opentelemetry-collector-contrib@sha256:340c9ca6a36617084c6661bdc4f0fe92b7cda5a805d61673ec8db375fddc522b";
           autoStart = true;
           extraOptions = [
             "--user=0"

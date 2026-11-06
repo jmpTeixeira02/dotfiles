@@ -12,7 +12,7 @@
       ];
 
       virtualisation.oci-containers.containers.homepage = {
-        image = "ghcr.io/gethomepage/homepage:latest";
+        image = "ghcr.io/gethomepage/homepage@sha256:3e38fe788223cb46a3ce1f046ef11667b40f7707fdca0dcbfa3f86c5c42bf1e8";
         autoStart = true;
         user = "1000:1000";
         volumes = [

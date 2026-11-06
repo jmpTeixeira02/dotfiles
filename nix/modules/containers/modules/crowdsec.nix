@@ -27,7 +27,7 @@
         "d ${config.mySystem.serviceData}/crowdsec/data 0755 homelab homelab -"
       ];
       virtualisation.oci-containers.containers.crowdsec = {
-        image = "docker.io/crowdsecurity/crowdsec:latest";
+        image = "docker.io/crowdsecurity/crowdsec@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a";
         autoStart = true;
         environment = {
           COLLECTIONS = "crowdsecurity/traefik crowdsecurity/linux crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules crowdsecurity/http-cve crowdsecurity/base-http-scenarios LePresidente/authelia";
