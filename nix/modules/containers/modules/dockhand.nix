@@ -8,7 +8,7 @@
       ];
 
       virtualisation.oci-containers.containers.dockhand = {
-        image = "docker.io/fnsys/dockhand:latest";
+        image = "docker.io/fnsys/dockhand:v1.0.57@sha256:4fd64d32728c99e5caf39b952a17d85448ee0b8ae76e0961f719ba2e19013988";
         autoStart = true;
         volumes = [
           "/var/run/podman/podman.sock:/var/run/docker.sock:ro"

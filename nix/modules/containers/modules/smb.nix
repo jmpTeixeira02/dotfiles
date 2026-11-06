@@ -19,7 +19,7 @@
       };
 
       virtualisation.oci-containers.containers.smb = {
-        image = "docker.io/dockurr/samba:latest";
+        image = "docker.io/dockurr/samba:4.23.10@sha256:2a0452a12b7a244a22f18d0f233101bb8d4952b5500ae263905e3b9dad3bf2ae";
         autoStart = true;
         volumes = [
           "${config.mySystem.poolMount}:/storage:rw"

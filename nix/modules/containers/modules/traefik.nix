@@ -28,7 +28,7 @@
       ];
 
       virtualisation.oci-containers.containers.traefik = {
-        image = "docker.io/traefik:latest";
+        image = "docker.io/traefik:v3.7.17@sha256:f4bb143d1135a579b630ed491e17ec50f6f7c9c6a30585ff3d385471d2a86f5a";
         autoStart = true;
         ports = [
           "80:80"

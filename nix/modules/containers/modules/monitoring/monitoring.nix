@@ -203,7 +203,7 @@
 
       virtualisation.oci-containers.containers = {
         cadvisor = {
-          image = "ghcr.io/google/cadvisor:latest";
+          image = "ghcr.io/google/cadvisor:v0.60.6@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a";
           autoStart = true;
           extraOptions = [
             "--privileged"
@@ -225,7 +225,7 @@
           ];
         };
         prometheus = {
-          image = "docker.io/prom/prometheus:latest";
+          image = "docker.io/prom/prometheus:v3.16.0@sha256:e04987641b57704f408e31f6373ba4138ecf27cb4a165d24aabb6c38fddd0f06";
           autoStart = true;
           user = "1000:1000";
           cmd = [
@@ -239,7 +239,7 @@
           ];
         };
         "node-exporter" = {
-          image = "quay.io/prometheus/node-exporter:latest";
+          image = "quay.io/prometheus/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0";
           autoStart = true;
           cmd = [
             "--path.rootfs=/host"
@@ -253,7 +253,7 @@
           ];
         };
         loki = {
-          image = "docker.io/grafana/loki:3";
+          image = "docker.io/grafana/loki:3.7.9@sha256:0db216b630ae1f348a1584c67f3cead8b4c1fc839169a39501db664744158e28";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -265,7 +265,7 @@
           ];
         };
         tempo = {
-          image = "docker.io/grafana/tempo:latest";
+          image = "docker.io/grafana/tempo:3.1.1@sha256:64e2fbd56d9c2b3412a4b430a58ea59e91a670b1e75f920a0c702213ad145044";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -277,7 +277,7 @@
           ];
         };
         grafana = {
-          image = "docker.io/grafana/grafana:latest";
+          image = "docker.io/grafana/grafana:13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205";
           autoStart = true;
           user = "1000:1000";
           environment = {
@@ -305,7 +305,7 @@
           ];
         };
         otel-collector = {
-          image = "docker.io/otel/opentelemetry-collector-contrib:latest";
+          image = "docker.io/otel/opentelemetry-collector-contrib:0.164.0@sha256:340c9ca6a36617084c6661bdc4f0fe92b7cda5a805d61673ec8db375fddc522b";
           autoStart = true;
           extraOptions = [
             "--user=0"

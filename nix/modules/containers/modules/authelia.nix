@@ -45,7 +45,7 @@
       ];
 
       virtualisation.oci-containers.containers.authelia = {
-        image = "ghcr.io/authelia/authelia:4.39.28";
+        image = "ghcr.io/authelia/authelia:4.39.28@sha256:bd97cff4fcbf715b5ff1f9ae286afbe6033afce385302520b0368122d43a6f54";
         autoStart = true;
         user = "1000:1000";
         volumes = [

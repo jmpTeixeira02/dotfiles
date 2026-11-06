@@ -16,7 +16,7 @@
       };
 
       virtualisation.oci-containers.containers.ddns-updater = {
-        image = "ghcr.io/qdm12/ddns-updater:v2.8";
+        image = "ghcr.io/qdm12/ddns-updater:v2.10.0@sha256:3e2aa558946b5a293def4d73008fa4651c072b2c12932cecd02126fb23979831";
         autoStart = true;
         volumes = [
           "${config.sops.templates."ddns-updater.json".path}:/updater/data/config.json:ro,U"

@@ -27,7 +27,7 @@
       ];
 
       virtualisation.oci-containers.containers.slskd = {
-        image = "docker.io/slskd/slskd:latest";
+        image = "docker.io/slskd/slskd:0.26.2@sha256:d0963a3e5b16facd295bf4f2156dad0182f246b1b21a032cae12f5494c694843";
         autoStart = true;
         user = "1000:1000";
         volumes = [

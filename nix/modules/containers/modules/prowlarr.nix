@@ -48,7 +48,7 @@
       ];
 
       virtualisation.oci-containers.containers.prowlarr = {
-        image = "lscr.io/linuxserver/prowlarr:latest";
+        image = "lscr.io/linuxserver/prowlarr:2.7.0@sha256:431d7efebcef466e56adaa40a7a2fa2b0e85159a037b8bf465eaadbf0cf5bedf";
         autoStart = true;
         user = "1000:1000";
         volumes = [

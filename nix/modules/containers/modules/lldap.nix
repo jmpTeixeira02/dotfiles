@@ -44,7 +44,7 @@
       ];
 
       virtualisation.oci-containers.containers.lldap = {
-        image = "docker.io/lldap/lldap:stable";
+        image = "docker.io/lldap/lldap:2026-09-22-alpine-rootless@sha256:bb6e509b4a44e8e9985acfd95d83a85e252ed81879254d9751b9926e3ac26c62";
         autoStart = true;
         volumes = [
           "${config.mySystem.serviceData}/lldap:/data:rw"

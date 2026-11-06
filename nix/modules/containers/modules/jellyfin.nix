@@ -35,12 +35,12 @@
       ];
 
       virtualisation.oci-containers.containers.jellyfin = {
-        image = "ghcr.io/jellyfin/jellyfin:12.1";
+        image = "ghcr.io/jellyfin/jellyfin:12.4@sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771";
         autoStart = true;
         volumes = [
           "${config.mySystem.serviceData}/jellyfin/config:/config:rw"
           "${config.mySystem.serviceData}/jellyfin/cache:/cache:rw"
-          "${config.sops.templates."jellyfin-ldap.xml".path}:/config/plugins/configurations/LDAP-Auth.xml:rw" # Need to make rw
+          "${config.sops.templates."jellyfin-ldap.xml".path}:/config/plugins/configurations/LDAP-Auth.xml:rw"
           "${config.mySystem.poolMount}/movies:/media/movies:ro"
           "${config.mySystem.poolMount}/tvseries:/media/tv:ro"
         ];

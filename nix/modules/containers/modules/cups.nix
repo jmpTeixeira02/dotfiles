@@ -21,7 +21,7 @@
       };
 
       virtualisation.oci-containers.containers.cups = {
-        image = "docker.io/anujdatar/cups:latest";
+        image = "docker.io/anujdatar/cups:26.11.01@sha256:c907a6a8cae0fc82578d25fcd302c8002fc98e0d0b1f481490d3f947c175f206";
         autoStart = true;
         volumes = [
           "/var/run/dbus:/var/run/dbus"

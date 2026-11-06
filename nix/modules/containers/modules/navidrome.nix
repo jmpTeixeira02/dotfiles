@@ -12,7 +12,7 @@
       ];
 
       virtualisation.oci-containers.containers.navidrome = {
-        image = "docker.io/deluan/navidrome:latest";
+        image = "docker.io/deluan/navidrome:0.64.2@sha256:38dc2727bfcfd5ede290f8ada114fc90368146f265ae4701ddddbcbe2a44ee52";
         autoStart = true;
         volumes = [
           "${config.mySystem.serviceData}/navidrome:/data:rw"
