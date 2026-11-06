@@ -1,0 +1,46 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "timezone": "Etc/UTC",
+    "schedule": [
+        "every weekend"
+    ],
+    "cargo": {
+        "managerFilePatterns": [
+            "/^tools\\/bunker\\/Cargo\\.toml$/",
+            "/^tools\\/dots\\/Cargo\\.toml$/"
+        ]
+    },
+    "nix": {
+        "enabled": true,
+        "managerFilePatterns": [
+            "/^nix\\//"
+        ]
+    },
+    "packageRules": [
+        {
+            "matchManagers": [
+                "cargo",
+                "nix",
+                "custom.regex",
+                "github-actions"
+            ],
+            "groupName": "all dependencies"
+        }
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "managerFilePatterns": [
+                "/^nix\\/.*\\.nix$/"
+            ],
+            "matchStrings": [
+                "image\\s*=\\s*\"(?<depName>[^\" ]+):(?<currentValue>[^\"@]+)@(?<currentDigest>sha256:[a-f0-9]+)\""
+            ],
+            "datasourceTemplate": "docker",
+            "versioningTemplate": "docker"
+        }
+    ]
+}
