@@ -114,7 +114,10 @@
       "flakes"
     ];
 
-    environment.systemPackages = with pkgs; [ git ];
+    environment.systemPackages = with pkgs; [
+      git
+      llama-cpp-vulkan
+    ];
     system.stateVersion = "26.05";
   };
 }
