@@ -3,7 +3,7 @@ spawn-at-startup "zen-beta"
 spawn-sh-at-startup "GTK_IM_MODULE=simple ghostty"
 spawn-sh-at-startup "steam"
 spawn-sh-at-startup "sleep 1 && discord"
-spawn-at-startup "zapzap"
+spawn-at-startup "zapfast"
 spawn-at-startup "spotify"
 spawn-at-startup "thunderbird"
 workspace "browser" {
@@ -44,7 +44,7 @@ workspace "chat" {
 }
 window-rule {
     match at-startup=true app-id="discord"
-    match at-startup=true app-id="com.rtosta.zapzap"
+    match at-startup=true app-id="zapfast"
     open-on-workspace "chat"
 }
 workspace "music" {
