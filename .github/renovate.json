@@ -7,25 +7,13 @@
     "schedule": [
         "every weekend"
     ],
-    "cargo": {
-        "managerFilePatterns": [
-            "/^tools\\/bunker\\/Cargo\\.toml$/",
-            "/^tools\\/dots\\/Cargo\\.toml$/"
-        ]
-    },
     "nix": {
-        "enabled": true,
-        "managerFilePatterns": [
-            "/^nix\\//"
-        ]
+        "enabled": true
     },
     "packageRules": [
         {
-            "matchManagers": [
-                "cargo",
-                "nix",
-                "custom.regex",
-                "github-actions"
+            "matchPackageNames": [
+                "*"
             ],
             "groupName": "all dependencies"
         }
@@ -39,8 +27,7 @@
             "matchStrings": [
                 "image\\s*=\\s*\"(?<depName>[^\" ]+):(?<currentValue>[^\"@]+)@(?<currentDigest>sha256:[a-f0-9]+)\""
             ],
-            "datasourceTemplate": "docker",
-            "versioningTemplate": "docker"
+            "datasourceTemplate": "docker"
         }
     ]
 }
