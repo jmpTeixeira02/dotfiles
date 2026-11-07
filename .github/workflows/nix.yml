@@ -30,9 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v23
 
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v15
 
       - name: Build ${{ matrix.host }}
         run: nix build .?submodules=1#${{ matrix.attr }} --no-link
