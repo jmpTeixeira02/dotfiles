@@ -82,6 +82,8 @@
       // lib.mapAttrs' (
         name: u:
         lib.nameValuePair "lldap-user-${name}" {
+          owner = "homelab";
+          mode = "0400";
           content = builtins.toJSON {
             id = name;
             email = config.sops.placeholder."network/lldap/users/${name}/email";
