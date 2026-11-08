@@ -7,6 +7,7 @@
 
         heroic
         bottles
+        faugus-launcher
 
         deadlock-mod-manager
       ];
