@@ -32,7 +32,7 @@
       ];
 
       virtualisation.oci-containers.containers.droppedneedle = {
-        image = "ghcr.io/droppedneedle/droppedneedle:v2.15.0@sha256:6d58d829cc5aa29e5de95933ba1ce46f249ccf7ef3ed437c643231b771d711c5";
+        image = "ghcr.io/droppedneedle/droppedneedle:v3.0.0@sha256:38d702f5ef14fa8c3f028e916011e1fe93a8a2b10452c72e2f6f27e3031356ef";
         autoStart = true;
         user = "1000:1000";
         volumes = [
