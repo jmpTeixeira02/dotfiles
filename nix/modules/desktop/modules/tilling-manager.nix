@@ -9,6 +9,7 @@
     }:
     {
       home.packages = with pkgs; [
+        umbriel
         niri
         nirius
       ];
@@ -16,6 +17,7 @@
       xdg.enable = true;
       xdg.configFile = {
         "niri".source = linkConfig "niri";
+        "umbriel".source = linkConfig "umbriel";
       };
 
     };
@@ -43,6 +45,10 @@
       programs.niri = {
         enable = true;
         package = niriForceRender;
+      };
+
+      programs.umbriel = {
+        enable = true;
       };
 
       services.displayManager.noctalia-greeter = {

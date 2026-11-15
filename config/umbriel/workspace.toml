@@ -1,0 +1,73 @@
+[[workspace]]
+name = "browser"
+output = "DP-1"
+
+[[workspace]]
+name = "terminal"
+output = "DP-1"
+
+[[workspace]]
+name = "steam"
+output = "DP-1"
+
+[[workspace]]
+name = "chat"
+output = "DP-2"
+
+[[workspace]]
+name = "music"
+output = "DP-2"
+
+[[workspace]]
+name = "email"
+output = "DP-2"
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^zen-beta$'
+default_workspace = "browser"
+default_maximize = true
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^com\.mitchellh\.ghostty$'
+default_workspace = "terminal"
+default_maximize = true
+
+[[window_rule]]
+match.app_id = '^steam_app_\d+$'
+default_workspace = "steam"
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^steam$'
+default_workspace = "steam"
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^steam$'
+match.title = '^Steam$'
+default_workspace = "steam"
+default_maximize = true
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^discord$'
+default_workspace = "chat"
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^zapfast$'
+default_workspace = "chat"
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^spotify$'
+default_workspace = "music"
+default_maximize = true
+
+[[window_rule]]
+match.at_startup = true
+match.app_id = '^thunderbird$'
+default_workspace = "email"
+default_maximize = true

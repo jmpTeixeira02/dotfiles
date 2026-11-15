@@ -1,0 +1,117 @@
+[keybinds]
+
+# Applications and session
+"Mod+T" = { action = "spawn env GTK_IM_MODULE=simple ghostty", repeat = false }
+"Mod+B" = { action = "spawn zen-beta", repeat = false }
+"Mod+Q" = { action = "window-close", repeat = false }
+"Mod+Alt+E" = { action = "spawn nautilus", repeat = false }
+"Mod+Shift+Alt+Q" = { action = "session-quit", repeat = false }
+
+"Mod+O" = { action = "overview-toggle", repeat = false }
+
+# Focus
+"Mod+Left" = "window-focus-left"
+"Mod+Right" = "window-focus-right"
+"Mod+Down" = "window-focus-or-workspace-down"
+"Mod+Up" = "window-focus-or-workspace-up"
+"Mod+H" = "window-focus-left"
+"Mod+J" = "window-focus-or-workspace-down"
+"Mod+K" = "window-focus-or-workspace-up"
+"Mod+L" = "window-focus-right"
+
+# Move
+"Mod+Ctrl+Left" = "column-move-left"
+"Mod+Ctrl+Down" = "window-move-down"
+"Mod+Ctrl+Up" = "window-move-up"
+"Mod+Ctrl+Right" = "column-move-right"
+"Mod+Ctrl+H" = "column-move-left"
+"Mod+Ctrl+J" = "window-move-or-workspace-down"
+"Mod+Ctrl+K" = "window-move-or-workspace-up"
+"Mod+Ctrl+L" = "column-move-right"
+
+"Mod+Ctrl+U" = "window-move-to-workspace-previous"
+"Mod+Ctrl+D" = "window-move-to-workspace-next"
+
+# Outputs
+"Mod+Shift+Left" = "output-focus-left"
+"Mod+Shift+Down" = "output-focus-down"
+"Mod+Shift+Up" = "output-focus-up"
+"Mod+Shift+Right" = "output-focus-right"
+"Mod+Shift+H" = "output-focus-left"
+"Mod+Shift+J" = "output-focus-down"
+"Mod+Shift+K" = "output-focus-up"
+"Mod+Shift+L" = "output-focus-right"
+
+"Mod+Ctrl+Shift+Left" = "column-move-to-output-left"
+"Mod+Ctrl+Shift+Down" = "column-move-to-output-down"
+"Mod+Ctrl+Shift+Up" = "column-move-to-output-up"
+"Mod+Ctrl+Shift+Right" = "column-move-to-output-right"
+"Mod+Ctrl+Shift+H" = "column-move-to-output-left"
+"Mod+Ctrl+Shift+J" = "column-move-to-output-down"
+"Mod+Ctrl+Shift+K" = "column-move-to-output-up"
+"Mod+Ctrl+Shift+L" = "column-move-to-output-right"
+
+"Mod+Alt+Left" = "workspace-move-to-output-left"
+"Mod+Alt+Down" = "workspace-move-to-output-down"
+"Mod+Alt+Up" = "workspace-move-to-output-up"
+"Mod+Alt+Right" = "workspace-move-to-output-right"
+"Mod+Alt+H" = "workspace-move-to-output-left"
+"Mod+Alt+J" = "workspace-move-to-output-down"
+"Mod+Alt+K" = "workspace-move-to-output-up"
+"Mod+Alt+L" = "workspace-move-to-output-right"
+
+# Workspaces
+"Mod+1" = "workspace-switch 1"
+"Mod+2" = "workspace-switch 2"
+"Mod+3" = "workspace-switch 3"
+"Mod+4" = "workspace-switch 4"
+"Mod+5" = "workspace-switch 5"
+"Mod+6" = "workspace-switch 6"
+"Mod+7" = "workspace-switch 7"
+"Mod+8" = "workspace-switch 8"
+"Mod+9" = "workspace-switch 9"
+
+"Mod+Ctrl+1" = "column-move-to-workspace 1"
+"Mod+Ctrl+2" = "column-move-to-workspace 2"
+"Mod+Ctrl+3" = "column-move-to-workspace 3"
+"Mod+Ctrl+4" = "column-move-to-workspace 4"
+"Mod+Ctrl+5" = "column-move-to-workspace 5"
+"Mod+Ctrl+6" = "column-move-to-workspace 6"
+"Mod+Ctrl+7" = "column-move-to-workspace 7"
+"Mod+Ctrl+8" = "column-move-to-workspace 8"
+"Mod+Ctrl+9" = "column-move-to-workspace 9"
+
+"Mod+WheelDown" = { action = "workspace-next", cooldown_ms = 150 }
+"Mod+WheelUp" = { action = "workspace-previous", cooldown_ms = 150 }
+"Mod+WheelRight" = "window-focus-right"
+"Mod+WheelLeft" = "window-focus-left"
+
+"Mod+Escape" = { action = "shortcuts-inhibit-toggle", allow_when_inhibited = true, repeat = false }
+
+# Sizing
+"Mod+R" = "window-cycle-primary-extent"
+"Mod+Shift+R" = "window-cycle-primary-extent-back"
+"Mod+Minus" = "window-modify-primary-extent -0.1"
+"Mod+Plus" = "window-modify-primary-extent +0.1"
+"Mod+Shift+Minus" = "window-modify-height-down -0.1"
+"Mod+Shift+Plus" = "window-modify-height-down +0.1"
+
+"Mod+BracketLeft" = "window-consume-or-expel-left"
+"Mod+BracketRight" = "window-consume-or-expel-right"
+
+"Mod+F" = { action = "window-toggle-maximize", repeat = false }
+"Mod+Shift+F" = { action = "window-toggle-fullscreen", repeat = false }
+"Mod+Ctrl+F" = "window-set-primary-extent 1.0"
+"Mod+C" = "column-center"
+"Mod+V" = { action = "window-toggle-floating", repeat = false }
+"Mod+Alt+V" = { action = "window-focus-switch-floating", repeat = false }
+
+"Mod+I" = "window-focus-previous"
+
+"Mod+F1" = { action = "cheatsheet-toggle", repeat = false }
+
+"Mod+Ctrl+V" = "screencast-follow-window"
+
+"Mod+Insert" = "screencast-set-window"
+"Mod+Home" = "screencast-set-output"
+"Mod+Delete" = "screencast-clear"

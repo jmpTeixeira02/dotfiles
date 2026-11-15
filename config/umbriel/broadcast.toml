@@ -1,0 +1,3 @@
+[[window_rule]]
+match.app_id = ['^bitwarden$', '^io\.ente\.auth$', '^com\.rtosta\.zapzap$']
+block_capture = true

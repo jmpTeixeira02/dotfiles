@@ -1,0 +1,67 @@
+[include]
+files = [
+    "workspace.toml",
+    "broadcast.toml",
+    "keybinds.toml",
+    "noctalia.toml",
+    "my-noctalia.toml",
+]
+
+[general]
+autostart = [
+    "noctalia",
+    "zen-beta",
+    "env GTK_IM_MODULE=simple ghostty",
+    "steam",
+    "sleep 1 && discord",
+    "zapfast",
+    "spotify",
+    "thunderbird",
+]
+show_cheatsheet = false
+
+[appearance]
+prefer_no_csd = true
+corner_radius = 8
+
+[layout]
+gap = 8
+
+[layout.scrolling]
+default_extent_fraction = 0.5
+
+[input.keyboard]
+layout = "pt"
+variant = "mac"
+numlock_toggle = true
+repeat_delay = 200
+repeat_rate = 40
+
+[input.mouse]
+accel_profile = "adaptive"
+sensitivity = -0.7
+# scroll_button = "MouseMiddle"
+
+[output.DP-1]
+mode = "2560x1440@144"
+scale = 1
+position = [0, 0]
+focus_at_startup = true
+
+[output.DP-2]
+mode = "1920x1080@60"
+scale = 1
+position = [2560, 0]
+
+[output.HDMI-A-1]
+enabled = false
+
+[[window_rule]]
+match.app_id = '^steam_app_.*'
+vrr = "always"
+
+[[window_rule]]
+match.app_id = '^zen-beta$'
+match.title = '^Picture-in-Picture$'
+default_floating = true
+default_position = { x = 32, y = 32, anchor = "bottom_right" }

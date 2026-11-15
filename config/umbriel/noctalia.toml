@@ -1,0 +1,15 @@
+[colors]
+insert_hint = "#8a9a7b80"
+
+[colors.border]
+focused = "#8a9a7b"
+unfocused = "#181616"
+# niri's urgent "#c4746e" has no Umbriel border color.
+
+[colors.tab_bar]
+active = "#8a9a7b"
+active_unfocused = "#313e24"
+urgent = "#c4746e"
+
+[colors.overview]
+badge = "#8a9a7b"
