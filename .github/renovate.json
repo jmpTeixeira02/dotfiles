@@ -7,18 +7,15 @@
     "schedule": [
         "every weekend"
     ],
-    "nix": {
-        "enabled": true
-    },
-    "lockFileMaintenance": {
-        "enabled": true
-    },
+    "enabledManagers": [
+        "custom.regex"
+    ],
     "packageRules": [
         {
-            "matchPackageNames": [
-                "*"
+            "matchDatasources": [
+                "docker"
             ],
-            "groupName": "all dependencies"
+            "groupName": "docker images"
         }
     ],
     "customManagers": [
