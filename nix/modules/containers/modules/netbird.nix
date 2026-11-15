@@ -20,7 +20,7 @@
       ];
 
       virtualisation.oci-containers.containers.netbird = {
-        image = "ghcr.io/netbirdio/netbird:0.82.0-rootless-ubi@sha256:738b60b647c4556e46270d5d1662d40215d2c28fa0496bb087997dbdd8c380f2";
+        image = "ghcr.io/netbirdio/netbird:0.83.1-rootless-ubi@sha256:71acb05ad4a421fac89e64a7f9cd9bac9af5812a8b91f0600690552c265bddbd";
         autoStart = true;
         volumes = [
           "${config.mySystem.serviceData}/netbird:/config:rw"

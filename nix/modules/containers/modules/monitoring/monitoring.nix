@@ -253,7 +253,7 @@
           ];
         };
         loki = {
-          image = "docker.io/grafana/loki:3.7.9@sha256:0db216b630ae1f348a1584c67f3cead8b4c1fc839169a39501db664744158e28";
+          image = "docker.io/grafana/loki:3.7.10@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -277,7 +277,7 @@
           ];
         };
         grafana = {
-          image = "docker.io/grafana/grafana:13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205";
+          image = "docker.io/grafana/grafana:13.3.1@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf";
           autoStart = true;
           user = "1000:1000";
           environment = {
