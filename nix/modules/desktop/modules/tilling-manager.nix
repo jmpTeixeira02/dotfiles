@@ -10,13 +10,10 @@
     {
       home.packages = with pkgs; [
         umbriel
-        niri
-        nirius
       ];
 
       xdg.enable = true;
       xdg.configFile = {
-        "niri".source = linkConfig "niri";
         "umbriel".source = linkConfig "umbriel";
       };
 
@@ -24,29 +21,7 @@
 
   flake.modules.nixos.tilling-manager =
     { pkgs, lib, ... }:
-    let
-      # https://github.com/niri-wm/niri/pull/4392
-      niriSrc = pkgs.fetchFromGitHub {
-        owner = "niri-wm";
-        repo = "niri";
-        rev = "refs/pull/4392/head";
-        hash = "sha256-K8rKFl1DsR+PSfLuHilQWtb95NaD1jsDy5fbeVOtukc=";
-      };
-
-      niriForceRender = pkgs.niri.overrideAttrs (old: {
-        src = niriSrc;
-        cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-          src = niriSrc;
-          hash = "sha256-vtTh+TG6TdX46QydGKaeo50u2qdQf3UkQ50EML+5H9c=";
-        };
-      });
-    in
     {
-      programs.niri = {
-        enable = true;
-        package = niriForceRender;
-      };
-
       programs.umbriel = {
         enable = true;
       };
