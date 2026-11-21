@@ -203,7 +203,7 @@
 
       virtualisation.oci-containers.containers = {
         cadvisor = {
-          image = "ghcr.io/google/cadvisor:v0.60.6@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a";
+          image = "ghcr.io/google/cadvisor:v0.61.1@sha256:4929b70e82079d001d0028b85d6a4dd25ad4666b719455c9542b983489963916";
           autoStart = true;
           extraOptions = [
             "--privileged"
@@ -239,7 +239,7 @@
           ];
         };
         "node-exporter" = {
-          image = "quay.io/prometheus/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0";
+          image = "quay.io/prometheus/node-exporter:v1.13.1@sha256:011e2d12c5bff759b90804bda642664775d7b4b127bf5148539bb82d3f590bb7";
           autoStart = true;
           cmd = [
             "--path.rootfs=/host"
@@ -253,7 +253,7 @@
           ];
         };
         loki = {
-          image = "docker.io/grafana/loki:3.7.9@sha256:0db216b630ae1f348a1584c67f3cead8b4c1fc839169a39501db664744158e28";
+          image = "docker.io/grafana/loki:3.7.10@sha256:b43c257ccfc925d4a50b8717cac61a3b51df8c48d01847936057e5c4075a24a7";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -277,7 +277,7 @@
           ];
         };
         grafana = {
-          image = "docker.io/grafana/grafana:13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205";
+          image = "docker.io/grafana/grafana:13.3.1@sha256:0615ec4fbd4072004b7d86b46ded63013a74b7d6eb1119273dd89e8fa25c13cf";
           autoStart = true;
           user = "1000:1000";
           environment = {
