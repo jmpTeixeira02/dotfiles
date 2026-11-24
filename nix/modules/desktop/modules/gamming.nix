@@ -5,11 +5,10 @@
       home.packages = with pkgs; [
         vulkan-tools
 
-        heroic
-        bottles
         faugus-launcher
 
         deadlock-mod-manager
+        steamcmd
       ];
 
       programs.mangohud = {

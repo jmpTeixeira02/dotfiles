@@ -20,6 +20,7 @@
         gimp
         obs-studio
         euro-office-desktopeditors
+        qbittorrent
       ];
       xdg.configFile."GIMP/3.0".source = "${photogimp}/.config/GIMP/3.0";
     };
