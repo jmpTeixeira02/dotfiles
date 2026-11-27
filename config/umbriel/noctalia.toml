@@ -1,15 +1,50 @@
 [colors]
-insert_hint = "#8a9a7b80"
+background = "#282727FF"
+text_primary = "#c5c9c5FF"
+text_muted = "#c8c093FF"
+accent_primary = "#8a9a7bFF"
+accent_secondary = "#8ea4a2FF"
+warning = "#c4746eFF"
+error = "#c4746eFF"
+insert_hint = "#c4746e80"
+backdrop = "#282727FF"
 
 [colors.border]
-focused = "#8a9a7b"
-unfocused = "#181616"
-# niri's urgent "#c4746e" has no Umbriel border color.
-
-[colors.tab_bar]
-active = "#8a9a7b"
-active_unfocused = "#313e24"
-urgent = "#c4746e"
+focused = "#8a9a7bFF"
+unfocused = "#282727FF"
+outer = "#181616FF"
 
 [colors.overview]
-badge = "#8a9a7b"
+background_tint = "#18161688"
+badge = "#8a9a7bFF"
+workspace_background = "#181616FF"
+
+[colors.tab_bar]
+background = "#282727FF"
+text = "#c8c093FF"
+active = "#8a9a7bFF"
+active_text = "#181616FF"
+active_unfocused = "#282727FF"
+active_unfocused_text = "#c5c9c5FF"
+urgent = "#c4746eFF"
+urgent_text = "#181616FF"
+
+[colors.title_bar]
+background = "#282727FF"
+background_unfocused = "#181616FF"
+text = "#c5c9c5FF"
+text_unfocused = "#c8c093FF"
+close = "#c4746eFF"
+close_glyph = "#181616FF"
+close_glyph_hover = "#181616FF"
+maximize = "#8a9a7bFF"
+maximize_glyph = "#181616FF"
+maximize_glyph_hover = "#181616FF"
+minimize = "#8ea4a2FF"
+minimize_glyph = "#181616FF"
+minimize_glyph_hover = "#181616FF"
+
+[[window_rule]]
+match.is_scratchpad = true
+border_color_focused = "#c4746eFF"
+border_color_unfocused = "#4b3230FF"

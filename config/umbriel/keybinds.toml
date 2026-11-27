@@ -8,6 +8,7 @@
 "Mod+Shift+Alt+Q" = { action = "session-quit", repeat = false }
 
 "Mod+O" = { action = "overview-toggle", repeat = false }
+"Mod+Ctrl+Alt+K" = { action = "keyboard-layout-next", repeat = false }
 
 # Focus
 "Mod+Left" = "window-focus-left"

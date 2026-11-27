@@ -683,6 +683,10 @@ umbriel_overview_type_to_launch_enabled = true
     [shell.greeter_sync]
     auto_sync = true
 
+    [shell.keyboard_layout.custom_labels]
+    Portuguese = "PT Default"
+    "Portuguese (Macintosh)" = "PT Mac"
+
     [shell.panel]
     control_center_position = "top_right"
 
@@ -697,7 +701,7 @@ source = "community"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk4", "niri" ]
+    builtin_ids = [ "btop", "gtk4", "umbriel" ]
     community_ids = []
 
 [wallpaper]

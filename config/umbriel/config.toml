@@ -3,13 +3,13 @@ files = [
     "workspace.toml",
     "broadcast.toml",
     "keybinds.toml",
-    "noctalia.toml",
     "my-noctalia.toml",
 ]
 
 [general]
 autostart = [
     "noctalia",
+    "sleep 1 && umbriel msg keyboard-layout-next", # Main variant needs to be the default for deadlock, but use alternate (Macintosh) as selected by default
     "zen-beta",
     "env GTK_IM_MODULE=simple ghostty",
     "steam",
@@ -31,8 +31,8 @@ gap = 8
 default_extent_fraction = 0.5
 
 [input.keyboard]
-layout = "pt"
-variant = "mac"
+layout = "pt,pt"
+variant = ",mac"      # Default Variant as main is needed for deadlock
 numlock_toggle = true
 repeat_delay = 200
 repeat_rate = 40
@@ -65,3 +65,6 @@ match.app_id = '^zen-beta$'
 match.title = '^Picture-in-Picture$'
 default_floating = true
 default_position = { x = 32, y = 32, anchor = "bottom_right" }
+
+[include.optional]
+files = ["noctalia.toml"]
