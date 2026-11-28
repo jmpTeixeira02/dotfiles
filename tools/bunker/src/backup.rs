@@ -48,11 +48,18 @@ pub fn run(drive: &Path, sources: &Sources) -> Result<(), Box<dyn Error>> {
     let dir = drive.join(format!("bunker_{dir_name}"));
     fs::create_dir_all(&dir)?;
 
-    fs::copy(&sources.bitwarden, dir.join("bitwarden.json"))?;
-    fs::copy(&sources.ente, dir.join("ente_auth.txt"))?;
+    copy_synced(&sources.bitwarden, &dir.join("bitwarden.json"))?;
+    copy_synced(&sources.ente, &dir.join("ente_auth.txt"))?;
+    fs::File::open(&dir)?.sync_all()?;
 
     println!("Backup complete: {}", dir.display());
     Ok(())
+}
+
+// fsync so the file is on the device, not just the page cache, before sucess report
+fn copy_synced(from: &Path, to: &Path) -> io::Result<()> {
+    fs::copy(from, to)?;
+    fs::File::open(to)?.sync_all()
 }
 
 fn build_dir_name() -> String {
