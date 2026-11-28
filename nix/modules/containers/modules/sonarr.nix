@@ -23,7 +23,7 @@
       ];
 
       virtualisation.oci-containers.containers.sonarr = {
-        image = "ghcr.io/linuxserver/sonarr:4.0.20@sha256:673dc4609a5672bc8e46069c86ffcea283a86b48d34a6c93d8da8c24a1b87571";
+        image = "ghcr.io/linuxserver/sonarr:4.0.20@sha256:5c943771636f8f13b833efc0eae81b9373737435a262503a29157842c052ed0b";
         autoStart = true;
         user = "1000:1000";
         volumes = [

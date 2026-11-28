@@ -203,7 +203,7 @@
 
       virtualisation.oci-containers.containers = {
         cadvisor = {
-          image = "ghcr.io/google/cadvisor:v0.60.6@sha256:b8e7d1093144fd088f425ff003d75a4aa405de075db78dae3bc563730b1bd07a";
+          image = "ghcr.io/google/cadvisor:v0.61.1@sha256:4929b70e82079d001d0028b85d6a4dd25ad4666b719455c9542b983489963916";
           autoStart = true;
           extraOptions = [
             "--privileged"
@@ -239,7 +239,7 @@
           ];
         };
         "node-exporter" = {
-          image = "quay.io/prometheus/node-exporter:v1.12.1@sha256:1b4e4438faca4dd7e001dd445d161a4a2091b0fededa84093b3a8dfeae1f1be0";
+          image = "quay.io/prometheus/node-exporter:v1.13.1@sha256:011e2d12c5bff759b90804bda642664775d7b4b127bf5148539bb82d3f590bb7";
           autoStart = true;
           cmd = [
             "--path.rootfs=/host"
@@ -253,7 +253,7 @@
           ];
         };
         loki = {
-          image = "docker.io/grafana/loki:3.7.9@sha256:0db216b630ae1f348a1584c67f3cead8b4c1fc839169a39501db664744158e28";
+          image = "docker.io/grafana/loki:3.7.11@sha256:4c86f2ad5003304c8da84d29da2279b04eb999d716f8089c88e4fa4a44b0781e";
           autoStart = true;
           user = "1000:1000";
           volumes = [
@@ -277,7 +277,7 @@
           ];
         };
         grafana = {
-          image = "docker.io/grafana/grafana:13.3.0@sha256:488984b716c0862639f91a698adbe2862677a5a07bad42da5f03f3030883b205";
+          image = "docker.io/grafana/grafana:13.3.2@sha256:81556409ba48b2b922e0adb69a2511337d8ba7578f11962eefa6149a2d815101";
           autoStart = true;
           user = "1000:1000";
           environment = {
@@ -305,7 +305,7 @@
           ];
         };
         otel-collector = {
-          image = "docker.io/otel/opentelemetry-collector-contrib:0.165.0@sha256:e40d61f10c9a617cca1ffd1be4d7e2b3a4b0f0001798ff07e58cabe82e618cea";
+          image = "docker.io/otel/opentelemetry-collector-contrib:0.166.0@sha256:3e18fe04181de50bdd72e23ad4a4d6214b54351e63d496f1c58127cc4541ad7f";
           autoStart = true;
           extraOptions = [
             "--user=0"
