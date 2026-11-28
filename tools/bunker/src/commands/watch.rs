@@ -25,7 +25,7 @@ pub fn run() -> Result<(), Box<dyn Error>> {
 
     let mut known: Vec<std::path::PathBuf> = Vec::new();
     loop {
-        let Some(drive) = wait_for_new_drive(&known, &shutdown) else {
+        let Some(drive) = wait_for_new_drive(&mut known, &shutdown) else {
             eprintln!("Shutdown complete.");
             break;
         };

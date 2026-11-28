@@ -63,6 +63,24 @@ mod tests {
     }
 
     #[test]
+    fn reinserted_drive_is_new_again() {
+        let mut known = vec![PathBuf::from("/media/usb")];
+        // unplugged: nothing mounted, so the drive is forgotten
+        assert_eq!(pick_new(&[], &mut known), None);
+        // replugged at the same path: backs up again
+        assert_eq!(
+            pick_new(&[PathBuf::from("/media/usb")], &mut known),
+            Some(PathBuf::from("/media/usb"))
+        );
+    }
+
+    #[test]
+    fn still_mounted_drive_is_not_new() {
+        let mut known = vec![PathBuf::from("/media/usb")];
+        assert_eq!(pick_new(&[PathBuf::from("/media/usb")], &mut known), None);
+    }
+
+    #[test]
     fn multiple_drives_all_returned() {
         let input = "/dev/sda1 / ext4 rw 0 0\n/dev/sdb1 /media/usb1 ext4 rw 0 0\n/dev/sdc1 /run/media/user/usb2 ext4 rw 0 0\n";
         assert_eq!(
@@ -75,16 +93,22 @@ mod tests {
     }
 }
 
-pub fn wait_for_new_drive(known: &[PathBuf], shutdown: &AtomicBool) -> Option<PathBuf> {
+pub fn wait_for_new_drive(known: &mut Vec<PathBuf>, shutdown: &AtomicBool) -> Option<PathBuf> {
     println!("Waiting for a new drive… (Ctrl+C to stop)");
     loop {
         if shutdown.load(Ordering::Relaxed) {
             return None;
         }
-        if let Some(drive) = external_drives().into_iter().find(|d| !known.contains(d)) {
+        if let Some(drive) = pick_new(&external_drives(), known) {
             println!("New drive detected: {}", drive.display());
             return Some(drive);
         }
         thread::sleep(Duration::from_secs(2));
     }
+}
+
+// Forget drives that were unplugged so re-inserting one triggers a new backup.
+fn pick_new(current: &[PathBuf], known: &mut Vec<PathBuf>) -> Option<PathBuf> {
+    known.retain(|d| current.contains(d));
+    current.iter().find(|d| !known.contains(d)).cloned()
 }
