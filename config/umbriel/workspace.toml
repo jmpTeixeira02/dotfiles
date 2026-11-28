@@ -57,7 +57,7 @@ default_workspace = "chat"
 
 [[window_rule]]
 match.at_startup = true
-match.app_id = '^zapfast$'
+match.app_id = '^com.rtosta.zapzap$'
 default_workspace = "chat"
 
 [[window_rule]]

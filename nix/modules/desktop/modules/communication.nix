@@ -3,7 +3,7 @@
     { pkgs, lib, ... }:
     {
       home.packages = with pkgs; [
-        zapfast
+        zapzap
       ];
 
       programs.discord = {

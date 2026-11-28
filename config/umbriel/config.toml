@@ -14,7 +14,7 @@ autostart = [
     "env GTK_IM_MODULE=simple ghostty",
     "steam",
     "sleep 1 && discord",
-    "zapfast",
+    "zapzap",
     "spotify",
     "thunderbird",
 ]
